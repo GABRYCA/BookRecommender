@@ -1,8 +1,12 @@
 package me.laba.bookrecommender;
 
-
 import java.util.ArrayList;
 
+/**
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia  758716 VA
+ */
 public class Libro {
 
     private int libroId;
@@ -67,5 +71,17 @@ public class Libro {
 
     public void setCategoria(ArrayList<String> categoria) {
         this.categoria = categoria;
+    }
+
+    @Override
+    public String toString() {
+        return "Libro{" +
+                "libroId=" + libroId +
+                ", titolo='" + titolo + '\'' +
+                ", autori=" + autori +
+                ", annoPubblicazione=" + annoPubblicazione +
+                ", editore='" + editore + '\'' +
+                ", categoria=" + categoria +
+                '}';
     }
 }
