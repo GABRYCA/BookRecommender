@@ -3,7 +3,7 @@
 ### Membri Gruppo:
 - `Caretti Gabriele 756564 VA`
 - `Como Riccardo 758697 VA`
-- `Manicone Giorgia  758716 VA`
+- `Manicone Giorgia 758716 VA`
 
 ### Informazioni:
 - Java 22
