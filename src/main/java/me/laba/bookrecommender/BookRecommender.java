@@ -179,6 +179,7 @@ public class BookRecommender {
                         System.out.println("1. Crea libreria");
                         System.out.println("2. Aggiungi libro alla libreria");
                         System.out.println("3. Visualizza librerie");
+                        System.out.println("4. Rimuovi libreria");
 
                         int sceltaLibrerie = scanner.nextInt();
                         switch (sceltaLibrerie) {
@@ -232,8 +233,9 @@ public class BookRecommender {
                                     if (l.getUserId() == utenteLoggato.getUserId()) {
                                         trovato++;
                                         delimitatore();
-                                        System.out.println("Le tue librerie:");
+                                        System.out.println("Le tua libreria:");
                                         System.out.println("Nome: " + l.getNomeLibreria());
+                                        System.out.println("Id libreria: " + l.getLibreriaId());
                                         System.out.println("Libri:");
                                         int conta = 1;
                                         for (String libroIdLibreria : l.getLibriId()) {
@@ -253,6 +255,34 @@ public class BookRecommender {
                                     System.out.println("Nessuna libreria trovata!");
                                 }
                                 continua(scanner);
+                                break;
+                            case 4:
+                                System.out.println("Inserisci l'id della libreria da eliminare: ");
+                                int libreriaIdElim = scanner.nextInt();
+                                int trovatoo = 0;
+
+                                for (Libreria l : librerie) {
+                                    if (l.getLibreriaId() == libreriaIdElim) {
+                                        if (l.getUserId() != utenteLoggato.getUserId()) { // Verifica se l'utente è il proprietario della libreria
+                                            System.out.println("Non sei il proprietario di questa libreria!");
+                                            trovatoo++;
+                                            break;
+                                        }
+                                        else {
+                                            trovatoo++;
+                                            librerie.remove(libreriaIdElim-1);
+                                            System.out.println("Libreria eliminata con successo !");
+                                            break;
+
+
+                                        }
+                                    }
+                                }
+                                if (trovatoo == 0) {
+                                    System.out.println("Nessuna libreria trovata!");
+                                }
+                                continua(scanner);
+
                                 break;
                             default:
                                 System.out.println("Scelta non valida!");
@@ -287,6 +317,35 @@ public class BookRecommender {
                         utenti.add(utente);
                         System.out.println("Registrazione effettuata con successo! Ora puoi loggarti...");
                     }
+                    break;
+                case 5:
+                    System.out.println("Inserisci l'id del libro: ");
+                    libroId = scanner.nextInt();
+                    if(libroId>0 && libroId <=102631) {
+                        System.out.println("Inserisci la valutazione (da  1 a 5) \n");
+                        System.out.println("Stile : ");
+                        int stile = scanner.nextInt();
+                        System.out.println("Contenuto : ");
+                        int contenuto = scanner.nextInt();
+                        System.out.println("Gradevolezza : ");
+                        int gradevolezza = scanner.nextInt();
+                        System.out.println("Originalita': ");
+                        int originalita = scanner.nextInt();
+                        System.out.println("Edizione : ");
+                        int edizione = scanner.nextInt();
+                        System.out.println("Voto finale : ");
+                        int Vfinale = scanner.nextInt();
+                        scanner.nextLine();
+                        System.out.println("Commento : ");
+                        String commento = scanner.nextLine();
+
+                        valutazioni.add(new Valutazione(valutazioni.size() + 1, utenteLoggato.getUserId(), libroId, stile, contenuto, gradevolezza, originalita, edizione, Vfinale, commento));
+                        System.out.println("\nValutazione creata con successo!");
+                    }else {
+                        System.out.println("\nLibro inesistente");
+                    }
+
+                    continua(scanner);
                     break;
                 default:
                     System.out.println("Scelta non valida!");

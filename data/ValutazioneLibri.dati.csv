@@ -1,3 +1,5 @@
 "ValutazioneId","UserId","LibroId","Stile","Contenuto","Gradevolezza","Originalità","Edizione","VotoFinale","Commento"
 "1","1","1","4","3","4","3","4","3","Ottimo libro"
 "2","1","46013","4","3","4","3","4","3","Ottimo libro"
+"3","3","10000","1","1","1","1","1","1","Libro orrendo!"
+"4","3","102631","5","5","5","5","5","5","Libro molto bello, lo consiglio veramente a tutti!"
