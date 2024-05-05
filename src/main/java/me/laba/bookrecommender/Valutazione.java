@@ -16,8 +16,9 @@ public class Valutazione {
     private int originalita;
     private int edizione;
     private int votoFinale;
+    private String commento;
 
-    public Valutazione(int valutazioneId, int userId, int libroId, int stile, int contenuto, int gradevolezza, int originalita, int edizione, int votoFinale) {
+    public Valutazione(int valutazioneId, int userId, int libroId, int stile, int contenuto, int gradevolezza, int originalita, int edizione, int votoFinale, String commento) {
         this.valutazioneId = valutazioneId;
         this.userId = userId;
         this.libroId = libroId;
@@ -27,6 +28,7 @@ public class Valutazione {
         this.originalita = originalita;
         this.edizione = edizione;
         this.votoFinale = votoFinale;
+        this.commento = commento;
     }
 
     public int getValutazioneId() {
@@ -101,6 +103,14 @@ public class Valutazione {
         this.votoFinale = votoFinale;
     }
 
+    public String getCommento() {
+        return commento;
+    }
+
+    public void setCommento(String commento) {
+        this.commento = commento;
+    }
+
     @Override
     public String toString() {
         return "Valutazione{" +
@@ -113,6 +123,7 @@ public class Valutazione {
                 ", originalita=" + originalita +
                 ", edizione=" + edizione +
                 ", votoFinale=" + votoFinale +
+                ", commento='" + commento + '\'' +
                 '}';
     }
 }

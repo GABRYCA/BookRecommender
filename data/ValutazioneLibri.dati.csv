@@ -1,2 +1,3 @@
-"ValutazioneId","UserId","LibroId","Stile","Contenuto","Gradevolezza","Originalità","Edizione","VotoFinale"
-"1","1","1","4","3","4","3","4","3"
+"ValutazioneId","UserId","LibroId","Stile","Contenuto","Gradevolezza","Originalità","Edizione","VotoFinale","Commento"
+"1","1","1","4","3","4","3","4","3","Ottimo libro"
+"2","1","46013","4","3","4","3","4","3","Ottimo libro"

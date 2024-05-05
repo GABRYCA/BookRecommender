@@ -13,11 +13,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * Classe Main del progetto.
- *
+ * <p>
  * LE SEGUENTI LINEE DEVONO ESSERE INSERITE IN OGNI FILE .java!
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia  758716 VA
@@ -37,10 +39,6 @@ public class BookRecommender {
 
     public static void main(String[] args) {
         System.out.println("Programma avviato!");
-
-        /*File sorgente = new File("data\\BooksDataset.csv");
-        File destinazione = new File("data\\Libri.dati.csv");
-        estrattoreLibri(sorgente, destinazione);*/
 
         System.out.println("Caricamento libri in corso...");
         libri = caricaLibri();
@@ -63,12 +61,243 @@ public class BookRecommender {
         System.out.println("Librerie caricate con successo!");
 
         // CODICE QUI.
+        int scelta = 0;
+        boolean loggato = false;
+        Utente utenteLoggato = null;
+        do {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("\nMenu:");
+            System.out.println("0. Esci");
 
+            // Opzioni disponibili per tutti
+            System.out.println("1. Ricerca libri");
+            System.out.println("2. Visualizza libro per id");
+
+            // Login e registrazione
+            if (!loggato) {
+                System.out.println("3. Login");
+                System.out.println("4. Registrazione");
+            } else {
+                System.out.println("3. Logout");
+                System.out.println("4. Gestisci librerie");
+                System.out.println("5. Valuta libro");
+                System.out.println("6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
+            }
+            System.out.println("Scelta: ");
+
+            scelta = scanner.nextInt();
+            switch (scelta) {
+                case 1:
+                    System.out.println("Inserisci tipo di ricerca (1. Titolo, 2. Autore, 3. Autore e Anno): ");
+                    int tipoRicerca = scanner.nextInt();
+                    TipoRicercaLibro tipo = TipoRicercaLibro.TITOLO;
+                    switch (tipoRicerca) {
+                        case 1:
+                            tipo = TipoRicercaLibro.TITOLO;
+                            break;
+                        case 2:
+                            tipo = TipoRicercaLibro.AUTORE;
+                            break;
+                        case 3:
+                            tipo = TipoRicercaLibro.AUTORE_ANNO;
+                            break;
+                    }
+                    System.out.println("Inserisci il " + tipo.toString().toLowerCase() + " da cercare: ");
+                    String valore = scanner.next();
+                    Optional<Integer> anno = Optional.empty();
+                    if (tipo == TipoRicercaLibro.AUTORE_ANNO) {
+                        System.out.println("Inserisci anno di pubblicazione: ");
+                        anno = Optional.of(scanner.nextInt());
+                    }
+                    ArrayList<Libro> risultato = cercaLibro(tipo, valore, anno);
+                    for (Libro libro : risultato) {
+                        System.out.println(libro);
+                    }
+                    continua(scanner);
+                    break;
+                case 2:
+                    System.out.println("Inserisci id del libro: ");
+                    int libroId = scanner.nextInt();
+                    for (Libro libro : libri) {
+                        if (libro.getLibroId() == libroId) {
+                            // Stampa informazioni del libro in modo dettagliato ed elegante + valutazioni
+                            delimitatore();
+                            System.out.println("Informazioni libro con id " + libroId + ":");
+                            System.out.println("Titolo: " + libro.getTitolo());
+                            System.out.println("Autori: " + String.join(", ", libro.getAutori()));
+                            System.out.println("Anno di pubblicazione: " + libro.getAnnoPubblicazione());
+                            System.out.println("Editore: " + libro.getEditore());
+                            System.out.println("Categoria: " + String.join(", ", libro.getCategoria()));
+                            delimitatore();
+                            System.out.println("Valutazioni:");
+                            for (Valutazione valutazione : valutazioni) {
+                                if (valutazione.getLibroId() == libroId) {
+                                    // Ottieni nome utente e stampalo
+                                    for (Utente u : utenti) {
+                                        if (u.getUserId() == valutazione.getUserId()) {
+                                            System.out.println("Utente: " + u.getNome() + " " + u.getCognome());
+                                            break;
+                                        }
+                                    }
+                                    System.out.println("Stile: " + valutazione.getStile());
+                                    System.out.println("Contenuto: " + valutazione.getContenuto());
+                                    System.out.println("Gradevolezza: " + valutazione.getGradevolezza());
+                                    System.out.println("Originalità: " + valutazione.getOriginalita());
+                                    System.out.println("Edizione: " + valutazione.getEdizione());
+                                    System.out.println("Voto finale: " + valutazione.getVotoFinale());
+                                    System.out.println("Commento: " + valutazione.getCommento());
+                                    System.out.println();
+                                }
+                            }
+                            delimitatore();
+                            break;
+                        }
+                    }
+                    break;
+                case 3:
+                    if (!loggato) {
+                        System.out.println("Inserisci email: ");
+                        String email = scanner.next();
+                        System.out.println("Inserisci password: ");
+                        String password = scanner.next();
+                        for (Utente utente : utenti) {
+                            if (utente.getEmail().equals(email) && utente.getPassword().equals(password)) {
+                                loggato = true;
+                                utenteLoggato = utente;
+                                System.out.println("Login effettuato con successo!");
+                                break;
+                            }
+                        }
+                    } else {
+                        loggato = false;
+                        utenteLoggato = null;
+                        System.out.println("Logout effettuato con successo!");
+                    }
+                    break;
+                case 4:
+                    if (loggato) { // Gestisci librerie
+                        System.out.println("1. Crea libreria");
+                        System.out.println("2. Aggiungi libro alla libreria");
+                        System.out.println("3. Visualizza librerie");
+
+                        int sceltaLibrerie = scanner.nextInt();
+                        switch (sceltaLibrerie) {
+                            case 1:
+                                System.out.println("Inserisci nome libreria: ");
+                                String nomeLibreria = scanner.next();
+                                Libreria libreria = new Libreria(librerie.size() + 1, utenteLoggato.getUserId(), nomeLibreria, new ArrayList<>());
+                                librerie.add(libreria);
+                                System.out.println("Libreria creata con successo!");
+                                break;
+                            case 2:
+                                System.out.println("Inserisci id della libreria: ");
+                                int libreriaId = scanner.nextInt();
+                                for (Libreria l : librerie) {
+                                    if (l.getLibreriaId() == libreriaId) {
+                                        if (l.getUserId() != utenteLoggato.getUserId()) { // Verifica se l'utente è il proprietario della libreria
+                                            System.out.println("Non sei il proprietario di questa libreria!");
+                                            break;
+                                        }
+                                        System.out.println("Inserisci id del libro da aggiungere: ");
+                                        int libroIdLibreria = scanner.nextInt();
+                                        boolean trovato = false;
+                                        boolean giaPresente = false;
+                                        for (Libro libro : libri) {
+                                            if (libro.getLibroId() == libroIdLibreria) {
+                                                if (l.getLibriId().contains(String.valueOf(libroIdLibreria))) { // Verifica che il libro non sia già presente
+                                                    System.out.println("Libro già presente nella libreria!");
+                                                    giaPresente = true;
+                                                    break;
+                                                }
+                                                l.getLibriId().add(String.valueOf(libroIdLibreria));
+                                                trovato = true;
+                                                break;
+                                            }
+                                        }
+                                        if (trovato) {
+                                            System.out.println("Libro aggiunto con successo!");
+                                        } else if (giaPresente) {
+                                            System.out.println("Libro già presente nella libreria!");
+                                        } else {
+                                            System.out.println("Libro non trovato!");
+                                        }
+                                        continua(scanner);
+                                        break;
+                                    }
+                                }
+                                break;
+                            case 3:
+                                int trovato = 0;
+                                for (Libreria l : librerie) {
+                                    if (l.getUserId() == utenteLoggato.getUserId()) {
+                                        trovato++;
+                                        delimitatore();
+                                        System.out.println("Le tue librerie:");
+                                        System.out.println("Nome: " + l.getNomeLibreria());
+                                        System.out.println("Libri:");
+                                        int conta = 1;
+                                        for (String libroIdLibreria : l.getLibriId()) {
+                                            for (Libro libro : libri) {
+                                                if (libro.getLibroId() == Integer.parseInt(libroIdLibreria)) {
+                                                    System.out.println("Libro " + conta + ": " + libro.getTitolo());
+                                                    System.out.println("Id: " + libro.getLibroId());
+                                                    conta++;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        delimitatore();
+                                    }
+                                }
+                                if (trovato == 0) {
+                                    System.out.println("Nessuna libreria trovata!");
+                                }
+                                continua(scanner);
+                                break;
+                            default:
+                                System.out.println("Scelta non valida!");
+                                break;
+                        }
+                    } else { // Registrazione
+                        System.out.println("Inserisci nome: ");
+                        String nome = scanner.next();
+                        System.out.println("Inserisci cognome: ");
+                        String cognome = scanner.next();
+                        System.out.println("Inserisci codice fiscale: ");
+                        String codiceFiscale = scanner.next();
+                        System.out.println("Inserisci email: ");
+                        String email = scanner.next();
+                        System.out.println("Inserisci userId: ");
+                        int userId = scanner.nextInt();
+                        System.out.println("Inserisci password: ");
+                        String password = scanner.next();
+                        Utente utente = new Utente(userId, nome, cognome, codiceFiscale, email, password);
+                        // Controlla non ci sia già un utente con lo stesso userId
+                        boolean trovato = false;
+                        for (Utente u : utenti) {
+                            if (u.getUserId() == userId) {
+                                trovato = true;
+                                break;
+                            }
+                        }
+                        if (trovato) {
+                            System.out.println("Utente già registrato con questo userId!");
+                            break;
+                        }
+                        utenti.add(utente);
+                        System.out.println("Registrazione effettuata con successo! Ora puoi loggarti...");
+                    }
+                    break;
+                default:
+                    System.out.println("Scelta non valida!");
+                    break;
+            }
+        } while (scelta != 0);
 
 
         // Salvataggio alla chiusura libri
         System.out.println("Salvataggio libri in corso...");
-        if (salvataggioLibri()){
+        if (salvataggioLibri()) {
             System.out.println("Libri salvati con successo!");
         } else {
             System.out.println("Errore durante il salvataggio dei libri!");
@@ -76,7 +305,7 @@ public class BookRecommender {
 
         // Salvataggio alla chiusura utenti
         System.out.println("Salvataggio utenti in corso...");
-        if (salvataggioUtenti()){
+        if (salvataggioUtenti()) {
             System.out.println("Utenti salvati con successo!");
         } else {
             System.out.println("Errore durante il salvataggio degli utenti!");
@@ -84,7 +313,7 @@ public class BookRecommender {
 
         // Salvataggio alla chiusura consigli
         System.out.println("Salvataggio consigli in corso...");
-        if (salvataggioConsigli()){
+        if (salvataggioConsigli()) {
             System.out.println("Consigli salvati con successo!");
         } else {
             System.out.println("Errore durante il salvataggio dei consigli!");
@@ -92,7 +321,7 @@ public class BookRecommender {
 
         // Salvataggio alla chiusura valutazioni
         System.out.println("Salvataggio valutazioni in corso...");
-        if (salvataggioValutazioni()){
+        if (salvataggioValutazioni()) {
             System.out.println("Valutazioni salvate con successo!");
         } else {
             System.out.println("Errore durante il salvataggio delle valutazioni!");
@@ -100,7 +329,7 @@ public class BookRecommender {
 
         // Salvataggio alla chiusura librerie
         System.out.println("Salvataggio librerie in corso...");
-        if (salvataggioLibrerie()){
+        if (salvataggioLibrerie()) {
             System.out.println("Librerie salvate con successo!");
         } else {
             System.out.println("Errore durante il salvataggio delle librerie!");
@@ -112,28 +341,27 @@ public class BookRecommender {
     /**
      * Ricerca dei libri in base al tipo di ricerca.
      *
-     * @param tipo TipoRicercaLibro
+     * @param tipo   TipoRicercaLibro
      * @param valore String
-     * @param anno Optional<Integer>
-     *
+     * @param anno   Optional<Integer>
      * @return ArrayList<Libro> risultato
-     * */
-    public static ArrayList<Libro> ricercaPerTipo(TipoRicercaLibro tipo, String valore, Optional<Integer> anno){
+     */
+    public static ArrayList<Libro> cercaLibro(TipoRicercaLibro tipo, String valore, Optional<Integer> anno) {
         ArrayList<Libro> risultato = new ArrayList<>();
-        switch (tipo){
+        switch (tipo) {
             case TITOLO:
                 // Ricerca per titolo
-                for (Libro libro : libri){
-                    if (libro.getTitolo().contains(valore)){
+                for (Libro libro : libri) {
+                    if (libro.getTitolo().contains(valore)) {
                         risultato.add(libro);
                     }
                 }
                 break;
             case AUTORE:
                 // Ricerca per autore
-                for (Libro libro : libri){
-                    for (String autore : libro.getAutori()){
-                        if (autore.contains(valore)){
+                for (Libro libro : libri) {
+                    for (String autore : libro.getAutori()) {
+                        if (autore.contains(valore)) {
                             risultato.add(libro);
                             break;
                         }
@@ -141,12 +369,12 @@ public class BookRecommender {
                 }
                 break;
             case AUTORE_ANNO:
-                if (anno.isEmpty()){
+                if (anno.isEmpty()) {
                     return risultato;
                 }
-                for (Libro libro : libri){
-                    for (String autore : libro.getAutori()){
-                        if (autore.contains(valore) && libro.getAnnoPubblicazione() == anno.get()){
+                for (Libro libro : libri) {
+                    for (String autore : libro.getAutori()) {
+                        if (autore.contains(valore) && libro.getAnnoPubblicazione() == anno.get()) {
                             risultato.add(libro);
                             break;
                         }
@@ -158,11 +386,43 @@ public class BookRecommender {
     }
 
     /**
+     * Premi un tasto per continuare
+     *
+     * @param scanner Scanner
+     * @return void
+     */
+    public static void continua(Scanner scanner) {
+        System.out.println("Premi un tasto per continuare...");
+        scanner.nextLine();
+        scanner.nextLine();
+    }
+
+    /**
+     * Stampa lista completa dei libri
+     *
+     * @return void
+     */
+    public static void stampaLibri() {
+        for (Libro libro : libri) {
+            System.out.println(libro);
+        }
+    }
+
+    /**
+     * Delimitatore terminale per stile
+     *
+     * @return void
+     * */
+    public static void delimitatore() {
+        System.out.println("**************************************");
+    }
+
+    /**
      * Carica tutti i libri presenti nel file CSV.
      *
      * @return ArrayList<Libro> libri
-     * */
-    public static ArrayList<Libro> caricaLibri(){
+     */
+    public static ArrayList<Libro> caricaLibri() {
         ArrayList<Libro> libri = new ArrayList<>();
         try {
             CSVReader reader = new CSVReader(new FileReader(sorgenteLibri));
@@ -198,8 +458,8 @@ public class BookRecommender {
      * Carica tutti gli utenti presenti nel file CSV.
      *
      * @return ArrayList<Utente> utenti
-     * */
-    public static ArrayList<Utente> caricaUtenti(){
+     */
+    public static ArrayList<Utente> caricaUtenti() {
         ArrayList<Utente> utenti = new ArrayList<>();
 
         try {
@@ -234,7 +494,7 @@ public class BookRecommender {
      * Carica i consigli presenti nel file CSV.
      *
      * @return ArrayList<ConsigliLibri> consigli
-     * */
+     */
     public static ArrayList<ConsigliLibri> caricaConsigli() {
         ArrayList<ConsigliLibri> consigli = new ArrayList<>();
 
@@ -271,7 +531,7 @@ public class BookRecommender {
      * Carica valutazioni dei libri
      *
      * @return ArrayList<Valutazione> valutazioni
-     * */
+     */
     public static ArrayList<Valutazione> caricaValutazioni() {
         ArrayList<Valutazione> valutazioni = new ArrayList<>();
 
@@ -290,7 +550,7 @@ public class BookRecommender {
 
             nextLine = reader.readNext();
             while ((nextLine) != null) {
-                Valutazione valutazione = new Valutazione(Integer.parseInt(nextLine[0]), Integer.parseInt(nextLine[1]), Integer.parseInt(nextLine[2]), Integer.parseInt(nextLine[3]), Integer.parseInt(nextLine[4]), Integer.parseInt(nextLine[5]), Integer.parseInt(nextLine[6]), Integer.parseInt(nextLine[7]), Integer.parseInt(nextLine[8]));
+                Valutazione valutazione = new Valutazione(Integer.parseInt(nextLine[0]), Integer.parseInt(nextLine[1]), Integer.parseInt(nextLine[2]), Integer.parseInt(nextLine[3]), Integer.parseInt(nextLine[4]), Integer.parseInt(nextLine[5]), Integer.parseInt(nextLine[6]), Integer.parseInt(nextLine[7]), Integer.parseInt(nextLine[8]), nextLine[9]);
                 valutazioni.add(valutazione);
                 try {
                     nextLine = reader.readNext();
@@ -312,7 +572,7 @@ public class BookRecommender {
      * Carica librerie dal file CSV
      *
      * @return ArrayList<Libreria> librerie
-     * */
+     */
     public static ArrayList<Libreria> caricaLibrerie() {
         ArrayList<Libreria> librerie = new ArrayList<>();
 
@@ -349,7 +609,7 @@ public class BookRecommender {
      * Salva i libri nel file CSV
      *
      * @return boolean
-     * */
+     */
     public static boolean salvataggioLibri() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(sorgenteLibri));
@@ -374,7 +634,7 @@ public class BookRecommender {
      * Salva gli utenti nel file CSV
      *
      * @return boolean
-     * */
+     */
     public static boolean salvataggioUtenti() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(sorgenteUtenti));
@@ -399,7 +659,7 @@ public class BookRecommender {
      * Salva i consigli nel file CSV
      *
      * @return boolean
-     * */
+     */
     public static boolean salvataggioConsigli() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(sorgenteConsigli));
@@ -424,16 +684,16 @@ public class BookRecommender {
      * Salva le valutazioni nel file CSV
      *
      * @return boolean
-     * */
+     */
     public static boolean salvataggioValutazioni() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(sorgenteValutazioni));
 
             // Scrivo intestazione
-            writer.writeNext(new String[]{"ValutazioneId", "UserId", "LibroId", "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione", "VotoFinale"});
+            writer.writeNext(new String[]{"ValutazioneId", "UserId", "LibroId", "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione", "VotoFinale", "Commento"});
 
             for (Valutazione valutazione : valutazioni) {
-                String[] entries = {String.valueOf(valutazione.getValutazioneId()), String.valueOf(valutazione.getUserId()), String.valueOf(valutazione.getLibroId()), String.valueOf(valutazione.getStile()), String.valueOf(valutazione.getContenuto()), String.valueOf(valutazione.getGradevolezza()), String.valueOf(valutazione.getOriginalita()), String.valueOf(valutazione.getEdizione()), String.valueOf(valutazione.getVotoFinale())};
+                String[] entries = {String.valueOf(valutazione.getValutazioneId()), String.valueOf(valutazione.getUserId()), String.valueOf(valutazione.getLibroId()), String.valueOf(valutazione.getStile()), String.valueOf(valutazione.getContenuto()), String.valueOf(valutazione.getGradevolezza()), String.valueOf(valutazione.getOriginalita()), String.valueOf(valutazione.getEdizione()), String.valueOf(valutazione.getVotoFinale()), String.valueOf(valutazione.getCommento())};
                 writer.writeNext(entries);
             }
 
@@ -449,7 +709,7 @@ public class BookRecommender {
      * Salva le librerie nel file CSV
      *
      * @return boolean
-     * */
+     */
     public static boolean salvataggioLibrerie() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(sorgenteLibrerie));

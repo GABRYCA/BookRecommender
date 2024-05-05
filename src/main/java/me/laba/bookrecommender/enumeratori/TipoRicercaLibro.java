@@ -8,6 +8,5 @@ package me.laba.bookrecommender.enumeratori;
 public enum TipoRicercaLibro {
     TITOLO,
     AUTORE,
-    AUTORE_ANNO,
-
+    AUTORE_ANNO
 }
