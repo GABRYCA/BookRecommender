@@ -40,28 +40,10 @@ public class BookRecommender {
     public static void main(String[] args) {
         System.out.println("Programma avviato!");
 
-        System.out.println("Caricamento libri in corso...");
-        libri = caricaLibri();
-        System.out.println("Libri caricati con successo!");
-
-        System.out.println("Caricamento utenti in corso...");
-        utenti = caricaUtenti();
-        System.out.println("Utenti caricati con successo!");
-
-        System.out.println("Caricamento consigli in corso...");
-        consigli = caricaConsigli();
-        System.out.println("Consigli caricati con successo!");
-
-        System.out.println("Caricamento valutazioni in corso...");
-        valutazioni = caricaValutazioni();
-        System.out.println("Valutazioni caricati con successo!");
-
-        System.out.println("Caricamento librerie in corso...");
-        librerie = caricaLibrerie();
-        System.out.println("Librerie caricate con successo!");
+        inizializzaDati(true);
 
         // CODICE QUI.
-        int scelta = 0;
+        int scelta;
         boolean loggato = false;
         Utente utenteLoggato = null;
         do {
@@ -100,6 +82,9 @@ public class BookRecommender {
                             break;
                         case 3:
                             tipo = TipoRicercaLibro.AUTORE_ANNO;
+                            break;
+                        default:
+                            System.out.println("Scelta non valida!");
                             break;
                     }
                     System.out.println("Inserisci il " + tipo.toString().toLowerCase() + " da cercare: ");
@@ -321,7 +306,11 @@ public class BookRecommender {
                 case 5:
                     System.out.println("Inserisci l'id del libro: ");
                     libroId = scanner.nextInt();
-                    if(libroId>0 && libroId <=102631) {
+                    if (libroId >= 0 && libroId <= libri.size()) {
+                        if (!Libro.esisteLibro(libri, libroId)) {
+                            System.out.println("Libro non trovato!");
+                            break;
+                        }
                         System.out.println("Inserisci la valutazione (da  1 a 5) \n");
                         System.out.println("Stile : ");
                         int stile = scanner.nextInt();
@@ -355,44 +344,7 @@ public class BookRecommender {
 
 
         // Salvataggio alla chiusura libri
-        System.out.println("Salvataggio libri in corso...");
-        if (salvataggioLibri()) {
-            System.out.println("Libri salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio dei libri!");
-        }
-
-        // Salvataggio alla chiusura utenti
-        System.out.println("Salvataggio utenti in corso...");
-        if (salvataggioUtenti()) {
-            System.out.println("Utenti salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio degli utenti!");
-        }
-
-        // Salvataggio alla chiusura consigli
-        System.out.println("Salvataggio consigli in corso...");
-        if (salvataggioConsigli()) {
-            System.out.println("Consigli salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio dei consigli!");
-        }
-
-        // Salvataggio alla chiusura valutazioni
-        System.out.println("Salvataggio valutazioni in corso...");
-        if (salvataggioValutazioni()) {
-            System.out.println("Valutazioni salvate con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio delle valutazioni!");
-        }
-
-        // Salvataggio alla chiusura librerie
-        System.out.println("Salvataggio librerie in corso...");
-        if (salvataggioLibrerie()) {
-            System.out.println("Librerie salvate con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio delle librerie!");
-        }
+        salvataggioDati(true);
 
         System.out.println("Programma terminato!");
     }
@@ -454,17 +406,6 @@ public class BookRecommender {
         System.out.println("Premi un tasto per continuare...");
         scanner.nextLine();
         scanner.nextLine();
-    }
-
-    /**
-     * Stampa lista completa dei libri
-     *
-     * @return void
-     */
-    public static void stampaLibri() {
-        for (Libro libro : libri) {
-            System.out.println(libro);
-        }
     }
 
     /**
@@ -593,12 +534,6 @@ public class BookRecommender {
      */
     public static ArrayList<Valutazione> caricaValutazioni() {
         ArrayList<Valutazione> valutazioni = new ArrayList<>();
-
-        // Esempio struttura
-        /*
-        ValutazioneId,UserId,LibroId,Stile,Contenuto,Gradevolezza,Originalità,Edizione,VotoFinale
-        1,1,1,4,3,4,3,4,3
-         */
 
         try {
             CSVReader reader = new CSVReader(new FileReader(sorgenteValutazioni));
@@ -788,6 +723,96 @@ public class BookRecommender {
             return false;
         }
     }
+
+    /**
+     * Inizializza e carica tutti i dati dai file CSV.
+     *
+     * @param mostraMessaggi boolean
+     * */
+    private static void inizializzaDati(boolean mostraMessaggi) {
+        if (mostraMessaggi) {
+            System.out.println("Caricamento libri in corso...");
+            libri = caricaLibri();
+            System.out.println("Libri caricati con successo!");
+
+            System.out.println("Caricamento utenti in corso...");
+            utenti = caricaUtenti();
+            System.out.println("Utenti caricati con successo!");
+
+            System.out.println("Caricamento consigli in corso...");
+            consigli = caricaConsigli();
+            System.out.println("Consigli caricati con successo!");
+
+            System.out.println("Caricamento valutazioni in corso...");
+            valutazioni = caricaValutazioni();
+            System.out.println("Valutazioni caricati con successo!");
+
+            System.out.println("Caricamento librerie in corso...");
+            librerie = caricaLibrerie();
+            System.out.println("Librerie caricate con successo!");
+        } else {
+            libri = caricaLibri();
+            utenti = caricaUtenti();
+            consigli = caricaConsigli();
+            valutazioni = caricaValutazioni();
+            librerie = caricaLibrerie();
+        }
+    }
+
+    /**
+     * Salva tutti i dati nei file CSV.
+     *
+     * @param mostraMessaggi boolean
+     * */
+    private static void salvataggioDati(boolean mostraMessaggi) {
+        if (mostraMessaggi) {
+            System.out.println("Salvataggio libri in corso...");
+            if (salvataggioLibri()) {
+                System.out.println("Libri salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio dei libri!");
+            }
+
+            // Salvataggio alla chiusura utenti
+            System.out.println("Salvataggio utenti in corso...");
+            if (salvataggioUtenti()) {
+                System.out.println("Utenti salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio degli utenti!");
+            }
+
+            // Salvataggio alla chiusura consigli
+            System.out.println("Salvataggio consigli in corso...");
+            if (salvataggioConsigli()) {
+                System.out.println("Consigli salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio dei consigli!");
+            }
+
+            // Salvataggio alla chiusura valutazioni
+            System.out.println("Salvataggio valutazioni in corso...");
+            if (salvataggioValutazioni()) {
+                System.out.println("Valutazioni salvate con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio delle valutazioni!");
+            }
+
+            // Salvataggio alla chiusura librerie
+            System.out.println("Salvataggio librerie in corso...");
+            if (salvataggioLibrerie()) {
+                System.out.println("Librerie salvate con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio delle librerie!");
+            }
+        } else {
+            salvataggioLibri();
+            salvataggioUtenti();
+            salvataggioConsigli();
+            salvataggioValutazioni();
+            salvataggioLibrerie();
+        }
+    }
+
     /*public static void estrattoreLibri(File sorgente, File destinazione) {
         try {
             CSVReader reader = new CSVReader(new FileReader(sorgente));

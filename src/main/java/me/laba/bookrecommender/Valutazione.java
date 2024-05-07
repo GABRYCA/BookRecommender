@@ -3,7 +3,7 @@ package me.laba.bookrecommender;
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
- * @author Manicone Giorgia  758716 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class Valutazione {
 
@@ -18,6 +18,20 @@ public class Valutazione {
     private int votoFinale;
     private String commento;
 
+    /**
+     * Costruttore classe Valutazione
+     *
+     * @param valutazioneId int
+     * @param userId int
+     * @param libroId int
+     * @param stile int
+     * @param contenuto int
+     * @param gradevolezza int
+     * @param originalita int
+     * @param edizione int
+     * @param votoFinale int
+     * @param commento String
+     */
     public Valutazione(int valutazioneId, int userId, int libroId, int stile, int contenuto, int gradevolezza, int originalita, int edizione, int votoFinale, String commento) {
         this.valutazioneId = valutazioneId;
         this.userId = userId;
