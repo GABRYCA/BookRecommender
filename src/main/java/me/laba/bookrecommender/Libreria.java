@@ -14,6 +14,14 @@ public class Libreria {
     private String nomeLibreria;
     private ArrayList<String> libriId;
 
+    /**
+     * Costruttore classe Libreria
+     *
+     * @param libreriaId int
+     * @param userId int
+     * @param nomeLibreria String
+     * @param libriId ArrayList<String>
+     */
     public Libreria(int libreriaId, int userId, String nomeLibreria, ArrayList<String> libriId) {
         this.libreriaId = libreriaId;
         this.userId = userId;

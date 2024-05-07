@@ -3,7 +3,7 @@ package me.laba.bookrecommender;
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
- * @author Manicone Giorgia  758716 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class Utente {
 
@@ -14,6 +14,16 @@ public class Utente {
     private String email;
     private String password;
 
+    /**
+     * Costruttore classe Utente
+     *
+     * @param userId int
+     * @param nome String
+     * @param cognome String
+     * @param codiceFiscale String
+     * @param email String
+     * @param password String
+     */
     public Utente(int userId, String nome, String cognome, String codiceFiscale, String email, String password) {
         this.userId = userId;
         this.nome = nome;

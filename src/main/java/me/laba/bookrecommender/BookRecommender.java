@@ -10,10 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Classe Main del progetto.
@@ -40,30 +37,13 @@ public class BookRecommender {
     public static void main(String[] args) {
         System.out.println("Programma avviato!");
 
-        System.out.println("Caricamento libri in corso...");
-        libri = caricaLibri();
-        System.out.println("Libri caricati con successo!");
-
-        System.out.println("Caricamento utenti in corso...");
-        utenti = caricaUtenti();
-        System.out.println("Utenti caricati con successo!");
-
-        System.out.println("Caricamento consigli in corso...");
-        consigli = caricaConsigli();
-        System.out.println("Consigli caricati con successo!");
-
-        System.out.println("Caricamento valutazioni in corso...");
-        valutazioni = caricaValutazioni();
-        System.out.println("Valutazioni caricati con successo!");
-
-        System.out.println("Caricamento librerie in corso...");
-        librerie = caricaLibrerie();
-        System.out.println("Librerie caricate con successo!");
+        inizializzaDati(true);
 
         // CODICE QUI.
-        int scelta = 0;
+        int scelta;
         boolean loggato = false;
         Utente utenteLoggato = null;
+        boolean inputValido = false;
         do {
             Scanner scanner = new Scanner(System.in);
             System.out.println("\nMenu:");
@@ -88,8 +68,19 @@ public class BookRecommender {
             scelta = scanner.nextInt();
             switch (scelta) {
                 case 1:
-                    System.out.println("Inserisci tipo di ricerca (1. Titolo, 2. Autore, 3. Autore e Anno): ");
-                    int tipoRicerca = scanner.nextInt();
+                    int tipoRicerca = 0;
+                    inputValido = false;
+                    while (!inputValido) {
+                        try {
+                            System.out.println("Inserisci tipo di ricerca (1. Titolo, 2. Autore, 3. Autore e Anno): ");
+                            tipoRicerca = scanner.nextInt();
+                            inputValido = true;
+                        } catch (InputMismatchException e) {
+                            System.out.println("Errore: per favore inserisci un numero.");
+                            scanner.next();
+                        }
+                    }
+
                     TipoRicercaLibro tipo = TipoRicercaLibro.TITOLO;
                     switch (tipoRicerca) {
                         case 1:
@@ -101,13 +92,28 @@ public class BookRecommender {
                         case 3:
                             tipo = TipoRicercaLibro.AUTORE_ANNO;
                             break;
+                        default:
+                            System.out.println("Scelta non valida!");
+                            tipo=null;
+                            break;
                     }
-                    System.out.println("Inserisci il " + tipo.toString().toLowerCase() + " da cercare: ");
+                    if(tipo==null) break;
+                    if(tipo.toString().toLowerCase().equals("autore_anno")) System.out.println("Inserisci un autore da cercare: ");
+                    else System.out.println("Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
                     String valore = scanner.next();
                     Optional<Integer> anno = Optional.empty();
+                    inputValido = false;
                     if (tipo == TipoRicercaLibro.AUTORE_ANNO) {
-                        System.out.println("Inserisci anno di pubblicazione: ");
-                        anno = Optional.of(scanner.nextInt());
+                        while (!inputValido) {
+                            try {
+                                System.out.println("Inserisci l'anno di pubblicazione: ");
+                                anno = Optional.of(scanner.nextInt());
+                                inputValido = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Errore: per favore inserisci un numero.");
+                                scanner.next();
+                            }
+                        }
                     }
                     ArrayList<Libro> risultato = cercaLibro(tipo, valore, anno);
                     for (Libro libro : risultato) {
@@ -116,8 +122,19 @@ public class BookRecommender {
                     continua(scanner);
                     break;
                 case 2:
-                    System.out.println("Inserisci id del libro: ");
-                    int libroId = scanner.nextInt();
+
+                    int libroId = 0;
+                    inputValido = false;
+                    while (!inputValido) {
+                        try {
+                            System.out.println("Inserisci id del libro: ");
+                            libroId = scanner.nextInt();
+                            inputValido = true;
+                        } catch (InputMismatchException e) {
+                            System.out.println("Errore: per favore inserisci un numero.");
+                            scanner.next();
+                        }
+                    }
                     for (Libro libro : libri) {
                         if (libro.getLibroId() == libroId) {
                             // Stampa informazioni del libro in modo dettagliato ed elegante + valutazioni
@@ -289,31 +306,62 @@ public class BookRecommender {
                                 break;
                         }
                     } else { // Registrazione
-                        System.out.println("Inserisci nome: ");
-                        String nome = scanner.next();
-                        System.out.println("Inserisci cognome: ");
-                        String cognome = scanner.next();
-                        System.out.println("Inserisci codice fiscale: ");
-                        String codiceFiscale = scanner.next();
-                        System.out.println("Inserisci email: ");
-                        String email = scanner.next();
-                        System.out.println("Inserisci userId: ");
-                        int userId = scanner.nextInt();
+                        String nome, cognome, codiceFiscale, email;
+                        int userId;
+                        boolean trovato = false;
+
+                        do {
+                            System.out.println("Inserisci nome: ");
+                            nome = scanner.next();
+                            if (!nome.matches("[a-zA-Z]+")) {
+                                System.out.println("Errore: il nome non deve contenere numeri.");
+                            }
+                        } while (!nome.matches("[a-zA-Z]+"));
+
+                        do {
+                            System.out.println("Inserisci cognome: ");
+                            cognome = scanner.next();
+                            if (!cognome.matches("[a-zA-Z]+")) {
+                                System.out.println("Errore: il cognome non deve contenere numeri.");
+                            }
+                        } while (!cognome.matches("[a-zA-Z]+"));
+
+                        do {
+                            System.out.println("Inserisci codice fiscale: ");
+                            codiceFiscale = scanner.next();
+                            if (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]")) {
+                                System.out.println("Errore: il codice fiscale non è valido.");
+                            }
+                        } while (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"));
+
+                        do {
+                            System.out.println("Inserisci email: ");
+                            email = scanner.next();
+                            if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                                System.out.println("Errore: l'email non è valida.");
+                            }
+                        } while (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$"));
+
+                        do{
+                            trovato = false;
+                            System.out.println("Inserisci userId: ");
+                            userId = scanner.nextInt();
+                            // Controlla non ci sia già un utente con lo stesso userId
+                            for (Utente u : utenti) {
+                                if (u.getUserId() == userId) {
+                                    trovato = true;
+                                    break;
+                                }
+                            }
+                            if (trovato) {
+                                System.out.println("Utente già registrato con questo userId!");
+
+                            }
+                        }while(trovato);
                         System.out.println("Inserisci password: ");
                         String password = scanner.next();
                         Utente utente = new Utente(userId, nome, cognome, codiceFiscale, email, password);
-                        // Controlla non ci sia già un utente con lo stesso userId
-                        boolean trovato = false;
-                        for (Utente u : utenti) {
-                            if (u.getUserId() == userId) {
-                                trovato = true;
-                                break;
-                            }
-                        }
-                        if (trovato) {
-                            System.out.println("Utente già registrato con questo userId!");
-                            break;
-                        }
+
                         utenti.add(utente);
                         System.out.println("Registrazione effettuata con successo! Ora puoi loggarti...");
                     }
@@ -321,7 +369,11 @@ public class BookRecommender {
                 case 5:
                     System.out.println("Inserisci l'id del libro: ");
                     libroId = scanner.nextInt();
-                    if(libroId>0 && libroId <=102631) {
+                    if (libroId > 0 && libroId <= libri.size()) {
+                        if (!Libro.esisteLibro(libri, libroId)) {
+                            System.out.println("Libro non trovato!");
+                            break;
+                        }
                         System.out.println("Inserisci la valutazione (da  1 a 5) \n");
                         System.out.println("Stile : ");
                         int stile = scanner.nextInt();
@@ -355,44 +407,7 @@ public class BookRecommender {
 
 
         // Salvataggio alla chiusura libri
-        System.out.println("Salvataggio libri in corso...");
-        if (salvataggioLibri()) {
-            System.out.println("Libri salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio dei libri!");
-        }
-
-        // Salvataggio alla chiusura utenti
-        System.out.println("Salvataggio utenti in corso...");
-        if (salvataggioUtenti()) {
-            System.out.println("Utenti salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio degli utenti!");
-        }
-
-        // Salvataggio alla chiusura consigli
-        System.out.println("Salvataggio consigli in corso...");
-        if (salvataggioConsigli()) {
-            System.out.println("Consigli salvati con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio dei consigli!");
-        }
-
-        // Salvataggio alla chiusura valutazioni
-        System.out.println("Salvataggio valutazioni in corso...");
-        if (salvataggioValutazioni()) {
-            System.out.println("Valutazioni salvate con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio delle valutazioni!");
-        }
-
-        // Salvataggio alla chiusura librerie
-        System.out.println("Salvataggio librerie in corso...");
-        if (salvataggioLibrerie()) {
-            System.out.println("Librerie salvate con successo!");
-        } else {
-            System.out.println("Errore durante il salvataggio delle librerie!");
-        }
+        salvataggioDati(true);
 
         System.out.println("Programma terminato!");
     }
@@ -454,17 +469,6 @@ public class BookRecommender {
         System.out.println("Premi un tasto per continuare...");
         scanner.nextLine();
         scanner.nextLine();
-    }
-
-    /**
-     * Stampa lista completa dei libri
-     *
-     * @return void
-     */
-    public static void stampaLibri() {
-        for (Libro libro : libri) {
-            System.out.println(libro);
-        }
     }
 
     /**
@@ -593,12 +597,6 @@ public class BookRecommender {
      */
     public static ArrayList<Valutazione> caricaValutazioni() {
         ArrayList<Valutazione> valutazioni = new ArrayList<>();
-
-        // Esempio struttura
-        /*
-        ValutazioneId,UserId,LibroId,Stile,Contenuto,Gradevolezza,Originalità,Edizione,VotoFinale
-        1,1,1,4,3,4,3,4,3
-         */
 
         try {
             CSVReader reader = new CSVReader(new FileReader(sorgenteValutazioni));
@@ -788,6 +786,96 @@ public class BookRecommender {
             return false;
         }
     }
+
+    /**
+     * Inizializza e carica tutti i dati dai file CSV.
+     *
+     * @param mostraMessaggi boolean
+     * */
+    private static void inizializzaDati(boolean mostraMessaggi) {
+        if (mostraMessaggi) {
+            System.out.println("Caricamento libri in corso...");
+            libri = caricaLibri();
+            System.out.println("Libri caricati con successo!");
+
+            System.out.println("Caricamento utenti in corso...");
+            utenti = caricaUtenti();
+            System.out.println("Utenti caricati con successo!");
+
+            System.out.println("Caricamento consigli in corso...");
+            consigli = caricaConsigli();
+            System.out.println("Consigli caricati con successo!");
+
+            System.out.println("Caricamento valutazioni in corso...");
+            valutazioni = caricaValutazioni();
+            System.out.println("Valutazioni caricati con successo!");
+
+            System.out.println("Caricamento librerie in corso...");
+            librerie = caricaLibrerie();
+            System.out.println("Librerie caricate con successo!");
+        } else {
+            libri = caricaLibri();
+            utenti = caricaUtenti();
+            consigli = caricaConsigli();
+            valutazioni = caricaValutazioni();
+            librerie = caricaLibrerie();
+        }
+    }
+
+    /**
+     * Salva tutti i dati nei file CSV.
+     *
+     * @param mostraMessaggi boolean
+     * */
+    private static void salvataggioDati(boolean mostraMessaggi) {
+        if (mostraMessaggi) {
+            System.out.println("Salvataggio libri in corso...");
+            if (salvataggioLibri()) {
+                System.out.println("Libri salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio dei libri!");
+            }
+
+            // Salvataggio alla chiusura utenti
+            System.out.println("Salvataggio utenti in corso...");
+            if (salvataggioUtenti()) {
+                System.out.println("Utenti salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio degli utenti!");
+            }
+
+            // Salvataggio alla chiusura consigli
+            System.out.println("Salvataggio consigli in corso...");
+            if (salvataggioConsigli()) {
+                System.out.println("Consigli salvati con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio dei consigli!");
+            }
+
+            // Salvataggio alla chiusura valutazioni
+            System.out.println("Salvataggio valutazioni in corso...");
+            if (salvataggioValutazioni()) {
+                System.out.println("Valutazioni salvate con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio delle valutazioni!");
+            }
+
+            // Salvataggio alla chiusura librerie
+            System.out.println("Salvataggio librerie in corso...");
+            if (salvataggioLibrerie()) {
+                System.out.println("Librerie salvate con successo!");
+            } else {
+                System.out.println("Errore durante il salvataggio delle librerie!");
+            }
+        } else {
+            salvataggioLibri();
+            salvataggioUtenti();
+            salvataggioConsigli();
+            salvataggioValutazioni();
+            salvataggioLibrerie();
+        }
+    }
+
     /*public static void estrattoreLibri(File sorgente, File destinazione) {
         try {
             CSVReader reader = new CSVReader(new FileReader(sorgente));

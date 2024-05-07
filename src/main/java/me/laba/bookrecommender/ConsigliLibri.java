@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
- * @author Manicone Giorgia  758716 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ConsigliLibri {
 
@@ -13,6 +13,13 @@ public class ConsigliLibri {
     private int userId;
     private ArrayList<String> libriId;
 
+    /**
+     * Costruttore classe ConsigliLibri
+     *
+     * @param suggerimentoId int
+     * @param userId int
+     * @param libriId ArrayList<String>
+     */
     public ConsigliLibri(int suggerimentoId, int userId, ArrayList<String> libriId) {
         this.suggerimentoId = suggerimentoId;
         this.userId = userId;

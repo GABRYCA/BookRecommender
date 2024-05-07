@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
- * @author Manicone Giorgia  758716 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class Libro {
 
@@ -16,6 +16,16 @@ public class Libro {
     private String editore;
     private ArrayList<String> categoria;
 
+    /**
+     * Costruttore classe Libro
+     *
+     * @param categoria ArrayList<String>
+     * @param editore String
+     * @param annoPubblicazione int
+     * @param autori ArrayList<String>
+     * @param titolo String
+     * @param libroId int
+     */
     public Libro(ArrayList<String> categoria, String editore, int annoPubblicazione, ArrayList<String> autori, String titolo, int libroId) {
         this.categoria = categoria;
         this.editore = editore;
@@ -71,6 +81,34 @@ public class Libro {
 
     public void setCategoria(ArrayList<String> categoria) {
         this.categoria = categoria;
+    }
+
+    /**
+     * Stampa lista completa dei libri
+     *
+     * @return void
+     */
+    public static void stampaLibri(ArrayList<Libro> libri) {
+        for (Libro libro : libri) {
+            System.out.println(libro);
+        }
+    }
+
+    /**
+     * Ritorna se esiste il libro con l'id passato
+     *
+     * @param libri ArrayList<Libro>
+     * @param libroId int
+     *
+     * @return boolean
+     * */
+    public static boolean esisteLibro(ArrayList<Libro> libri, int libroId) {
+        for (Libro libro : libri) {
+            if (libro.getLibroId() == libroId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
