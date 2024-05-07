@@ -63,9 +63,10 @@ public class BookRecommender {
                 System.out.println("5. Valuta libro");
                 System.out.println("6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
-            System.out.println("Scelta: ");
 
-            scelta = scanner.nextInt();
+                System.out.println("Scelta: ");
+                scelta = scanner.nextInt();
+
             switch (scelta) {
                 case 1:
                     int tipoRicerca = 0;
@@ -367,36 +368,64 @@ public class BookRecommender {
                     }
                     break;
                 case 5:
-                    System.out.println("Inserisci l'id del libro: ");
-                    libroId = scanner.nextInt();
-                    if (libroId > 0 && libroId <= libri.size()) {
-                        if (!Libro.esisteLibro(libri, libroId)) {
-                            System.out.println("Libro non trovato!");
-                            break;
+
+                    if(loggato) {
+                        System.out.println("Inserisci l'id del libro: ");
+                        libroId = scanner.nextInt();
+                        if (libroId > 0 && libroId <= libri.size()) {
+                            if (!Libro.esisteLibro(libri, libroId)) {
+                                System.out.println("Libro non trovato!");
+                                break;
+                            }
+                            int stile, contenuto, gradevolezza, originalita, edizione, vFinale;
+                            do {
+                                System.out.println("Stile: ");
+                                stile = scanner.nextInt();
+                            } while (stile < 1 || stile > 5);
+
+                            do {
+                                System.out.println("Contenuto: ");
+                                contenuto = scanner.nextInt();
+                            } while (contenuto < 1 || contenuto > 5);
+
+                            do {
+                                System.out.println("Gradevolezza: ");
+                                gradevolezza = scanner.nextInt();
+                            } while (gradevolezza < 1 || gradevolezza > 5);
+
+                            do {
+                                System.out.println("Originalità: ");
+                                originalita = scanner.nextInt();
+                            } while (originalita < 1 || originalita > 5);
+
+                            do {
+                                System.out.println("Edizione: ");
+                                edizione = scanner.nextInt();
+                            } while (edizione < 1 || edizione > 5);
+
+                            do {
+                                System.out.println("Voto finale: ");
+                                vFinale = scanner.nextInt();
+                            } while (vFinale < 1 || vFinale > 5);
+
+                            scanner.nextLine(); // Pulizia del buffer
+
+                            System.out.println("Commento: ");
+                            String commento = scanner.nextLine();
+
+                            valutazioni.add(new Valutazione(valutazioni.size() + 1, utenteLoggato.getUserId(), libroId, stile, contenuto, gradevolezza, originalita, edizione, vFinale, commento));
+                            System.out.println("\nValutazione creata con successo!");
+                        } else {
+                            System.out.println("\nLibro inesistente");
                         }
-                        System.out.println("Inserisci la valutazione (da  1 a 5) \n");
-                        System.out.println("Stile : ");
-                        int stile = scanner.nextInt();
-                        System.out.println("Contenuto : ");
-                        int contenuto = scanner.nextInt();
-                        System.out.println("Gradevolezza : ");
-                        int gradevolezza = scanner.nextInt();
-                        System.out.println("Originalita': ");
-                        int originalita = scanner.nextInt();
-                        System.out.println("Edizione : ");
-                        int edizione = scanner.nextInt();
-                        System.out.println("Voto finale : ");
-                        int Vfinale = scanner.nextInt();
-                        scanner.nextLine();
-                        System.out.println("Commento : ");
-                        String commento = scanner.nextLine();
-
-                        valutazioni.add(new Valutazione(valutazioni.size() + 1, utenteLoggato.getUserId(), libroId, stile, contenuto, gradevolezza, originalita, edizione, Vfinale, commento));
-                        System.out.println("\nValutazione creata con successo!");
-                    }else {
-                        System.out.println("\nLibro inesistente");
                     }
+                    continua(scanner);
+                    break;
+                case 6:
+                    if(loggato) {
 
+                        inserisciSuggerimentoLibro(scanner, utenteLoggato.getUserId());
+                    }
                     continua(scanner);
                     break;
                 default:
@@ -410,6 +439,62 @@ public class BookRecommender {
         salvataggioDati(true);
 
         System.out.println("Programma terminato!");
+    }
+
+    /**
+     * Inserimento nei libri consigliati tramite id del libro.
+     *
+     * @param scanner Scanner
+     * @param userId Int
+     * @return void
+     */
+    public static void inserisciSuggerimentoLibro(Scanner scanner,int userId){
+        boolean trovato = false;
+        boolean giaPresente = false;
+        boolean creaConsiglio= false;
+        System.out.println("Inserisci l'id del libro che vuoi suggerire: ");
+        int libroIdConsigli = scanner.nextInt();
+        if (libroIdConsigli > 0 && libroIdConsigli <= libri.size()) {
+            for (ConsigliLibri c : consigli) {
+
+                if(c.getUserId() != userId){
+                    creaConsiglio = true;
+                }else {
+                    creaConsiglio = false;
+                }
+            }
+            if(creaConsiglio){
+                consigli.add(new ConsigliLibri(consigli.size()+1,userId,new ArrayList<String>()));
+                creaConsiglio= false;
+
+            }
+            for (ConsigliLibri c : consigli) {
+
+
+                        if (c.getLibriId().contains(String.valueOf(libroIdConsigli)) && c.getUserId() == userId) { // Verifica che il libro non sia già presente
+                            giaPresente = true;
+                            break;
+                        }else if(c.getUserId() == userId){
+                            c.getLibriId().add(String.valueOf(libroIdConsigli));
+                            System.out.println(c.getLibriId());
+                            trovato = true;
+                            break;
+                        }
+
+            }
+            if (trovato) {
+                System.out.println("Operazione effettuata !");
+            } else if (giaPresente) {
+                System.out.println("Libro già consigliato");
+            } else {
+                System.out.println("Libro non trovato!");
+            }
+        }else {
+            System.out.println("\nLibro inesistente");
+        }
+
+
+    //consigli.add(new ConsigliLibri(consigli.size()+1,userId,id))
     }
 
     /**
