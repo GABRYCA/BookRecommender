@@ -64,7 +64,6 @@ public class BookRecommender {
                 System.out.println("6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
             System.out.println("Scelta: ");
-
             scelta = scanner.nextInt();
             switch (scelta) {
                 case 1:
