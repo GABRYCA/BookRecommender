@@ -1,5 +1,7 @@
 package me.laba.bookrecommender;
 
+import java.util.ArrayList;
+
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
@@ -79,6 +81,87 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Metodo che verifica se un utente esiste
+     *
+     * @param utenti ArrayList<Utente>
+     * @param userId int
+     * @return boolean
+     */
+    public static boolean esisteUtente(ArrayList<Utente> utenti, int userId){
+        for (Utente u : utenti) {
+            if (u.getUserId() == userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Metodo che verifica se un utente esiste per email
+     *
+     * @param utenti ArrayList<Utente>
+     * @param email String
+     * @return boolean
+     */
+    public static boolean esisteUtente(ArrayList<Utente> utenti, String email) {
+        for (Utente u : utenti) {
+            if (u.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Metodo che verifica se un utente esiste per email e password
+     *
+     * @param utenti ArrayList<Utente>
+     * @param email String
+     * @return boolean
+     */
+    public static boolean esisteUtente(ArrayList<Utente> utenti, String email, String password) {
+        for (Utente u : utenti) {
+            if (u.getEmail().equals(email) && u.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Login di un utente, ritorna l'utente se esiste, altrimenti null
+     *
+     * @param utenti ArrayList<Utente>
+     * @param email String
+     * @param password String
+     * @return Utente
+     */
+    public static Utente loginUtente(ArrayList<Utente> utenti, String email, String password) {
+        for (Utente u : utenti) {
+            if (u.getEmail().equals(email) && u.getPassword().equals(password)) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Metodo per prendere un utente per id, se esiste
+     *
+     * @param utenti ArrayList<Utente>
+     * @param userId int
+     * @return Utente
+     */
+    public static Utente getUtenteById(ArrayList<Utente> utenti, int userId) {
+        for (Utente u : utenti) {
+            if (u.getUserId() == userId) {
+                return u;
+            }
+        }
+        return null;
     }
 
     @Override
