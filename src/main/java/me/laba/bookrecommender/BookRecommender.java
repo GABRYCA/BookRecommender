@@ -64,8 +64,8 @@ public class BookRecommender {
                 System.out.println("6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
 
-                System.out.println("Scelta: ");
-                scelta = scanner.nextInt();
+            System.out.println("Scelta: ");
+            scelta = scanner.nextInt();
 
             switch (scelta) {
                 case 1:
@@ -471,15 +471,15 @@ public class BookRecommender {
             for (ConsigliLibri c : consigli) {
 
 
-                        if (c.getLibriId().contains(String.valueOf(libroIdConsigli)) && c.getUserId() == userId) { // Verifica che il libro non sia già presente
-                            giaPresente = true;
-                            break;
-                        }else if(c.getUserId() == userId){
-                            c.getLibriId().add(String.valueOf(libroIdConsigli));
-                            System.out.println(c.getLibriId());
-                            trovato = true;
-                            break;
-                        }
+                if (c.getLibriId().contains(String.valueOf(libroIdConsigli)) && c.getUserId() == userId) { // Verifica che il libro non sia già presente
+                    giaPresente = true;
+                    break;
+                }else if(c.getUserId() == userId){
+                    c.getLibriId().add(String.valueOf(libroIdConsigli));
+                    System.out.println(c.getLibriId());
+                    trovato = true;
+                    break;
+                }
 
             }
             if (trovato) {
@@ -494,7 +494,7 @@ public class BookRecommender {
         }
 
 
-    //consigli.add(new ConsigliLibri(consigli.size()+1,userId,id))
+        //consigli.add(new ConsigliLibri(consigli.size()+1,userId,id))
     }
 
     /**
