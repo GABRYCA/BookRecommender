@@ -34,7 +34,7 @@ public class BookRecommender {
     public static ArrayList<Valutazione> valutazioni = new ArrayList<>();
     public static ArrayList<Libreria> librerie = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("\033[1;32mProgramma avviato\033[0m");
 
         // Titolo bello d'inizio con un grande titolo fatto con caratteri ASCCI "BookRecommender" e un sottotitolo con
@@ -49,7 +49,7 @@ public class BookRecommender {
                 ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
                 """);
         //System.out.println("\033[0m");
-        System.out.println("\033[1;36mProgetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
+        System.out.println("\033[1;36m                          Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
 
         inizializzaDati(false);
 
@@ -60,28 +60,28 @@ public class BookRecommender {
         boolean inputValido = false;
         do {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("\n\033[1;33m==============================");
-            System.out.println("\033[1;36m          Menu");
-            System.out.println("\033[1;33m==============================");
-            System.out.println("\033[0m🔹 0. Esci");
+            System.out.println("\n\033[1;33m                                        ==============================");
+            System.out.println("\033[1;36m                                                     Menu");
+            System.out.println("\033[1;33m                                        ==============================");
+            System.out.println("\033[0m                                        ¤ 0. Esci");
 
             // Opzioni disponibili per tutti
-            System.out.println("🔹 1. Ricerca libri");
-            System.out.println("🔹 2. Visualizza libro per id");
+            System.out.println("                                        ¤ 1. Ricerca libri");
+            System.out.println("                                        ¤ 2. Visualizza libro per id");
 
             // Login e registrazione
             if (!loggato) {
-                System.out.println("🔹 3. Login");
-                System.out.println("🔹 4. Registrazione");
+                System.out.println("                                        ¤ 3. Login");
+                System.out.println("                                        ¤ 4. Registrazione");
             } else {
-                System.out.println("🔹 3. Logout");
-                System.out.println("🔹 4. Gestisci librerie");
-                System.out.println("🔹 5. Valuta libro");
-                System.out.println("🔹 6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
+                System.out.println("                                        ¤ 3. Logout");
+                System.out.println("                                        ¤ 4. Gestisci librerie");
+                System.out.println("                                        ¤ 5. Valuta libro");
+                System.out.println("                                        ¤ 6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
 
-            System.out.println("\033[1;33m==============================");
-            System.out.print("\033[0m🔹 Inserisci la tua scelta: ");
+            System.out.println("\033[1;33m                                        ==============================\n");
+            System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
             scelta = scanner.nextInt();
 
             switch (scelta) {
@@ -90,18 +90,18 @@ public class BookRecommender {
                     inputValido = false;
                     while (!inputValido) {
                         try {
-                            System.out.println("\n\033[1;33m==============================");
-                            System.out.println("\033[1;36m   Tipo di Ricerca");
-                            System.out.println("\033[1;33m==============================");
-                            System.out.println("\033[0m🔹 1. Titolo");
-                            System.out.println("🔹 2. Autore");
-                            System.out.println("🔹 3. Autore e Anno");
-                            System.out.println("\033[1;33m==============================");
-                            System.out.print("\033[0m🔹 Inserisci il tipo di ricerca: ");
+                            System.out.println("\n\033[1;33m                                        ==============================");
+                            System.out.println("\033[1;36m                                                Tipo di Ricerca");
+                            System.out.println("\033[1;33m                                        ==============================");
+                            System.out.println("\033[0m                                        ¤ 1. Titolo");
+                            System.out.println("                                        ¤ 2. Autore");
+                            System.out.println("                                        ¤ 3. Autore e Anno");
+                            System.out.println("\033[1;33m                                        ==============================");
+                            System.out.print("\033[0m                                        ¤ Inserisci il tipo di ricerca: ");
                             tipoRicerca = scanner.nextInt();
                             inputValido = true;
                         } catch (InputMismatchException e) {
-                            System.out.println("\033[1;31mErrore: per favore inserisci un numero.\033[0m");
+                            System.out.println("\033[1;31m                                     Errore: per favore inserisci un numero.\033[0m");
                             scanner.next();
                         }
                     }
@@ -112,26 +112,26 @@ public class BookRecommender {
                         case 3 -> TipoRicercaLibro.AUTORE_ANNO;
                         default -> {
                             delimitatore(true);
-                            System.out.println("\033[1;31mScelta non valida!\033[0m");
-                            delimitatore();
+                            System.out.print("\033[1;31m                                              Scelta non valida!\033[0m");
+                            delimitatore(true);
                             yield null;
                         }
                     };
                     if (tipo == null) break;
                     if (tipo.toString().equalsIgnoreCase("autore_anno"))
-                        System.out.println("🔹 Inserisci un autore da cercare: ");
-                    else System.out.print("🔹 Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
+                            System.out.print("                                        ¤ Inserisci un autore da cercare: ");
+                    else    System.out.print("                                        ¤ Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
                     String valore = scanner.next();
                     Optional<Integer> anno = Optional.empty();
                     inputValido = false;
                     if (tipo == TipoRicercaLibro.AUTORE_ANNO) {
                         while (!inputValido) {
                             try {
-                                System.out.print("🔹 Inserisci l'anno di pubblicazione: ");
+                                System.out.print("                                        ¤ Inserisci l'anno di pubblicazione: ");
                                 anno = Optional.of(scanner.nextInt());
                                 inputValido = true;
                             } catch (InputMismatchException e) {
-                                System.out.println("\033[1;31mErrore: per favore inserisci un numero.\033[0m");
+                                System.out.println("\033[1;31m                                      Errore: per favore inserisci un numero.\033[0m");
                                 scanner.next();
                             }
                         }
@@ -146,133 +146,133 @@ public class BookRecommender {
                     inputValido = false;
                     while (!inputValido) {
                         try {
-                            System.out.print("\033[1;36m🔹 Inserisci id del libro:\033[0m ");
+                            System.out.print("\033[1;36m                                        ¤ Inserisci id del libro:\033[0m ");
                             libroId = scanner.nextInt();
                             inputValido = true;
                         } catch (InputMismatchException e) {
-                            System.out.println("\033[1;31mErrore: per favore inserisci un numero.\033[0m");
+                            System.out.println("\033[1;31m                                    Errore: per favore inserisci un numero.\033[0m");
                             scanner.next();
                         }
                     }
                     if (!Libro.esisteLibro(libri, libroId)){
-                        delimitatore();
-                        System.out.println("\033[1;31mLibro non trovato!\033[0m");
-                        delimitatore();
+                        delimitatore(true);
+                            System.out.print("\033[1;31m                                             Libro non trovato!\033[0m");
+                        delimitatore(true);
                         break;
                     }
                     for (Libro libro : libri) {
                         if (libro.getLibroId() == libroId) {
                             // Stampa informazioni del libro in modo dettagliato ed elegante + valutazioni
-                            delimitatore();
-                            System.out.println("\033[1;36mInformazioni libro con id " + libroId + ":\033[0m");
-                            System.out.println("🔹 Titolo: " + libro.getTitolo());
-                            System.out.println("🔹 Autori: " + String.join(", ", libro.getAutori()));
-                            System.out.println("🔹 Anno di pubblicazione: " + libro.getAnnoPubblicazione());
-                            System.out.println("🔹 Editore: " + libro.getEditore());
-                            System.out.println("🔹 Categoria: " + String.join(", ", libro.getCategoria()));
-                            delimitatore();
-                            System.out.println("\033[1;36mValutazioni:\033[0m");
+                            delimitatore(true);
+                            System.out.println("\033[1;36m                                        Informazioni libro con id " + libroId + ":\033[0m");
+                            System.out.println("                                        ¤ Titolo: " + libro.getTitolo());
+                            System.out.println("                                        ¤ Autori: " + String.join(", ", libro.getAutori()));
+                            System.out.println("                                        ¤ Anno di pubblicazione: " + libro.getAnnoPubblicazione());
+                            System.out.println("                                        ¤ Editore: " + libro.getEditore());
+                            System.out.println("                                        ¤ Categoria: " + String.join(", ", libro.getCategoria()));
+                            delimitatore(true);
+                            System.out.println("\033[1;36m                                                Valutazioni:\033[0m");
                             for (Valutazione valutazione : valutazioni) {
                                 if (valutazione.getLibroId() == libroId) {
                                     // Ottieni nome utente e stampalo
                                     for (Utente u : utenti) {
                                         if (u.getUserId() == valutazione.getUserId()) {
-                                            System.out.println("🔹 Utente: " + u.getNome() + " " + u.getCognome());
+                                        System.out.println("                                        ¤ Utente: " + u.getNome() + " " + u.getCognome());
                                             break;
                                         }
                                     }
-                                    System.out.println("🔹 Stile: " + valutazione.getStile());
-                                    System.out.println("🔹 Contenuto: " + valutazione.getContenuto());
-                                    System.out.println("🔹 Gradevolezza: " + valutazione.getGradevolezza());
-                                    System.out.println("🔹 Originalità: " + valutazione.getOriginalita());
-                                    System.out.println("🔹 Edizione: " + valutazione.getEdizione());
-                                    System.out.println("🔹 Voto finale: " + valutazione.getVotoFinale());
-                                    System.out.println("🔹 Commento: " + valutazione.getCommento());
+                                    System.out.println("                                        ¤ Stile: " + valutazione.getStile());
+                                    System.out.println("                                        ¤ Contenuto: " + valutazione.getContenuto());
+                                    System.out.println("                                        ¤ Gradevolezza: " + valutazione.getGradevolezza());
+                                    System.out.println("                                        ¤ Originalità: " + valutazione.getOriginalita());
+                                    System.out.println("                                        ¤ Edizione: " + valutazione.getEdizione());
+                                    System.out.println("                                        ¤ Voto finale: " + valutazione.getVotoFinale());
+                                    System.out.println("                                        ¤ Commento: " + valutazione.getCommento());
                                     System.out.println();
                                 }
                             }
-                            delimitatore();
-                            System.out.println("\033[1;36mSuggerimenti:\033[0m");
+                            delimitatore(true);
+                            System.out.println("\033[1;36m                                                Suggerimenti:\033[0m");
                             for (ConsigliLibri consigliLibri : consigli) {
 
                                 if (consigliLibri.getLibriId().contains(String.valueOf(libroId))) {
                                     // Ottieni nome utente e stampalo
                                     for (Utente u : utenti) {
                                         if (u.getUserId() == consigliLibri.getUserId()) {
-                                            System.out.println("🔹 LIbro consigliato dall'utente : " + u.getNome() + " " + u.getCognome());
+                                            System.out.println("                                ¤ LIbro consigliato dall'utente : " + u.getNome() + " " + u.getCognome());
                                             break;
                                         }
                                     }
 
                                 }
                             }
-                            delimitatore();
+                            delimitatore(true);
                             break;
                         }
                     }
                     break;
                 case 3:
                     if (!loggato) {
-                        System.out.println("\n\033[1;33m==============================");
-                        System.out.println("\033[1;36m          Login ");
-                        System.out.println("\033[1;33m==============================");
-                        System.out.print("\033[0m🔹 \033[1;36mInserisci email:\033[0m ");
+                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;36m                                                     Login ");
+                        System.out.println("\033[1;33m                                        ==============================");
+                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci email:\033[0m ");
                         String email = scanner.next();
-                        System.out.print("\033[0m🔹 \033[1;36mInserisci password:\033[0m ");
+                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
                         String password = scanner.next();
                         for (Utente utente : utenti) {
                             if (utente.getEmail().equals(email) && utente.getPassword().equals(password)) {
                                 loggato = true;
                                 utenteLoggato = utente;
-                                System.out.println("\033[1;32mLogin effettuato con successo!\033[0m");
+                        System.out.println("\033[1;32m                                        Login effettuato con successo!\033[0m");
                                 break;
                             }
                         }
                     } else {
                         loggato = false;
                         utenteLoggato = null;
-                        System.out.println("\033[1;32mLogout effettuato con successo!\033[0m");
+                        System.out.println("\033[1;32m                                        Logout effettuato con successo!\033[0m");
                     }
 
                     break;
                 case 4:
                     if (loggato) { // Gestisci librerie
-                        System.out.println("\n\033[1;33m==============================");
-                        System.out.println("\033[1;36m          Libreria");
-                        System.out.println("\033[1;33m==============================");
-                        System.out.println("\033[0m🔹 1. Crea libreria");
-                        System.out.println("🔹 2. Aggiungi libro alla libreria");
-                        System.out.println("🔹 3. Visualizza librerie");
-                        System.out.println("🔹 4. Rimuovi libreria");
-                        System.out.println("\033[1;33m==============================");
-                        System.out.print("\033[0mInserisci la tua scelta: ");
+                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;36m                                                   Libreria");
+                        System.out.println("\033[1;33m                                        ==============================");
+                        System.out.println("\033[0m                                        ¤ 1. Crea libreria");
+                        System.out.println("                                        ¤ 2. Aggiungi libro alla libreria");
+                        System.out.println("                                        ¤ 3. Visualizza librerie");
+                        System.out.println("                                        ¤ 4. Rimuovi libreria");
+                        System.out.println("\033[1;33m                                        ==============================\n");
+                        System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
                         int sceltaLibrerie = scanner.nextInt();
 
                         switch (sceltaLibrerie) {
                             case 1:
-                                System.out.println("\033[0m🔹 \033[1;36mInserisci nome libreria:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci nome libreria:\033[0m ");
                                 String nomeLibreria = scanner.next();
                                 Libreria libreria = new Libreria(librerie.size() + 1, utenteLoggato.getUserId(), nomeLibreria, new ArrayList<>());
                                 librerie.add(libreria);
-                                System.out.println("\033[1;32mLibreria creata con successo!\033[0m");
+                                System.out.println("\033[1;32m                                        Libreria creata con successo!\033[0m");
                                 break;
                             case 2:
-                                System.out.println("\033[0m🔹 \033[1;36mInserisci id della libreria:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci id della libreria:\033[0m ");
                                 int libreriaId = scanner.nextInt();
                                 for (Libreria l : librerie) {
                                     if (l.getLibreriaId() == libreriaId) {
                                         if (l.getUserId() != utenteLoggato.getUserId()) { // Verifica se l'utente è il proprietario della libreria
-                                            System.out.println("\033[1;31mNon sei il proprietario di questa libreria!\033[0m");
+                                            System.out.println("\033[1;31m                                  Non sei il proprietario di questa libreria!\033[0m");
                                             break;
                                         }
-                                        System.out.println("\033[0m🔹 \033[1;36mInserisci id del libro da aggiungere:\033[0m ");
+                                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro da aggiungere:\033[0m ");
                                         int libroIdLibreria = scanner.nextInt();
                                         boolean trovato = false;
                                         boolean giaPresente = false;
                                         for (Libro libro : libri) {
                                             if (libro.getLibroId() == libroIdLibreria) {
                                                 if (l.getLibriId().contains(String.valueOf(libroIdLibreria))) { // Verifica che il libro non sia già presente
-                                                    System.out.println("\033[1;31mLibro già presente nella libreria!\033[0m");
+                                                    System.out.println("\033[1;31m                                        Libro già presente nella libreria!\033[0m");
                                                     giaPresente = true;
                                                     break;
                                                 }
@@ -282,11 +282,11 @@ public class BookRecommender {
                                             }
                                         }
                                         if (trovato) {
-                                            System.out.println("\033[1;32mLibro aggiunto con successo!\033[0m");
+                                            System.out.println("\033[1;32m                                        Libro aggiunto con successo!\033[0m");
                                         } else if (giaPresente) {
-                                            System.out.println("\033[1;31mLibro già presente nella libreria!\033[0m");
+                                            System.out.println("\033[1;31m                                        Libro già presente nella libreria!\033[0m");
                                         } else {
-                                            System.out.println("\033[1;31mLibro non trovato!\033[0m");
+                                            System.out.println("\033[1;31m                                        Libro non trovato!\033[0m");
                                         }
                                         break;
                                     }
@@ -297,56 +297,56 @@ public class BookRecommender {
                                 for (Libreria l : librerie) {
                                     if (l.getUserId() == utenteLoggato.getUserId()) {
                                         trovato++;
-                                        delimitatore();
-                                        System.out.println("\033[1;36mLe tua libreria:\033[0m");
-                                        System.out.println("🔹 Nome: " + l.getNomeLibreria());
-                                        System.out.println("🔹 Id libreria: " + l.getLibreriaId());
-                                        System.out.println("🔹 Libri:");
+                                        delimitatore(true);
+                                        System.out.println("\033[1;36m                                               Le tua libreria:\033[0m");
+                                        System.out.println("                                        ¤ Nome: " + l.getNomeLibreria());
+                                        System.out.println("                                        ¤ Id libreria: " + l.getLibreriaId());
+                                        System.out.println("                                        ¤ Libri:");
                                         int conta = 1;
                                         for (String libroIdLibreria : l.getLibriId()) {
                                             for (Libro libro : libri) {
                                                 if (libro.getLibroId() == Integer.parseInt(libroIdLibreria)) {
-                                                    System.out.println("🔹 Libro " + conta + ": " + libro.getTitolo());
-                                                    System.out.println("🔹 Id: " + libro.getLibroId());
+                                                    System.out.println("                                        ¤ Libro " + conta + ": " + libro.getTitolo());
+                                                    System.out.println("                                        ¤ Id: " + libro.getLibroId());
                                                     conta++;
                                                     break;
                                                 }
                                             }
                                         }
-                                        delimitatore();
+                                        delimitatore(true);
                                     }
                                 }
                                 if (trovato == 0) {
-                                    System.out.println("\033[1;31mNessuna libreria trovata!\033[0m");
+                                        System.out.println("\033[1;31m                                             Nessuna libreria trovata!\033[0m");
                                 }
                                 break;
                             case 4:
-                                System.out.println("\033[0m🔹 \033[1;36mInserisci l'id della libreria da eliminare:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m\n                                        ¤ Inserisci l'id della libreria da eliminare:\033[0m ");
                                 int libreriaIdElim = scanner.nextInt();
                                 int trovatoo = 0;
 
                                 for (Libreria l : librerie) {
                                     if (l.getLibreriaId() == libreriaIdElim) {
                                         if (l.getUserId() != utenteLoggato.getUserId()) { // Verifica se l'utente è il proprietario della libreria
-                                            System.out.println("\033[1;31mNon sei il proprietario di questa libreria!\033[0m");
+                                            System.out.println("\033[1;31m                                    Non sei il proprietario di questa libreria!\033[0m");
                                             trovatoo++;
                                             break;
                                         } else {
                                             trovatoo++;
                                             librerie.remove(libreriaIdElim - 1);
-                                            System.out.println("\033[1;32mLibreria eliminata con successo !\033[0m");
+                                            System.out.println("\033[1;32m                                          Libreria eliminata con successo !\033[0m");
                                             break;
                                         }
                                     }
                                 }
                                 if (trovatoo == 0) {
-                                    System.out.println("\033[1;31mNessuna libreria trovata!\033[0m");
+                                            System.out.println("\033[1;31m                                           Nessuna libreria trovata!\033[0m");
                                 }
                                 break;
                             default:
                                 delimitatore(true);
-                                System.out.println("\033[1;31mScelta non valida!\033[0m");
-                                delimitatore();
+                                            System.out.print("\033[1;31m                                              Scelta non valida!\033[0m");
+                                delimitatore(true);
                                 break;
                         }
 
@@ -354,44 +354,44 @@ public class BookRecommender {
                         String nome, cognome, codiceFiscale, email;
                         int userId;
                         boolean trovato = false;
-                        System.out.println("\n\033[1;33m==============================");
-                        System.out.println("\033[1;36m          Registrazione ");
-                        System.out.println("\033[1;33m==============================");
+                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;36m                                                Registrazione ");
+                        System.out.println("\033[1;33m                                        ==============================");
                         do {
-                            System.out.print("\033[0m🔹 \033[1;36mInserisci nome:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci nome:\033[0m ");
                             nome = scanner.next();
                             if (!nome.matches("[a-zA-Z]+")) {
-                                System.out.println("\033[1;31mErrore: il nome non deve contenere numeri.\033[0m");
+                                System.out.println("\033[1;31m                                  Errore: il nome non deve contenere numeri.\033[0m");
                             }
                         } while (!nome.matches("[a-zA-Z]+"));
 
                         do {
-                            System.out.print("\033[0m🔹 \033[1;36mInserisci cognome:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci cognome:\033[0m ");
                             cognome = scanner.next();
                             if (!cognome.matches("[a-zA-Z]+")) {
-                                System.out.println("\033[1;31mErrore: il cognome non deve contenere numeri.\033[0m");
+                                System.out.println("\033[1;31m                                  Errore: il cognome non deve contenere numeri.\033[0m");
                             }
                         } while (!cognome.matches("[a-zA-Z]+"));
 
                         do {
-                            System.out.print("\033[0m🔹 \033[1;36mInserisci codice fiscale:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci codice fiscale:\033[0m ");
                             codiceFiscale = scanner.next();
                             if (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]")) {
-                                System.out.println("\033[1;31mErrore: il codice fiscale non è valido.\033[0m");
+                                System.out.println("\033[1;31m                                  Errore: il codice fiscale non è valido.\033[0m");
                             }
                         } while (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"));
 
                         do {
-                            System.out.print("\033[0m🔹 \033[1;36mInserisci email:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci email:\033[0m ");
                             email = scanner.next();
                             if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-                                System.out.println("\033[1;31mErrore: l'email non è valida.\033[0m");
+                                System.out.println("\033[1;31m                                  Errore: l'email non è valida.\033[0m");
                             }
                         } while (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$"));
 
                         do {
                             trovato = false;
-                            System.out.print("\033[0m🔹 \033[1;36mInserisci userId:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci userId:\033[0m ");
                             userId = scanner.nextInt();
                             // Controlla non ci sia già un utente con lo stesso userId
                             for (Utente u : utenti) {
@@ -401,71 +401,71 @@ public class BookRecommender {
                                 }
                             }
                             if (trovato) {
-                                System.out.println("\033[1;31mUtente già registrato con questo userId!\033[0m");
+                                System.out.println("\033[1;31m                                  Utente già registrato con questo userId!\033[0m");
                             }
                         } while (trovato);
-                        System.out.print("\033[0m🔹 \033[1;36mInserisci password:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
                         String password = scanner.next();
                         Utente utente = new Utente(userId, nome, cognome, codiceFiscale, email, password);
 
                         utenti.add(utente);
-                        System.out.println("\033[1;32mRegistrazione effettuata con successo! Ora puoi loggarti...\033[0m");
+                                System.out.println("\033[1;32m                              Registrazione effettuata con successo! Ora puoi loggarti...\033[0m");
 
                     }
                     break;
                 case 5:
 
                     if (loggato) {
-                        System.out.println("\n\033[1;33m==============================");
-                        System.out.println("\033[1;36m     Valutazione libro");
-                        System.out.println("\033[1;33m==============================");
-                        System.out.print("\033[0m🔹 \033[1;36mInserisci l'id del libro:\033[0m ");
+                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;36m                                              Valutazione libro");
+                        System.out.println("\033[1;33m                                        ==============================\n");
+                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro:\033[0m ");
                         libroId = scanner.nextInt();
                         if (libroId > 0 && libroId <= libri.size()) {
                             if (!Libro.esisteLibro(libri, libroId)) {
-                                System.out.println("\033[1;31mLibro non trovato!\033[0m");
+                                System.out.println("\033[1;31m                                              Libro non trovato!\033[0m");
                                 break;
                             }
                             int stile, contenuto, gradevolezza, originalita, edizione, vFinale;
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mStile:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Stile:\033[0m ");
                                 stile = scanner.nextInt();
                             } while (stile < 1 || stile > 5);
 
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mContenuto:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Contenuto:\033[0m ");
                                 contenuto = scanner.nextInt();
                             } while (contenuto < 1 || contenuto > 5);
 
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mGradevolezza:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Gradevolezza:\033[0m ");
                                 gradevolezza = scanner.nextInt();
                             } while (gradevolezza < 1 || gradevolezza > 5);
 
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mOriginalità:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Originalita':\033[0m ");
                                 originalita = scanner.nextInt();
                             } while (originalita < 1 || originalita > 5);
 
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mEdizione:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Edizione:\033[0m ");
                                 edizione = scanner.nextInt();
                             } while (edizione < 1 || edizione > 5);
 
                             do {
-                                System.out.print("\033[0m🔹 \033[1;36mVoto finale:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Voto finale:\033[0m ");
                                 vFinale = scanner.nextInt();
                             } while (vFinale < 1 || vFinale > 5);
 
                             scanner.nextLine(); // Pulizia del buffer
 
-                            System.out.print("\033[0m🔹 \033[1;36mCommento:\033[0m ");
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Commento:\033[0m ");
                             String commento = scanner.nextLine();
 
                             valutazioni.add(new Valutazione(valutazioni.size() + 1, utenteLoggato.getUserId(), libroId, stile, contenuto, gradevolezza, originalita, edizione, vFinale, commento));
-                            System.out.println("\033[1;32m\nValutazione creata con successo!\033[0m");
+                            System.out.println("\033[1;32m\n                                        Valutazione creata con successo!\033[0m");
                         } else {
-                            System.out.println("\033[1;31m\nLibro inesistente\033[0m");
+                            System.out.println("\033[1;31m\n                                               Libro inesistente\033[0m");
                         }
                     }
                     break;
@@ -487,8 +487,8 @@ public class BookRecommender {
         salvataggioDati(false);
 
         delimitatore(true);
-        System.out.println("\033[1;31mProgramma terminato!\033[0m");
-        delimitatore();
+        System.out.print("\033[1;31m                                            Programma terminato!\033[0m");
+        delimitatore(true);
     }
 
     /**
@@ -502,10 +502,10 @@ public class BookRecommender {
         boolean trovato = false;
         boolean giaPresente = false;
         boolean creaConsiglio = false;
-        System.out.println("\n\033[1;33m==============================");
-        System.out.println("\033[1;36m     Suggerimento libro");
-        System.out.println("\033[1;33m==============================");
-        System.out.print("\033[0m🔹 \033[1;36mInserisci l'id del libro che vuoi suggerire:\033[0m ");
+        System.out.println("\n\033[1;33m                                        ==============================");
+        System.out.println("\033[1;36m                                              Suggerimento libro");
+        System.out.println("\033[1;33m                                        ==============================\n");
+        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro che vuoi suggerire:\033[0m ");
         int libroIdConsigli = scanner.nextInt();
         if (libroIdConsigli > 0 && libroIdConsigli <= libri.size()) {
             for (ConsigliLibri c : consigli) {
@@ -536,14 +536,14 @@ public class BookRecommender {
 
             }
             if (trovato) {
-                System.out.println("\033[1;32mOperazione effettuata !\033[0m");
+                System.out.println("\033[1;32m                                             Operazione effettuata !\033[0m");
             } else if (giaPresente) {
-                System.out.println("\033[1;31mLibro già consigliato\033[0m");
+                System.out.println("\033[1;31m                                             Libro già consigliato\033[0m");
             } else {
-                System.out.println("\033[1;31mLibro non trovato!\033[0m");
+                System.out.println("\033[1;31m                                             Libro non trovato!\033[0m");
             }
         } else {
-            System.out.println("\033[1;31m\nLibro inesistente\033[0m");
+                System.out.println("\033[1;31m\n                                             Libro inesistente\033[0m");
         }
 
 
@@ -604,18 +604,9 @@ public class BookRecommender {
      * @return void
      */
     public static void continua(Scanner scanner) {
-        System.out.println("\033[1;36mPremi invio per continuare...\033[0m");
+        System.out.println("\033[1;36m\n                                        Premi invio per continuare...\033[0m");
         scanner.nextLine();
         scanner.nextLine();
-    }
-
-    /**
-     * Delimitatore terminale per stile
-     *
-     * @return void
-     */
-    public static void delimitatore() {
-        System.out.println("\033[1;34m====================================\033[0m");
     }
 
     /**
@@ -626,9 +617,9 @@ public class BookRecommender {
      */
     public static void delimitatore(boolean acapo) {
         if (acapo) {
-            System.out.println("\033[1;34m\n====================================\033[0m");
+            System.out.println("\033[1;34m\n                                     ====================================\033[0m");
         } else {
-            System.out.println("\033[1;34m====================================\033[0m");
+            System.out.println("\033[1;34m                                       ====================================\033[0m");
         }
     }
 
