@@ -113,13 +113,13 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Libro{" +
-                "libroId=" + libroId +
-                ", titolo='" + titolo + '\'' +
-                ", autori=" + autori +
-                ", annoPubblicazione=" + annoPubblicazione +
-                ", editore='" + editore + '\'' +
-                ", categoria=" + categoria +
-                '}';
+        return "\033[1;36mLibro\033[0m{" +
+                "\n\033[1;33m🔹 libroId\033[0m=" + libroId +
+                ",\n\033[1;33m🔹 titolo\033[0m='" + titolo + '\'' +
+                ",\n\033[1;33m🔹 autori\033[0m=" + autori +
+                ",\n\033[1;33m🔹 annoPubblicazione\033[0m=" + annoPubblicazione +
+                ",\n\033[1;33m🔹 editore\033[0m='" + editore + '\'' +
+                ",\n\033[1;33m🔹 categoria\033[0m=" + categoria +
+                "\n}";
     }
 }
