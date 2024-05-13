@@ -105,6 +105,17 @@ public class Utente {
         return utenti.stream().anyMatch(utente -> utente.getEmail().equals(email));
     }
 
+    /**
+     * Verifica se l'utente con il codice fiscale dato esiste già
+     *
+     * @param utenti ArrayList<Utente>
+     * @param codiceFiscale String
+     * @return boolean
+     */
+    public static boolean esisteUtenteC(ArrayList<Utente> utenti, String codiceFiscale) {
+        return utenti.stream().anyMatch(utente -> utente.getCodiceFiscale().equals(codiceFiscale));
+    }
+
     @Override
     public String toString() {
         return "Utente{" +

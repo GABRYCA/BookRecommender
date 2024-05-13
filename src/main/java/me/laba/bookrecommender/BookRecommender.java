@@ -375,12 +375,17 @@ public class BookRecommender {
                         } while (!cognome.matches("[a-zA-Z]+"));
 
                         do {
+                            trovato = false;
                             System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci codice fiscale:\033[0m ");
                             codiceFiscale = scanner.next();
                             if (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]")) {
                                 System.out.println("\033[1;31m                                  Errore: il codice fiscale non è valido.\033[0m");
+                                trovato = true;
+                            }else if (Utente.esisteUtenteC(utenti, codiceFiscale)) {
+                                System.out.println("\033[1;31m                                  Utente già registrato con questo codice fiscale!\033[0m");
+                                trovato = true;
                             }
-                        } while (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"));
+                        } while (trovato);
 
                         do {
                             trovato = false;
@@ -396,15 +401,23 @@ public class BookRecommender {
                         } while (trovato);
 
                         do {
+                            userId= 0;
                             trovato = false;
                             System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci userId:\033[0m ");
-                            userId = scanner.nextInt();
-                            // Controlla non ci sia già un utente con lo stesso userId
-                            if (Utente.esisteUtente(utenti, userId)) {
-                                trovato = true;
-                                System.out.println("\033[1;31m                                  Utente già registrato con questo userId!\033[0m");
+                            try {
+                                userId = scanner.nextInt();
+                                // Controlla non ci sia già un utente con lo stesso userId
+                                if (Utente.esisteUtente(utenti, userId)) {
+                                    trovato = true;
+                                    System.out.println("\033[1;31m                                  Utente già registrato con questo userId!\033[0m");
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("\033[1;31m                                  UserId deve essere un numero intero!\033[0m");
+                                scanner.next();
+                                trovato=true;
                             }
                         } while (trovato);
+
                         System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
                         String password = scanner.next();
                         Utente utente = new Utente(userId, nome, cognome, codiceFiscale, email, password);
