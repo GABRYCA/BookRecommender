@@ -1,5 +1,7 @@
 package me.laba.bookrecommender;
 
+import java.util.ArrayList;
+
 /**
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
@@ -79,6 +81,28 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Verifica se l'utente con ID dato esiste già
+     *
+     * @param utenti ArrayList<Utente>
+     * @param userId int
+     * @return boolean
+     */
+    public static boolean esisteUtente(ArrayList<Utente> utenti, int userId) {
+        return utenti.stream().anyMatch(utente -> utente.getUserId() == userId);
+    }
+
+    /**
+     * Verifica se l'utente con email dato esiste già
+     *
+     * @param utenti ArrayList<Utente>
+     * @param email String
+     * @return boolean
+     */
+    public static boolean esisteUtente(ArrayList<Utente> utenti, String email) {
+        return utenti.stream().anyMatch(utente -> utente.getEmail().equals(email));
     }
 
     @Override

@@ -103,12 +103,7 @@ public class Libro {
      * @return boolean
      * */
     public static boolean esisteLibro(ArrayList<Libro> libri, int libroId) {
-        for (Libro libro : libri) {
-            if (libro.getLibroId() == libroId) {
-                return true;
-            }
-        }
-        return false;
+        return libri.stream().anyMatch(libro -> libro.getLibroId() == libroId);
     }
 
     @Override

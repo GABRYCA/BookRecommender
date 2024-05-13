@@ -119,8 +119,9 @@ public class BookRecommender {
                     };
                     if (tipo == null) break;
                     if (tipo.toString().equalsIgnoreCase("autore_anno"))
-                            System.out.print("                                        ¤ Inserisci un autore da cercare: ");
-                    else    System.out.print("                                        ¤ Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
+                        System.out.print("                                        ¤ Inserisci un autore da cercare: ");
+                    else
+                        System.out.print("                                        ¤ Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
                     String valore = scanner.next();
                     Optional<Integer> anno = Optional.empty();
                     inputValido = false;
@@ -154,9 +155,9 @@ public class BookRecommender {
                             scanner.next();
                         }
                     }
-                    if (!Libro.esisteLibro(libri, libroId)){
+                    if (!Libro.esisteLibro(libri, libroId)) {
                         delimitatore(true);
-                            System.out.print("\033[1;31m                                             Libro non trovato!\033[0m");
+                        System.out.print("\033[1;31m                                             Libro non trovato!\033[0m");
                         delimitatore(true);
                         break;
                     }
@@ -177,7 +178,7 @@ public class BookRecommender {
                                     // Ottieni nome utente e stampalo
                                     for (Utente u : utenti) {
                                         if (u.getUserId() == valutazione.getUserId()) {
-                                        System.out.println("                                        ¤ Utente: " + u.getNome() + " " + u.getCognome());
+                                            System.out.println("                                        ¤ Utente: " + u.getNome() + " " + u.getCognome());
                                             break;
                                         }
                                     }
@@ -224,7 +225,7 @@ public class BookRecommender {
                             if (utente.getEmail().equals(email) && utente.getPassword().equals(password)) {
                                 loggato = true;
                                 utenteLoggato = utente;
-                        System.out.println("\033[1;32m                                        Login effettuato con successo!\033[0m");
+                                System.out.println("\033[1;32m                                        Login effettuato con successo!\033[0m");
                                 break;
                             }
                         }
@@ -317,7 +318,7 @@ public class BookRecommender {
                                     }
                                 }
                                 if (trovato == 0) {
-                                        System.out.println("\033[1;31m                                             Nessuna libreria trovata!\033[0m");
+                                    System.out.println("\033[1;31m                                             Nessuna libreria trovata!\033[0m");
                                 }
                                 break;
                             case 4:
@@ -340,12 +341,12 @@ public class BookRecommender {
                                     }
                                 }
                                 if (trovatoo == 0) {
-                                            System.out.println("\033[1;31m                                           Nessuna libreria trovata!\033[0m");
+                                    System.out.println("\033[1;31m                                           Nessuna libreria trovata!\033[0m");
                                 }
                                 break;
                             default:
                                 delimitatore(true);
-                                            System.out.print("\033[1;31m                                              Scelta non valida!\033[0m");
+                                System.out.print("\033[1;31m                                              Scelta non valida!\033[0m");
                                 delimitatore(true);
                                 break;
                         }
@@ -382,35 +383,34 @@ public class BookRecommender {
                         } while (!codiceFiscale.matches("[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"));
 
                         do {
+                            trovato = false;
                             System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci email:\033[0m ");
                             email = scanner.next();
                             if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
                                 System.out.println("\033[1;31m                                  Errore: l'email non è valida.\033[0m");
+                                trovato = true;
+                            } else if (Utente.esisteUtente(utenti, email)) {
+                                System.out.println("\033[1;31m                                  Utente già registrato con questa email!\033[0m");
+                                trovato = true;
                             }
-                        } while (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$"));
+                        } while (trovato);
 
                         do {
                             trovato = false;
                             System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci userId:\033[0m ");
                             userId = scanner.nextInt();
                             // Controlla non ci sia già un utente con lo stesso userId
-                            for (Utente u : utenti) {
-                                if (u.getUserId() == userId) {
-                                    trovato = true;
-                                    break;
-                                }
-                            }
-                            if (trovato) {
+                            if (Utente.esisteUtente(utenti, userId)) {
+                                trovato = true;
                                 System.out.println("\033[1;31m                                  Utente già registrato con questo userId!\033[0m");
                             }
                         } while (trovato);
-                            System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
+                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
                         String password = scanner.next();
                         Utente utente = new Utente(userId, nome, cognome, codiceFiscale, email, password);
 
                         utenti.add(utente);
-                                System.out.println("\033[1;32m                              Registrazione effettuata con successo! Ora puoi loggarti...\033[0m");
-
+                        System.out.println("\033[1;32m                              Registrazione effettuata con successo! Ora puoi loggarti...\033[0m");
                     }
                     break;
                 case 5:
@@ -459,7 +459,7 @@ public class BookRecommender {
 
                             scanner.nextLine(); // Pulizia del buffer
 
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Commento:\033[0m ");
+                            System.out.print("\033[0m\033[1;36m                                        ¤ Commento:\033[0m ");
                             String commento = scanner.nextLine();
 
                             valutazioni.add(new Valutazione(valutazioni.size() + 1, utenteLoggato.getUserId(), libroId, stile, contenuto, gradevolezza, originalita, edizione, vFinale, commento));
@@ -519,7 +519,7 @@ public class BookRecommender {
             }
             if (creaConsiglio) {
                 consigli.add(new ConsigliLibri(consigli.size() + 1, userId, new ArrayList<String>()));
-                creaConsiglio = false;
+                // creaConsiglio = false;
 
             }
             for (ConsigliLibri c : consigli) {
@@ -543,7 +543,7 @@ public class BookRecommender {
                 System.out.println("\033[1;31m                                             Libro non trovato!\033[0m");
             }
         } else {
-                System.out.println("\033[1;31m\n                                             Libro inesistente\033[0m");
+            System.out.println("\033[1;31m\n                                             Libro inesistente\033[0m");
         }
 
 
