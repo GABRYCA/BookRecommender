@@ -37,27 +37,12 @@ public class BookRecommender {
     public static void main(String[] args) throws IOException {
         System.out.println("\033[1;32mProgramma avviato\033[0m");
 
-
-
         inizializzaDati(false);
-
-        // CODICE QUI.
         int scelta;
         boolean loggato = false;
         Utente utenteLoggato = null;
         boolean inputValido = false;
         do {
-            System.out.println("\033[1;33m");
-            System.out.println("""
-                ██████╗  ██████╗  ██████╗ ██╗  ██╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗██████╗ ███████╗██████╗\s
-                ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║██╔══██╗██╔════╝██╔══██╗
-                ██████╔╝██║   ██║██║   ██║█████╔╝ ██████╔╝█████╗  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║██║  ██║█████╗  ██████╔╝
-                ██╔══██╗██║   ██║██║   ██║██╔═██╗ ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗
-                ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║██████╔╝███████╗██║  ██║
-                ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-                """);
-            //System.out.println("\033[0m");
-            System.out.println("\033[1;36m                          Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
             try {
                 if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                     Runtime.getRuntime().exec("cls");
@@ -68,6 +53,17 @@ public class BookRecommender {
             } catch (IOException e) {
 
             }
+            System.out.println("\033[1;33m");
+            System.out.println("""
+                ██████╗  ██████╗  ██████╗ ██╗  ██╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗██████╗ ███████╗██████╗\s
+                ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║██╔══██╗██╔════╝██╔══██╗
+                ██████╔╝██║   ██║██║   ██║█████╔╝ ██████╔╝█████╗  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║██║  ██║█████╗  ██████╔╝
+                ██╔══██╗██║   ██║██║   ██║██╔═██╗ ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗
+                ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║██████╔╝███████╗██║  ██║
+                ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+                """);
+
+            System.out.println("\033[1;36m                          Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
             Scanner scanner = new Scanner(System.in);
             System.out.println("\n\033[1;33m                                        ==============================");
             System.out.println("\033[1;36m                                                     Menu");
@@ -643,8 +639,6 @@ public class BookRecommender {
             System.out.println("\033[1;31m\n                                             Libro inesistente\033[0m");
         }
 
-
-        //consigli.add(new ConsigliLibri(consigli.size()+1,userId,id))
     }
 
     /**
