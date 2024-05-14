@@ -37,19 +37,7 @@ public class BookRecommender {
     public static void main(String[] args) throws IOException {
         System.out.println("\033[1;32mProgramma avviato\033[0m");
 
-        // Titolo bello d'inizio con un grande titolo fatto con caratteri ASCCI "BookRecommender" e un sottotitolo con
-        // i nomi degli autori.
-        System.out.println("\033[1;33m");
-        System.out.println("""
-                ██████╗  ██████╗  ██████╗ ██╗  ██╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗██████╗ ███████╗██████╗\s
-                ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║██╔══██╗██╔════╝██╔══██╗
-                ██████╔╝██║   ██║██║   ██║█████╔╝ ██████╔╝█████╗  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║██║  ██║█████╗  ██████╔╝
-                ██╔══██╗██║   ██║██║   ██║██╔═██╗ ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗
-                ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║██████╔╝███████╗██║  ██║
-                ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-                """);
-        //System.out.println("\033[0m");
-        System.out.println("\033[1;36m                          Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
+
 
         inizializzaDati(false);
 
@@ -59,6 +47,27 @@ public class BookRecommender {
         Utente utenteLoggato = null;
         boolean inputValido = false;
         do {
+            System.out.println("\033[1;33m");
+            System.out.println("""
+                ██████╗  ██████╗  ██████╗ ██╗  ██╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗██████╗ ███████╗██████╗\s
+                ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║██╔══██╗██╔════╝██╔══██╗
+                ██████╔╝██║   ██║██║   ██║█████╔╝ ██████╔╝█████╗  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║██║  ██║█████╗  ██████╔╝
+                ██╔══██╗██║   ██║██║   ██║██╔═██╗ ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗
+                ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║██████╔╝███████╗██║  ██║
+                ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+                """);
+            //System.out.println("\033[0m");
+            System.out.println("\033[1;36m                          Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
+            try {
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    Runtime.getRuntime().exec("cls");
+                } else {
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                }
+            } catch (IOException e) {
+
+            }
             Scanner scanner = new Scanner(System.in);
             System.out.println("\n\033[1;33m                                        ==============================");
             System.out.println("\033[1;36m                                                     Menu");
@@ -79,10 +88,25 @@ public class BookRecommender {
                 System.out.println("                                        ¤ 5. Valuta libro");
                 System.out.println("                                        ¤ 6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
-
             System.out.println("\033[1;33m                                        ==============================\n");
-            System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
-            scelta = scanner.nextInt();
+            boolean t = false;
+            scelta = 0;
+            do {
+
+                System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
+                try {
+                    scelta = scanner.nextInt();
+                    t=false;
+                } catch (InputMismatchException e) {
+                    delimitatore(true);
+                    System.out.print("\033[1;31m                                              Scelta non valida\033[0m");
+                    delimitatore(true);
+                    scanner.next();
+                    t=true;
+                }
+            } while (t);
+
+
 
             switch (scelta) {
                 case 1:
@@ -122,7 +146,8 @@ public class BookRecommender {
                         System.out.print("                                        ¤ Inserisci un autore da cercare: ");
                     else
                         System.out.print("                                        ¤ Inserisci un " + tipo.toString().toLowerCase() + " da cercare: ");
-                    String valore = scanner.next();
+                    scanner.nextLine();
+                    String valore = scanner.nextLine();
                     Optional<Integer> anno = Optional.empty();
                     inputValido = false;
                     if (tipo == TipoRicercaLibro.AUTORE_ANNO) {
@@ -246,13 +271,27 @@ public class BookRecommender {
                         System.out.println("                                        ¤ 3. Visualizza librerie");
                         System.out.println("                                        ¤ 4. Rimuovi libreria");
                         System.out.println("\033[1;33m                                        ==============================\n");
-                        System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
-                        int sceltaLibrerie = scanner.nextInt();
+                        int sceltaLibrerie = 0;
+                        t = false;
+                        do {
 
+                            System.out.print("\033[0m                                        ¤ Inserisci la tua scelta: ");
+                            try {
+                                sceltaLibrerie = scanner.nextInt();
+                                t=false;
+                            } catch (InputMismatchException e) {
+                                delimitatore(true);
+                                System.out.print("\033[1;31m                                              Scelta non valida\033[0m");
+                                delimitatore(true);
+                                scanner.next();
+                                t=true;
+                            }
+                        } while (t);
                         switch (sceltaLibrerie) {
                             case 1:
+                                scanner.nextLine();
                                 System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci nome libreria:\033[0m ");
-                                String nomeLibreria = scanner.next();
+                                String nomeLibreria = scanner.nextLine();
                                 Libreria libreria = new Libreria(librerie.size() + 1, utenteLoggato.getUserId(), nomeLibreria, new ArrayList<>());
                                 librerie.add(libreria);
                                 System.out.println("\033[1;32m                                        Libreria creata con successo!\033[0m");
@@ -432,45 +471,80 @@ public class BookRecommender {
                         System.out.println("\n\033[1;33m                                        ==============================");
                         System.out.println("\033[1;36m                                              Valutazione libro");
                         System.out.println("\033[1;33m                                        ==============================\n");
-                        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro:\033[0m ");
-                        libroId = scanner.nextInt();
+                        libroId = 0;
+                        inputValido = false;
+                        while (!inputValido) {
+                            try {
+                                System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro:\033[0m ");
+                                libroId = scanner.nextInt();
+                                inputValido = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("\033[1;31m                                    Errore: per favore inserisci un numero.\033[0m");
+                                scanner.next();
+                            }
+                        }
+
                         if (libroId > 0 && libroId <= libri.size()) {
                             if (!Libro.esisteLibro(libri, libroId)) {
                                 System.out.println("\033[1;31m                                              Libro non trovato!\033[0m");
                                 break;
                             }
+                            scanner.nextLine();
                             int stile, contenuto, gradevolezza, originalita, edizione, vFinale;
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Stile:\033[0m ");
-                                stile = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Stile:\033[0m ");
+                                    stile = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    stile = 0;
+                                }
                             } while (stile < 1 || stile > 5);
 
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Contenuto:\033[0m ");
-                                contenuto = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Contenuto:\033[0m ");
+                                    contenuto = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    contenuto = 0;
+                                }
                             } while (contenuto < 1 || contenuto > 5);
 
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Gradevolezza:\033[0m ");
-                                gradevolezza = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Gradevolezza:\033[0m ");
+                                    gradevolezza = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    gradevolezza = 0;
+                                }
                             } while (gradevolezza < 1 || gradevolezza > 5);
 
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Originalita':\033[0m ");
-                                originalita = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Originalita':\033[0m ");
+                                    originalita = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    originalita = 0;
+                                }
                             } while (originalita < 1 || originalita > 5);
 
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Edizione:\033[0m ");
-                                edizione = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Edizione:\033[0m ");
+                                    edizione = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    edizione = 0;
+                                }
                             } while (edizione < 1 || edizione > 5);
 
                             do {
-                                System.out.print("\033[0m\033[1;36m                                        ¤ Voto finale:\033[0m ");
-                                vFinale = scanner.nextInt();
+                                try {
+                                    System.out.print("\033[0m\033[1;36m                                        ¤ Voto finale:\033[0m ");
+                                    vFinale = Integer.parseInt(scanner.nextLine());
+                                } catch (NumberFormatException e) {
+                                    vFinale = 0;
+                                }
                             } while (vFinale < 1 || vFinale > 5);
 
-                            scanner.nextLine(); // Pulizia del buffer
 
                             System.out.print("\033[0m\033[1;36m                                        ¤ Commento:\033[0m ");
                             String commento = scanner.nextLine();
@@ -518,8 +592,18 @@ public class BookRecommender {
         System.out.println("\n\033[1;33m                                        ==============================");
         System.out.println("\033[1;36m                                              Suggerimento libro");
         System.out.println("\033[1;33m                                        ==============================\n");
-        System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro che vuoi suggerire:\033[0m ");
-        int libroIdConsigli = scanner.nextInt();
+        int libroIdConsigli = 0;
+        boolean inputValido = false;
+        while (!inputValido) {
+            try {
+                System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci l'id del libro che vuoi suggerire:\033[0m ");
+                libroIdConsigli = scanner.nextInt();
+                inputValido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("\033[1;31m                                    Errore: per favore inserisci un numero.\033[0m");
+                scanner.next();
+            }
+        }
         if (libroIdConsigli > 0 && libroIdConsigli <= libri.size()) {
             for (ConsigliLibri c : consigli) {
 
