@@ -62,9 +62,9 @@ public class BookRecommender {
 
             System.out.println("\033[1;36m                    Progetto realizzato da Caretti Gabriele, Como Riccardo e Manicone Giorgia.\033[0m");
             Scanner scanner = new Scanner(System.in);
-            System.out.println("\n\033[1;33m                                        ==============================");
+            System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
             System.out.println("\033[1;36m                                                     Menu");
-            System.out.println("\033[1;33m                                        ==============================");
+            System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
             System.out.println("\033[0m                                        ¤ 0. Esci");
 
             // Opzioni disponibili per tutti
@@ -81,7 +81,7 @@ public class BookRecommender {
                 System.out.println("                                        ¤ 5. Valuta libro");
                 System.out.println("                                        ¤ 6. Suggerisci libro"); // usa funzione inserisciSuggerimentoLibro() successivamente
             }
-            System.out.println("\033[1;33m                                        ==============================\n");
+            System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
             boolean t = false;
             scelta = 0;
             do {
@@ -107,13 +107,13 @@ public class BookRecommender {
                     inputValido = false;
                     while (!inputValido) {
                         try {
-                            System.out.println("\n\033[1;33m                                        ==============================");
+                            System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                             System.out.println("\033[1;36m                                                Tipo di Ricerca");
-                            System.out.println("\033[1;33m                                        ==============================");
+                            System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                             System.out.println("\033[0m                                        ¤ 1. Titolo");
                             System.out.println("                                        ¤ 2. Autore");
                             System.out.println("                                        ¤ 3. Autore e Anno");
-                            System.out.println("\033[1;33m                                        ==============================");
+                            System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                             System.out.print("\033[0m                                        ¤ Inserisci il tipo di ricerca: ");
                             tipoRicerca = scanner.nextInt();
                             inputValido = true;
@@ -232,9 +232,9 @@ public class BookRecommender {
                     break;
                 case 3:
                     if (!loggato) {
-                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.println("\033[1;36m                                                     Login ");
-                        System.out.println("\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci email:\033[0m ");
                         String email = scanner.next();
                         System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci password:\033[0m ");
@@ -256,14 +256,14 @@ public class BookRecommender {
                     break;
                 case 4:
                     if (loggato) { // Gestisci librerie
-                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.println("\033[1;36m                                                   Libreria");
-                        System.out.println("\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.println("\033[0m                                        ¤ 1. Crea libreria");
                         System.out.println("                                        ¤ 2. Aggiungi libro alla libreria");
                         System.out.println("                                        ¤ 3. Visualizza librerie");
                         System.out.println("                                        ¤ 4. Rimuovi libreria");
-                        System.out.println("\033[1;33m                                        ==============================\n");
+                        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         int sceltaLibrerie = 0;
                         t = false;
                         do {
@@ -387,9 +387,9 @@ public class BookRecommender {
                         String nome, cognome, codiceFiscale, email;
                         int userId;
                         boolean trovato = false;
-                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.println("\033[1;36m                                                Registrazione ");
-                        System.out.println("\033[1;33m                                        ==============================");
+                        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         do {
                             System.out.print("\033[0m\033[1;36m                                        ¤ Inserisci nome:\033[0m ");
                             nome = scanner.next();
@@ -461,9 +461,9 @@ public class BookRecommender {
                 case 5:
 
                     if (loggato) {
-                        System.out.println("\n\033[1;33m                                        ==============================");
+                        System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         System.out.println("\033[1;36m                                              Valutazione libro");
-                        System.out.println("\033[1;33m                                        ==============================\n");
+                        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
                         libroId = 0;
                         inputValido = false;
                         while (!inputValido) {
@@ -582,9 +582,9 @@ public class BookRecommender {
         boolean trovato = false;
         boolean giaPresente = false;
         boolean creaConsiglio = false;
-        System.out.println("\n\033[1;33m                                        ==============================");
+        System.out.println("\n\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
         System.out.println("\033[1;36m                                              Suggerimento libro");
-        System.out.println("\033[1;33m                                        ==============================\n");
+        System.out.println("\033[1;33m                                        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
         int libroIdConsigli = 0;
         boolean inputValido = false;
         while (!inputValido) {
@@ -705,9 +705,9 @@ public class BookRecommender {
      */
     public static void delimitatore(boolean acapo) {
         if (acapo) {
-            System.out.println("\033[1;34m\n                                     ====================================\033[0m");
+            System.out.println("\033[1;34m\n                                     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\033[0m");
         } else {
-            System.out.println("\033[1;34m                                       ====================================\033[0m");
+            System.out.println("\033[1;34m                                     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\033[0m");
         }
     }
 
