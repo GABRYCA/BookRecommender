@@ -85,8 +85,6 @@ public class Libro {
 
     /**
      * Stampa lista completa dei libri
-     *
-     * @return void
      */
     public static void stampaLibri(ArrayList<Libro> libri) {
         for (Libro libro : libri) {
