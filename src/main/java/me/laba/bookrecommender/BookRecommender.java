@@ -14,8 +14,6 @@ import java.util.*;
 
 /**
  * Classe Main del progetto.
- * <p>
- * LE SEGUENTI LINEE DEVONO ESSERE INSERITE IN OGNI FILE .java!
  *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
@@ -337,12 +335,14 @@ public class BookRecommender {
                                         System.out.println("                                        ¤ Libri:");
                                         int conta = 1;
                                         for (String libroIdLibreria : l.getLibriId()) {
-                                            for (Libro libro : libri) {
-                                                if (libro.getLibroId() == Integer.parseInt(libroIdLibreria)) {
-                                                    System.out.println("                                        ¤ Libro " + conta + ": " + libro.getTitolo());
-                                                    System.out.println("                                        ¤ Id: " + libro.getLibroId());
-                                                    conta++;
-                                                    break;
+                                            if(!Objects.equals(libroIdLibreria, "")) {
+                                                for (Libro libro : libri) {
+                                                    if (libro.getLibroId() == Integer.parseInt(libroIdLibreria)) {
+                                                        System.out.println("                                        ¤ Libro " + conta + ": " + libro.getTitolo());
+                                                        System.out.println("                                        ¤ Id: " + libro.getLibroId());
+                                                        conta++;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
