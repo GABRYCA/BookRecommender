@@ -25,14 +25,16 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 - Il Project Manager dovrà consegnare il progetto all'interno di una cartella compressa denominata con cognome_matricola, caricata su OneDrive dell'Università o Google Drive, condividendo il link.
 
 ## Cartelle:
-- Principali: 
-  - `LabA`
-  - `LabB`
-- SubCartelle:
-  - `doc`: Documentazione
-  - `src`: Codice sorgente
-  - `bin`: Eseguibile
-  - `data`: File dati
+- `clientBR`: Modulo Client Maven
+- `serverBR`: Modulo Server Maven
+- `doc`: Documentazione
+- `src`: Codice sorgente 
+  - `client`: Codice Client - FORSE DA SPOSTARE in clientBR in qualche modo.
+  - `server`: Codice Server - FORSE DA SPOSTARE in serverBR in qualche modo.
+- `bin`: Eseguibile
+- `data`: File dati
 
-## Architettura:
-![img.png](LabA/img/img.png)
+### Cosa useremo:
+- PostgreSQL
+- Maven
+- Struttura del progetto menzionata dalla consegna

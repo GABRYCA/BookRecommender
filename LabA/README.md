@@ -6,11 +6,11 @@
 - `Manicone Giorgia 758716 VA`
 
 ### Informazioni:
-- Java 24
+- Java 22
 - **Package Manager**: Maven
 - **IDE**: IntelliJ IDEA & Eclipse
-- **Package**: me.labb.bookrecommender
-- **Main**: TBD
+- **Package**: me.laba.bookrecommender
+- **Main**: me.laba.bookrecommender.BookRecommender
 
 ### Ruoli Membri:
 - Caretti Gabriele: ? (PM)
@@ -19,20 +19,25 @@
 
 ### Descrizione:
 Book Recommender è un progetto che segue le linee guida del progetto
-LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'Insubria.
+LabA del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'Insubria.
 
 ### Consegna:
 - Il Project Manager dovrà consegnare il progetto all'interno di una cartella compressa denominata con cognome_matricola, caricata su OneDrive dell'Università o Google Drive, condividendo il link.
 
 ## Cartelle:
-- Principali: 
-  - `LabA`
-  - `LabB`
-- SubCartelle:
-  - `doc`: Documentazione
-  - `src`: Codice sorgente
-  - `bin`: Eseguibile
-  - `data`: File dati
+- `doc`: Documentazione
+- `src`: Codice sorgente
+- `bin`: Eseguibile
+- `data`: File dati
 
 ## Architettura:
 ![img.png](LabA/img/img.png)
+
+#### File e strutture dati:
+- Libri
+- UtentiRegistrati
+- ValutazioniLibri
+- ConsigliLibri
+
+_NB: Per il salvataggio dei dati useremo file .csv, questi permetto
+di salvare informazioni con un formato tabellare, dove ogni colonna è divisa da un comma/virgola `,`._
