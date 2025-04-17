@@ -62,10 +62,12 @@ CREATE TABLE Libri (
     LibroID SERIAL PRIMARY KEY,
     Titolo VARCHAR(500) NOT NULL,
     Autori TEXT,
+    MesePubblicazione VARCHAR(9) CHECK (MesePubblicazione IN ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')),
     AnnoPubblicazione INTEGER,
     Editore VARCHAR(255),
     Categoria VARCHAR(255),
     Descrizione TEXT,
+    Prezzo NUMERIC(6,2) DEFAULT 0,
     DataInserimento TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
