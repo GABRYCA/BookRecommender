@@ -7,6 +7,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Singleton per la gestione delle connessioni al database Postgres.
+ * Usare getInstance() per inizializzare e ottenere un'instanza.
+ * */
 public class DatabaseManager {
 
     private static volatile DatabaseManager instance;

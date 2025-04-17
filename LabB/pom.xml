@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
-        <postgresql.jdbc.version>42.7.3</postgresql.jdbc.version>
+        <postgresql.jdbc.version>42.7.5</postgresql.jdbc.version>
     </properties>
 
     <dependencyManagement>
