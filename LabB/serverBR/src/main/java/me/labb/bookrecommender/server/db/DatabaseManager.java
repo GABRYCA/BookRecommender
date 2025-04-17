@@ -38,15 +38,9 @@ public class DatabaseManager {
                 throw new RuntimeException("Proprietà del database mancanti in config.properties (db.url, db.username, db.password)");
             }
 
-            Class.forName("org.postgresql.Driver");
-            System.out.println("Driver PostgreSQL caricato con successo.");
-
         } catch (IOException e) {
             System.err.println("Errore durante la lettura del file config.properties.");
             throw new RuntimeException("Errore I/O durante la lettura di config.properties", e);
-        } catch (ClassNotFoundException e) {
-            System.err.println("Errore: Driver PostgreSQL non trovato! Assicurati che la dipendenza Maven sia corretta.");
-            throw new RuntimeException("Driver PostgreSQL non trovato", e);
         } catch (Exception e) {
             System.err.println("Errore imprevisto durante l'inizializzazione di DatabaseManager.");
             throw new RuntimeException("Errore inizializzazione DatabaseManager", e);
