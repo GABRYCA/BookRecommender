@@ -26,11 +26,10 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 
 ## Cartelle:
 - `clientBR`: Modulo Client Maven
+  - `src/client`: Codice Client
 - `serverBR`: Modulo Server Maven
+  - `src/server`: Codice Server
 - `doc`: Documentazione
-- `src`: Codice sorgente 
-  - `client`: Codice Client - FORSE DA SPOSTARE in clientBR in qualche modo.
-  - `server`: Codice Server - FORSE DA SPOSTARE in serverBR in qualche modo.
 - `bin`: Eseguibile
 - `data`: File dati
 
@@ -38,3 +37,6 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 - PostgreSQL
 - Maven
 - Struttura del progetto menzionata dalla consegna
+
+## Database:
+- Farsi passare il config.properties chiedendolo, e inserirlo in serverBR/src/main/resources
