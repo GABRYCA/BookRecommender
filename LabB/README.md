@@ -1,4 +1,4 @@
-# LabA: Book Recommender
+# LabB: BookRecommender
 
 ### Membri Gruppo:
 - `Caretti Gabriele 756564 VA`
@@ -25,7 +25,7 @@
 - Giorgia Manicone: ? (Documentazione e Testing)
 
 ### Descrizione:
-Book Recommender è un progetto che segue le linee guida del progetto
+BookRecommender è un progetto che segue le linee guida del progetto
 LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'Insubria.
 
 ### Consegna:
