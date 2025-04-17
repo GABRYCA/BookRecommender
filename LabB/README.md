@@ -45,6 +45,8 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 
 ## Schema Database (PostgreSQL):
 
+![schema.png](img/schema.png)
+
 ```sql
 CREATE TABLE UtentiRegistrati (
     UserID SERIAL PRIMARY KEY,
