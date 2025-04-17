@@ -6,11 +6,18 @@
 - `Manicone Giorgia 758716 VA`
 
 ### Informazioni:
-- Java 24
+- **Java**: 24
 - **Package Manager**: Maven
 - **IDE**: IntelliJ IDEA & Eclipse
 - **Package**: me.labb.bookrecommender
-- **Main**: TBD
+- **Main**:
+  - **Client**: `me.labb.bookrecommender.client.ClientMain`
+  - **Server**: `me.labb.bookrecommender.server.ServerMain`
+- **Database**: PostgreSQL
+- **Accesso DB**: JDBC
+- **GUI**: Swing (o JavaFX, da definire)
+- **Concorrenza**: Gestione multi-threading/client sul server
+- **Comunicazione Client/Server**: Sockets, RMI (o altro meccanismo)
 
 ### Ruoli Membri:
 - Caretti Gabriele: ? (PM)
@@ -33,10 +40,80 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 - `bin`: Eseguibile
 - `data`: File dati
 
-### Cosa useremo:
-- PostgreSQL
-- Maven
-- Struttura del progetto menzionata dalla consegna
-
-## Database:
+## Connessione al Database:
 - Farsi passare il config.properties chiedendolo, e inserirlo in serverBR/src/main/resources
+
+## Schema Database (PostgreSQL):
+
+```sql
+CREATE TABLE UtentiRegistrati (
+    UserID SERIAL PRIMARY KEY,
+    NomeCompleto VARCHAR(255) NOT NULL,
+    CodiceFiscale VARCHAR(16) UNIQUE,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    Username VARCHAR(100) UNIQUE NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    DataRegistrazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Libri (
+    LibroID SERIAL PRIMARY KEY,
+    Titolo VARCHAR(500) NOT NULL,
+    Autori TEXT,
+    AnnoPubblicazione INTEGER,
+    Editore VARCHAR(255),
+    Categoria VARCHAR(255),
+    Descrizione TEXT,
+    DataInserimento TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Librerie (
+    LibreriaID SERIAL PRIMARY KEY,
+    UserID INTEGER NOT NULL REFERENCES UtentiRegistrati(UserID) ON DELETE CASCADE,
+    NomeLibreria VARCHAR(255) NOT NULL,
+    DataCreazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(UserID, NomeLibreria)
+);
+
+CREATE TABLE ContenutoLibreria (
+    LibreriaID INTEGER NOT NULL REFERENCES Librerie(LibreriaID) ON DELETE CASCADE,
+    LibroID INTEGER NOT NULL REFERENCES Libri(LibroID) ON DELETE CASCADE,
+    DataAggiunta TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (LibreriaID, LibroID)
+);
+
+CREATE TABLE ValutazioniLibri (
+    ValutazioneID SERIAL PRIMARY KEY,
+    UserID INTEGER NOT NULL REFERENCES UtentiRegistrati(UserID) ON DELETE CASCADE,
+    LibroID INTEGER NOT NULL REFERENCES Libri(LibroID) ON DELETE CASCADE,
+    ScoreStile SMALLINT CHECK (ScoreStile >= 1 AND ScoreStile <= 5),
+    NoteStile VARCHAR(256),
+    ScoreContenuto SMALLINT CHECK (ScoreContenuto >= 1 AND ScoreContenuto <= 5),
+    NoteContenuto VARCHAR(256),
+    ScoreGradevolezza SMALLINT CHECK (ScoreGradevolezza >= 1 AND ScoreGradevolezza <= 5),
+    NoteGradevolezza VARCHAR(256),
+    ScoreOriginalita SMALLINT CHECK (ScoreOriginalita >= 1 AND ScoreOriginalita <= 5),
+    NoteOriginalita VARCHAR(256),
+    ScoreEdizione SMALLINT CHECK (ScoreEdizione >= 1 AND ScoreEdizione <= 5),
+    NoteEdizione VARCHAR(256),
+    DataValutazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(UserID, LibroID)
+);
+
+CREATE TABLE ConsigliLibri (
+    ConsiglioID SERIAL PRIMARY KEY,
+    UserID INTEGER NOT NULL REFERENCES UtentiRegistrati(UserID) ON DELETE CASCADE,
+    LibroRiferimentoID INTEGER NOT NULL REFERENCES Libri(LibroID) ON DELETE CASCADE,
+    LibroSuggeritoID INTEGER NOT NULL REFERENCES Libri(LibroID) ON DELETE CASCADE,
+    DataSuggerimento TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(UserID, LibroRiferimentoID, LibroSuggeritoID),
+    CHECK (LibroRiferimentoID <> LibroSuggeritoID)
+);
+
+-- INDICI
+CREATE INDEX idx_libri_titolo ON Libri (Titolo);
+CREATE INDEX idx_libri_autori ON Libri (Autori);
+CREATE INDEX idx_valutazioni_libro ON ValutazioniLibri (LibroID);
+CREATE INDEX idx_consigli_riferimento ON ConsigliLibri (LibroRiferimentoID);
+CREATE INDEX idx_contenuto_libreria_utente ON ContenutoLibreria (LibreriaID);
+```

@@ -1,4 +1,4 @@
-package bookrecommender.server.db;
+package me.labb.bookrecommender.server.db;
 
 import java.io.IOException;
 import java.io.InputStream;
