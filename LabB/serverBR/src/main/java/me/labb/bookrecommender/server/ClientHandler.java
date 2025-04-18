@@ -2,6 +2,7 @@ package me.labb.bookrecommender.server;
 
 import me.labb.bookrecommender.server.db.*;
 import me.labb.bookrecommender.server.oggetti.*;
+import me.labb.bookrecommender.server.utils.RequestParser;
 import me.labb.bookrecommender.server.utils.ResponseFormatter;
 
 import java.io.BufferedReader;
@@ -80,15 +81,21 @@ public class ClientHandler implements Runnable {
 
     /**
      * Elabora comandi inviati dal client.
+     * Supporta sia il formato testuale che JSON.
      * 
-     * @param comando Il comando da elaborare
+     * @param input Il comando da elaborare (testo o JSON)
      * @return La risposta da inviare al client
      */
-    private String elaboraComando(String comando) {
-        // Dividi comando in parti (comando + parametri)
-        String[] parti = comando.split("\\s+", 2);
-        String azione = parti[0].toUpperCase();
-        String parametri = parti.length > 1 ? parti[1] : "";
+    private String elaboraComando(String input) {
+        // Utilizza RequestParser per analizzare l'input (testo o JSON)
+        RequestParser.ParsedRequest parsedRequest = RequestParser.parseRequest(input);
+        String azione = parsedRequest.getComando();
+        String parametri = parsedRequest.getParametri();
+
+        // Log per debug
+        if (RequestParser.isJsonRequest(input)) {
+            System.out.println("Ricevuta richiesta JSON: comando=" + azione + ", parametri=" + parametri);
+        }
 
         // Comandi disponibili a tutti
         switch (azione) {
@@ -427,6 +434,15 @@ public class ClientHandler implements Runnable {
 
         Map<String, Object> data = new HashMap<>();
         data.put("comandiGenerali", comandiGenerali);
+
+        // Comunico supporto JSON
+        Map<String, Object> jsonInfo = new HashMap<>();
+        jsonInfo.put("descrizione", "Il server supporta richieste in formato JSON con la seguente struttura");
+        jsonInfo.put("esempio1", "{\"comando\": \"NOME_COMANDO\", \"parametri\": \"param1 param2\"}");
+        jsonInfo.put("esempio2", "{\"comando\": \"LOGIN\", \"parametri\": {\"username\": \"utente\", \"password\": \"password123\"}}");
+        jsonInfo.put("esempio3", "{\"comando\": \"VALUTA_LIBRO\", \"parametri\": {\"libroID\": 123, \"scoreStile\": 4, \"noteStile\": \"Ottimo stile\", \"scoreContenuto\": 5, \"noteContenuto\": \"Contenuto interessante\"}}");
+        jsonInfo.put("nota", "I parametri possono essere una stringa o un oggetto JSON strutturato. Il server elaborerà correttamente entrambi i formati.");
+        data.put("formatoJSON", jsonInfo);
 
         if (!isAutenticato()) {
             data.put("comandiAutenticazione", comandiAutenticazione);
