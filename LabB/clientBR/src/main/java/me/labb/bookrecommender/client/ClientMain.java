@@ -17,9 +17,6 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class ClientMain extends Application {
 

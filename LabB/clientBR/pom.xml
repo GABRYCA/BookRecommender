@@ -22,16 +22,7 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>me.labb.bookrecommender</groupId>
-            <artifactId>BookRecommender-Client</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>me.labb.bookrecommender</groupId>
-            <artifactId>BookRecommender-Server</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!-- Non mettere dipendenze a se stesso o al server, il client comunica tramite Sockets con il server -->
 
         <!-- JavaFX -->
         <dependency>
