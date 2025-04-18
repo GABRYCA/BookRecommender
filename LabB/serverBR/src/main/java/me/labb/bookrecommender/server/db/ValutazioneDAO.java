@@ -3,6 +3,7 @@ package me.labb.bookrecommender.server.db;
 import me.labb.bookrecommender.server.oggetti.Valutazione;
 
 import java.sql.*;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +163,8 @@ public class ValutazioneDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataValutazione");
+                ZonedDateTime dataValutazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Valutazione valutazione = new Valutazione(
                         rs.getInt("ValutazioneID"),
                         rs.getInt("UserID"),
@@ -176,7 +179,7 @@ public class ValutazioneDAO {
                         rs.getString("NoteOriginalita"),
                         rs.getShort("ScoreEdizione"),
                         rs.getString("NoteEdizione"),
-                        rs.getObject("DataValutazione", ZonedDateTime.class)
+                        dataValutazione
                 );
                 return Optional.of(valutazione);
             }
@@ -216,6 +219,8 @@ public class ValutazioneDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataValutazione");
+                ZonedDateTime dataValutazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Valutazione valutazione = new Valutazione(
                         rs.getInt("ValutazioneID"),
                         rs.getInt("UserID"),
@@ -230,7 +235,7 @@ public class ValutazioneDAO {
                         rs.getString("NoteOriginalita"),
                         rs.getShort("ScoreEdizione"),
                         rs.getString("NoteEdizione"),
-                        rs.getObject("DataValutazione", ZonedDateTime.class)
+                        dataValutazione
                 );
                 valutazioni.add(valutazione);
             }
@@ -270,6 +275,8 @@ public class ValutazioneDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataValutazione");
+                ZonedDateTime dataValutazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Valutazione valutazione = new Valutazione(
                         rs.getInt("ValutazioneID"),
                         rs.getInt("UserID"),
@@ -284,7 +291,7 @@ public class ValutazioneDAO {
                         rs.getString("NoteOriginalita"),
                         rs.getShort("ScoreEdizione"),
                         rs.getString("NoteEdizione"),
-                        rs.getObject("DataValutazione", ZonedDateTime.class)
+                        dataValutazione
                 );
                 valutazioni.add(valutazione);
             }

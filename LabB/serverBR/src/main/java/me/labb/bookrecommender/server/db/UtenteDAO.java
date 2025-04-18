@@ -6,6 +6,8 @@ import me.labb.bookrecommender.server.sicurezza.PasswordManager;
 import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.ZoneId;
 
 /**
  * Classe DAO per gestire le operazioni CRUD sugli utenti.
@@ -95,6 +97,8 @@ public class UtenteDAO {
                 String storedHash = rs.getString("PasswordHash");
 
                 if (PasswordManager.verificaPassword(password, storedHash)) {
+                    Timestamp ts = rs.getTimestamp("DataRegistrazione");
+                    ZonedDateTime dataRegistrazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                     Utente utente = new Utente(
                             rs.getInt("UserID"),
                             rs.getString("NomeCompleto"),
@@ -102,7 +106,7 @@ public class UtenteDAO {
                             rs.getString("Email"),
                             rs.getString("Username"),
                             rs.getString("PasswordHash"),
-                            rs.getObject("DataRegistrazione", ZonedDateTime.class)
+                            dataRegistrazione
                     );
                     return Optional.of(utente);
                 }
@@ -141,6 +145,8 @@ public class UtenteDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataRegistrazione");
+                ZonedDateTime dataRegistrazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Utente utente = new Utente(
                         rs.getInt("UserID"),
                         rs.getString("NomeCompleto"),
@@ -148,7 +154,7 @@ public class UtenteDAO {
                         rs.getString("Email"),
                         rs.getString("Username"),
                         rs.getString("PasswordHash"),
-                        rs.getObject("DataRegistrazione", ZonedDateTime.class)
+                        dataRegistrazione
                 );
                 return Optional.of(utente);
             }

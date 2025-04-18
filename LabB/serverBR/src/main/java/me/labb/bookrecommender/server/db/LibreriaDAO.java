@@ -4,6 +4,7 @@ import me.labb.bookrecommender.server.oggetti.Libreria;
 import me.labb.bookrecommender.server.oggetti.Libro;
 
 import java.sql.*;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +86,13 @@ public class LibreriaDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataCreazione");
+                ZonedDateTime dataCreazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Libreria libreria = new Libreria(
                         rs.getInt("LibreriaID"),
                         rs.getInt("UserID"),
                         rs.getString("NomeLibreria"),
-                        rs.getObject("DataCreazione", ZonedDateTime.class)
+                        dataCreazione
                 );
                 librerie.add(libreria);
             }
@@ -127,11 +130,13 @@ public class LibreriaDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataCreazione");
+                ZonedDateTime dataCreazione = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Libreria libreria = new Libreria(
                         rs.getInt("LibreriaID"),
                         rs.getInt("UserID"),
                         rs.getString("NomeLibreria"),
-                        rs.getObject("DataCreazione", ZonedDateTime.class)
+                        dataCreazione
                 );
                 return Optional.of(libreria);
             }

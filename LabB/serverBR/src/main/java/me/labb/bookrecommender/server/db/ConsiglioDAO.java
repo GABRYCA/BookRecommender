@@ -4,6 +4,7 @@ import me.labb.bookrecommender.server.oggetti.Consiglio;
 import me.labb.bookrecommender.server.oggetti.Libro;
 
 import java.sql.*;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,12 +125,14 @@ public class ConsiglioDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataSuggerimento");
+                ZonedDateTime dataSuggerimento = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Consiglio consiglio = new Consiglio(
                         rs.getInt("ConsiglioID"),
                         rs.getInt("UserID"),
                         rs.getInt("LibroRiferimentoID"),
                         rs.getInt("LibroSuggeritoID"),
-                        rs.getObject("DataSuggerimento", ZonedDateTime.class)
+                        dataSuggerimento
                 );
                 return Optional.of(consiglio);
             }
@@ -169,12 +172,14 @@ public class ConsiglioDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                Timestamp ts = rs.getTimestamp("DataSuggerimento");
+                ZonedDateTime dataSuggerimento = (ts != null) ? ts.toInstant().atZone(ZoneId.systemDefault()) : null;
                 Consiglio consiglio = new Consiglio(
                         rs.getInt("ConsiglioID"),
                         rs.getInt("UserID"),
                         rs.getInt("LibroRiferimentoID"),
                         rs.getInt("LibroSuggeritoID"),
-                        rs.getObject("DataSuggerimento", ZonedDateTime.class)
+                        dataSuggerimento
                 );
                 consigli.add(consiglio);
             }
