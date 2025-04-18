@@ -15,7 +15,7 @@
   - **Server**: `me.labb.bookrecommender.server.ServerMain`
 - **Database**: PostgreSQL
 - **Accesso DB**: JDBC
-- **GUI**: Swing (o JavaFX, da definire)
+- **GUI**: JavaFX
 - **Concorrenza**: Gestione multi-threading/client sul server
 - **Comunicazione Client/Server**: Sockets, RMI (o altro meccanismo)
 
@@ -39,6 +39,7 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 - `doc`: Documentazione
 - `bin`: Eseguibile
 - `data`: File dati
+- `in caso di errore`: installare JavaFX 25-ea+1 e posizionare la cartella nel disco C://. Download : "https://gluonhq.com/products/javafx/" ![img.png](img.png)
 
 ## Connessione al Database:
 - Farsi passare il config.properties chiedendolo, e inserirlo in serverBR/src/main/resources

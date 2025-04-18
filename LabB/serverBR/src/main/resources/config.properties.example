@@ -1,7 +1,0 @@
-# Configurazione database PostgreSQL
-db.url=jdbc:postgresql://localhost:5432/bookrecommender
-db.username=postgres
-db.password=password
-
-# Configurazione server
-server.port=8080
