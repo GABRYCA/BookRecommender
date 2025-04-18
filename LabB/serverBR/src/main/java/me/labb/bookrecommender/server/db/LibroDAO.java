@@ -45,8 +45,6 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
-                        rs.getFloat("Prezzo"),
-                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 return Optional.of(libro);
@@ -95,8 +93,6 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
-                        rs.getFloat("Prezzo"),
-                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 risultati.add(libro);
@@ -144,8 +140,6 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
-                        rs.getFloat("Prezzo"),
-                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 risultati.add(libro);

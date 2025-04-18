@@ -30,11 +30,11 @@ public class ServerMain {
 
         // Creo e inizializzo il server
         Server server = new Server();
+
         
         // Avvio il server in un thread separato
         Thread serverThread = new Thread(server);
         serverThread.start();
-        
         System.out.println("Server avviato con successo. Premi CTRL+C per terminare.");
         
         // Arresto del server
@@ -50,5 +50,6 @@ public class ServerMain {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
     }
 }
