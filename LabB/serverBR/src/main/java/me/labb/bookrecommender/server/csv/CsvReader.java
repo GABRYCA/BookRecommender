@@ -66,6 +66,8 @@ public class CsvReader {
                             record.get("Description"),
                             record.get("Category"),
                             record.get("Publisher"),
+                            Float.parseFloat(record.get("Price Starting With ($)")),
+                            record.get("Publish Date (Month)"),
                             Integer.parseInt(record.get("Publish Date (Year)"))
                     );
                     libri.add(libro);

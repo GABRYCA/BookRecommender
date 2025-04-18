@@ -48,13 +48,14 @@ public class Utils {
             statement = connection.prepareStatement(sql);
             
             for (Libro libro : libri) {
-                statement.setString(1, libro.getTitolo());
-                statement.setString(2, libro.getAutore());
-                statement.setString(3, libro.getDescrizione());
-                statement.setString(4, libro.getCategoria());
-                statement.setString(5, libro.getEditore());
-                statement.setInt(8, libro.getAnnoPubblicazione());
-                
+                statement.setString(1, libro.titolo());
+                statement.setString(2, libro.autori());
+                statement.setString(3, libro.descrizione());
+                statement.setString(4, libro.categoria());
+                statement.setString(5, libro.editore());
+                statement.setFloat(6, libro.prezzo());
+                statement.setString(7, libro.mesePubblicazione());
+                statement.setInt(8, libro.annoPubblicazione());
                 statement.addBatch();
             }
             

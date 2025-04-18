@@ -237,6 +237,8 @@ public class LibreriaDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
+                        rs.getFloat("Prezzo"),
+                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 libri.add(libro);

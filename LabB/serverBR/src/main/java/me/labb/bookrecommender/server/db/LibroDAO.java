@@ -32,8 +32,8 @@ public class LibroDAO {
         try {
             conn = dbManager.getConnection();
             String sql = """
-                    SELECT * FROM "Libri" WHERE "LibroID" = ?
-                    """;
+                     SELECT * FROM "Libri" WHERE "LibroID" = ?
+                     """;
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, libroID);
             rs = stmt.executeQuery();
@@ -45,6 +45,8 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
+                        rs.getFloat("Prezzo"),
+                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 return Optional.of(libro);
@@ -75,11 +77,11 @@ public class LibroDAO {
         try {
             conn = dbManager.getConnection();
             String sql = """
-                    SELECT * FROM "Libri" 
-                    WHERE "Titolo" ILIKE ? OR "Autori" ILIKE ?
-                    ORDER BY "Titolo" ASC
-                    LIMIT ?
-                    """;
+                     SELECT * FROM "Libri" 
+                     WHERE "Titolo" ILIKE ? OR "Autori" ILIKE ?
+                     ORDER BY "Titolo" ASC
+                     LIMIT ?
+                     """;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, "%" + query + "%");
             stmt.setString(2, "%" + query + "%");
@@ -93,6 +95,8 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
+                        rs.getFloat("Prezzo"),
+                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 risultati.add(libro);
@@ -123,11 +127,11 @@ public class LibroDAO {
         try {
             conn = dbManager.getConnection();
             String sql = """
-                    SELECT * FROM "Libri" 
-                    WHERE "Categoria" = ?
-                    ORDER BY "Titolo" ASC
-                    LIMIT ?
-                    """;
+                     SELECT * FROM "Libri" 
+                     WHERE "Categoria" = ?
+                     ORDER BY "Titolo" ASC
+                     LIMIT ?
+                     """;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, categoria);
             stmt.setInt(2, limit);
@@ -140,6 +144,8 @@ public class LibroDAO {
                         rs.getString("Descrizione"),
                         rs.getString("Categoria"),
                         rs.getString("Editore"),
+                        rs.getFloat("Prezzo"),
+                        rs.getString("MesePubblicazione"),
                         rs.getInt("AnnoPubblicazione")
                 );
                 risultati.add(libro);
@@ -168,9 +174,9 @@ public class LibroDAO {
         try {
             conn = dbManager.getConnection();
             String sql = """
-                    SELECT DISTINCT "Categoria" FROM "Libri" 
-                    ORDER BY "Categoria" ASC
-                    """;
+                     SELECT DISTINCT "Categoria" FROM "Libri" 
+                     ORDER BY "Categoria" ASC
+                     """;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 

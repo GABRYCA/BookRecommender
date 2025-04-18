@@ -1,5 +1,7 @@
 package me.labb.bookrecommender.client;
 
+import me.labb.bookrecommender.client.oggetti.Libro;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,17 +21,13 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import me.labb.bookrecommender.server.*;
-import me.labb.bookrecommender.server.db.DatabaseManager;
-import me.labb.bookrecommender.server.oggetti.Libro;
-
 public class ClientMain extends Application {
 
     private Stage primaryStage;
     private Label statusLabel;
     private Button connectButton;
     private Button disconnectButton;
-    private final DatabaseManager dbManager = DatabaseManager.getInstance();
+    //private final DatabaseManager dbManager = DatabaseManager.getInstance();
     private Connection dbConnection;
     private TableView<Libro> tableView;
     private Socket socket;
@@ -42,7 +40,7 @@ public class ClientMain extends Application {
         createAndShowGUI();
 
         primaryStage.setOnCloseRequest(event -> {
-            handleDisconnect();
+            //handleDisconnect();
             System.exit(0);
         });
     }
@@ -50,7 +48,7 @@ public class ClientMain extends Application {
     private void createAndShowGUI() {
         VBox root = createMainLayout();
         addUIElements(root);
-        setupScene(root);
+        //setupScene(root);
     }
 
     private VBox createMainLayout() {
@@ -71,29 +69,29 @@ public class ClientMain extends Application {
         connectButton.setOnAction(e -> handleConnect());
 
         disconnectButton = new Button("Disconnetti");
-        disconnectButton.setOnAction(e -> handleDisconnect());
+        //disconnectButton.setOnAction(e -> handleDisconnect());
         disconnectButton.setDisable(true);
 
         // Creazione TableView
         tableView = new TableView<>();
 
         TableColumn<Libro, String> titleColumn = new TableColumn<>("Titolo");
-        titleColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTitolo()));
+        titleColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().titolo()));
 
         TableColumn<Libro, String> authorColumn = new TableColumn<>("Autori");
-        authorColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getAutore()));
+        authorColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().autori()));
 
         TableColumn<Libro, String> Desc = new TableColumn<>("Descrizione");
-        Desc.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDescrizione()));
+        Desc.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().descrizione()));
 
         TableColumn<Libro, String> categoryColumn = new TableColumn<>("Categoria");
-        categoryColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCategoria()));
+        categoryColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().categoria()));
 
         TableColumn<Libro, String> publisherColumn = new TableColumn<>("Editore");
-        publisherColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEditore()));
+        publisherColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().editore()));
 
         TableColumn<Libro, Number> yearColumn = new TableColumn<>("Anno Pubblicazione");
-        yearColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getAnnoPubblicazione()));
+        yearColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().annoPubblicazione()));
 
         tableView.getColumns().addAll(titleColumn, authorColumn, Desc, categoryColumn, publisherColumn, yearColumn);
         tableView.setVisible(false);
@@ -107,28 +105,28 @@ public class ClientMain extends Application {
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
 
             // Connessione al database
-            dbConnection = dbManager.getConnection();
+            //dbConnection = dbManager.getConnection();
 
             statusLabel.setText("Connesso");
             statusLabel.setStyle("-fx-text-fill: green;");
             connectButton.setDisable(true);
             disconnectButton.setDisable(false);
-            loadBooks();
+            //loadBooks();
             tableView.setVisible(true);
             primaryStage.setHeight(600);
             primaryStage.setWidth(800);
         } catch (IOException e) {
-            showError("Errore di connessione al server: " + e.getMessage());
+            //showError("Errore di connessione al server: " + e.getMessage());
             statusLabel.setText("Errore connessione server");
             statusLabel.setStyle("-fx-text-fill: red;");
-        } catch (SQLException e) {
+        /*} catch (SQLException e) {
             showError("Errore di connessione al database: " + e.getMessage());
             statusLabel.setText("Errore connessione database");
             statusLabel.setStyle("-fx-text-fill: red;");
+        }*/
         }
-    }
 
-    private void loadBooks() {
+    /*private void loadBooks() {
         ObservableList<Libro> books = FXCollections.observableArrayList();
         try {
             if (dbConnection == null || dbConnection.isClosed()) {
@@ -165,9 +163,9 @@ public class ClientMain extends Application {
             System.err.println("Errore SQL: " + e.getMessage());
             showError("Errore durante il caricamento dei libri: " + e.getMessage());
         }
-    }
+    }*/
 
-    private void handleDisconnect() {
+    /*private void handleDisconnect() {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
@@ -217,5 +215,6 @@ public class ClientMain extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }*/
     }
 }

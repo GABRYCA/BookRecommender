@@ -1,4 +1,4 @@
-package me.labb.bookrecommender.server.oggetti;
+package me.labb.bookrecommender.client.oggetti;
 
 public record Libro (
         String titolo,
