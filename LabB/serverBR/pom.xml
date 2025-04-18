@@ -17,6 +17,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>${postgresql.jdbc.version}</version>
         </dependency>
 
         <dependency>
@@ -25,7 +26,6 @@
             <version>1.14.0</version>
         </dependency>
 
-        <!-- Jackson for JSON processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
