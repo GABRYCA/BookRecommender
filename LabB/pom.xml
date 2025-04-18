@@ -24,12 +24,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.jdbc.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
