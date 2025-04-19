@@ -169,7 +169,7 @@
 .custom-dialog {
     -fx-background-color: #0d1b2a;
     -fx-padding: 20px;
-    -fx-background-radius: 10px;
+
 }
 
 .custom-grid {
@@ -186,9 +186,6 @@
 .custom-field {
     -fx-background-color: #1b263b;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #415a77;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
     -fx-padding: 8px;
 }
 
@@ -313,7 +310,7 @@
 .registration-alert {
     -fx-background-color: #333333;  /* Colore di sfondo scuro */
     -fx-text-fill: white;  /* Colore del testo bianco */
-    -fx-border-color: #1e90ff;  /* Colore blu per il bordo */
+    -fx-border-color: #1b263b;  /* Colore blu per il bordo */
     -fx-border-width: 3px;  /* Spessore del bordo */
     -fx-border-radius: 10px;  /* Raggio del bordo per angoli arrotondati */
     -fx-padding: 15px;  /* Distanza interna */

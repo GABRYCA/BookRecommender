@@ -50,7 +50,7 @@
             <TabPane VBox.vgrow="ALWAYS" styleClass="tabs-container">
                 <Tab text="Risultati" closable="false">
                     <VBox spacing="10">
-                        <Label fx:id="resultLabel" styleClass="section-title" text="Libri trovati" />
+                        <Label fx:id="resultLabel" styleClass="section-title" text="" />
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                             <VBox fx:id="resultContainer" spacing="8" styleClass="result-container" />
                         </ScrollPane>

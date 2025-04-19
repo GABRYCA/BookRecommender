@@ -325,6 +325,9 @@ public class clientController implements Initializable {
             alert.setTitle("Campo vuoto");
             alert.setHeaderText("Nessun termine di ricerca");
             alert.setContentText("Inserisci un termine di ricerca.");
+            // Aggiungi la classe CSS all'Alert
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");  // Aggiungi la classe per personalizzare l'Alert
             animaDialogo(alert);
             alert.showAndWait();
             return;
