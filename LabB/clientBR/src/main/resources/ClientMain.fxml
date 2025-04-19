@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="me.labb.bookrecommender.client.clientController">
+    <top>
+        <VBox spacing="15" styleClass="header-section">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="20" />
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label styleClass="app-title" text="📚 Book Recommender">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="statusLabel" styleClass="status-label" text="Non connesso" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="button-bar">
+                <Button fx:id="connettiBtn" mnemonicParsing="false" onAction="#connetti" styleClass="action-button" text="Connetti" />
+                <Button fx:id="disconnettiBtn" mnemonicParsing="false" onAction="#disconnetti" styleClass="action-button" text="Disconnetti" />
+                <Separator orientation="VERTICAL" />
+                <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#login" styleClass="action-button" text="Login" />
+                <Button fx:id="registratiBtn" mnemonicParsing="false" onAction="#registrati" styleClass="action-button" text="Registrati" />
+                <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logout" styleClass="action-button" text="Logout" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" styleClass="content-section">
+            <padding>
+                <Insets bottom="10" left="20" right="20" top="10" />
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-section">
+                <TextField fx:id="searchField" promptText="Cerca libri..." HBox.hgrow="ALWAYS" />
+                <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="Cerca" />
+                <ComboBox fx:id="categoriaComboBox" promptText="Categoria" prefWidth="150" />
+                <Button fx:id="consigliaBtn" mnemonicParsing="false" onAction="#consigliaLibri" styleClass="recommend-button" text="Consiglia" />
+                <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo" styleClass="profile-button" text="Profilo" />
+            </HBox>
+
+            <TabPane VBox.vgrow="ALWAYS" styleClass="tabs-container">
+                <Tab text="Risultati" closable="false">
+                    <VBox spacing="10">
+                        <Label fx:id="resultLabel" styleClass="section-title" text="Libri trovati" />
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                            <VBox fx:id="resultContainer" spacing="8" styleClass="result-container" />
+                        </ScrollPane>
+                    </VBox>
+                </Tab>
+                <Tab text="Console" closable="false">
+                    <TextArea fx:id="output" editable="false" wrapText="true" styleClass="console-output" VBox.vgrow="ALWAYS" />
+                </Tab>
+            </TabPane>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox styleClass="footer" alignment="CENTER_RIGHT" spacing="10">
+            <padding>
+                <Insets bottom="10" left="20" right="20" top="10" />
+            </padding>
+            <Label styleClass="version-footer" text="Book Recommender v1.0" />
+        </HBox>
+    </bottom>
+</BorderPane>
