@@ -194,15 +194,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(119,141,169,0.4), 6, 0, 0, 2);
 }
 
-.dialog-pane .button {
-    -fx-background-color: #1d3557;
-    -fx-text-fill: #f1faee;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6px;
-    -fx-cursor: hand;
-    -fx-padding: 6px 12px;
-}
-
 .dialog-pane .button:hover {
     -fx-background-color: #457b9d;
 }
@@ -214,11 +205,11 @@
 
 /* Pulsanti nei dialoghi */
 .dialog-pane .button {
-    -fx-background-color: #1d3557;
-    -fx-text-fill: #f1faee;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6px;
-    -fx-cursor: hand;
+    -fx-background-color: #1e90ff;  /* Colore di sfondo blu per il bottone */
+    -fx-text-fill: white;  /* Colore del testo del bottone */
+    -fx-font-size: 14px;  /* Dimensione del font per il bottone */
+    -fx-border-radius: 5px;  /* Raggio per angoli arrotondati dei bottoni */
+    -fx-padding: 10px 20px;  /* Padding per il bottone */
 }
 
 .dialog-pane .button:hover {
@@ -281,12 +272,11 @@
 
 /* Stile del pulsante "Chiudi" */
 .profile-dialog .button {
-    -fx-background-color: #5b9bd5;  /* Blu chiaro */
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px 20px;
-    -fx-border-radius: 5px;
-    -fx-effect: dropshadow(gaussian, #5b9bd5, 5, 0, 0, 5);
+    -fx-background-color: #1e90ff;  /* Colore di sfondo blu per il bottone */
+    -fx-text-fill: white;  /* Colore del testo del bottone */
+    -fx-font-size: 14px;  /* Dimensione del font per il bottone */
+    -fx-border-radius: 5px;  /* Raggio per angoli arrotondati dei bottoni */
+    -fx-padding: 10px 20px;  /* Padding per il bottone */
 }
 
 .profile-dialog .button:hover {

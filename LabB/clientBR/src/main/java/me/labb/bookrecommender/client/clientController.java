@@ -388,6 +388,9 @@ public class clientController implements Initializable {
             alert.setTitle("Nessuna categoria");
             alert.setHeaderText("Categoria non selezionata");
             alert.setContentText("Seleziona una categoria per ricevere consigli.");
+            // Aggiungi la classe CSS all'Alert
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");  // Aggiungi la classe per personalizzare l'Alert
             animaDialogo(alert);
             alert.showAndWait();
             return;
@@ -395,12 +398,6 @@ public class clientController implements Initializable {
 
         resultLabel.setText("Ricerca consigli in corso...");
         resultContainer.getChildren().clear();
-
-        // Animazione del pulsante durante la ricerca
-        RotateTransition rt = new RotateTransition(Duration.millis(2000), consigliaBtn);
-        rt.setByAngle(360);
-        rt.setCycleCount(Animation.INDEFINITE);
-        rt.play();
 
         consigliaBtn.setDisable(true);
 
@@ -412,7 +409,6 @@ public class clientController implements Initializable {
 
             @Override
             protected void succeeded() {
-                rt.stop();
                 consigliaBtn.setDisable(false);
 
                 List<Libro> libri = getValue();
@@ -428,7 +424,6 @@ public class clientController implements Initializable {
 
             @Override
             protected void failed() {
-                rt.stop();
                 consigliaBtn.setDisable(false);
                 stampaConAnimazione("Errore durante la ricerca consigli: " + getException().getMessage());
                 resultLabel.setText("Errore nella ricerca");
