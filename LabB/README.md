@@ -42,7 +42,7 @@ LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi dell'I
 - `in caso di errore`: installare JavaFX 25-ea+1 e posizionare la cartella nel disco C://. Download : "https://gluonhq.com/products/javafx/" ![img.png](img.png)
 
 ## Connessione al Database:
-- Farsi passare il config.properties chiedendolo, e inserirlo in serverBR/src/main/resources
+- Farsi passare il `config.properties` chiedendolo, e inserirlo in serverBR/src/main/resources
 
 ## Schema Database (PostgreSQL):
 
@@ -122,3 +122,31 @@ CREATE INDEX idx_valutazioni_libro ON ValutazioniLibri (LibroID);
 CREATE INDEX idx_consigli_riferimento ON ConsigliLibri (LibroRiferimentoID);
 CREATE INDEX idx_contenuto_libreria_utente ON ContenutoLibreria (LibreriaID);
 ```
+
+## Installazione (e sviluppo):
+Assicurarsi di avere Java JDK 24 e JRE all'ultima versione, e maven installato.
+
+- Inserire in `serverBR/src/main//resources` il file `config.properties` con le credenziali di accesso al database:
+```properties
+db.url=jdbc:postgresql://indirizzo:5432/postgres
+db.username=postgres
+db.password=passwordaldb
+server.port=8080
+```
+- Caricare il progetto tramite `pom.xml` nella root del progetto.
+- Avviare `mvn clean install` (o se si sta usando Intellij Idea, premere su "m" nella colonna a destra, aprire BookRecommender -> Lifecycle -> Cliccare due volte `clean`, attendere, e successivamente anche `install`).
+- Avviare il server su Intellij Idea, aprendo `serverBR/src/main/java/me.labb.bookrecommender.server/ServerMain` e premendo il tasto run verde a sinistra del `public class ServerMain {`.
+- Avviare il client tramite `mvn javafx:run -f pom.xml` (o, con Intellij Idea premer su "m" nella colonna a destra, aprire BookRecommender-Client->Plugins->javafx-> Cliccare due volte javafx:run).
+
+Possono capire errore, i più comuni sono dovuto ad un conflitto di versioni Java installate. Per sicurezza, disinstallare qualsiasi altra versione di java
+dalla macchina e installare solamente il JDK 24, e se proprio servisse, un JRE ultima versione (non il vecchio 1.8).
+
+## Build
+- `mvn clean install` creerà un jar sia nel serverBR/target, che nel clientBR/target, entrambi avviabili tramite `java -jar nomejar.jar`.
+  (Da Intellij Idea, premere sulla "m" ed entrare in BookRecommender -> Lifecycle -> Click due volte su clean e poi install).
+
+## Avvio server e client:
+- Avviare prima il server tramite l'apposito .jar.
+- Avviare il client tramite l'apposito .jar.
+
+In caso di errori, potrebbe essere necessario il file `config.properties` con le credenziali per accedere al database postgres da parte del server.
