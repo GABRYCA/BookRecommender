@@ -237,6 +237,7 @@ public class LibreriaDAO {
 
             while (rs.next()) {
                 Libro libro = new Libro(
+                        rs.getInt("LibroID"),
                         rs.getString("Titolo"),
                         rs.getString("Autori"),
                         rs.getString("Descrizione"),

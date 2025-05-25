@@ -13,18 +13,14 @@ import java.util.Map;
  */
 public class ResponseFormatter {
 
-    // Stati (successo o errore)
     public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_ERROR = "ERROR";
 
-    // Formati (Testo o JSON)
     public static final String FORMAT_TEXT = "TEXT";
     public static final String FORMAT_JSON = "JSON";
 
-    // Formato di default, cambiare tra FORMAT_TEXT e FORMAT_JSON se necessario
     private static String defaultFormat = FORMAT_JSON;
 
-    // Jackson ObjectMapper (mappa un oggetto in un JSON)
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**

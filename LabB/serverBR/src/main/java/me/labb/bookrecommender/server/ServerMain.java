@@ -21,7 +21,7 @@ public class ServerMain {
 
         try {
             Connection c = dbm.getConnection();
-            c.getSchema(); // Leggo lo schema così verifico subito se ho accesso a esso.
+            c.getSchema();
             c.close();
         } catch (SQLException e) {
             System.err.println("Errore di connessione al database: " + e.getMessage());

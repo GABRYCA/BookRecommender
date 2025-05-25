@@ -34,6 +34,3 @@ LabA e LabB del corso 2023/2024 di Informatica L-31 dell'Università degli Studi
   - `bin`: Eseguibile
   - `data`: File dati
   - (eg: `serverBR` e `clientBR`): eventuali moduli
-
-## Architettura:
-![img.png](LabA/img/img.png)

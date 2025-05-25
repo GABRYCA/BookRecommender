@@ -56,6 +56,67 @@
                         </ScrollPane>
                     </VBox>
                 </Tab>
+
+                <!-- Scheda per le Librerie -->
+                <Tab text="Le Mie Librerie" closable="false">
+                    <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria" styleClass="action-button" />
+                            <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie" styleClass="action-button" />
+                        </HBox>
+                        <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
+                            <!-- Lista delle librerie -->
+                            <VBox spacing="5">
+                                <Label text="Le mie librerie:" styleClass="section-title" />
+                                <ListView fx:id="librerieListView" VBox.vgrow="ALWAYS" />
+                            </VBox>
+                            <!-- Contenuto della libreria selezionata -->
+                            <VBox spacing="5">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label fx:id="libreriaSelezionataLabel" text="Seleziona una libreria" styleClass="section-title" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro" onAction="#aggiungiLibroALibreria" styleClass="action-button" />
+                                    <Button fx:id="rimuoviLibroBtn" text="Rimuovi Libro" onAction="#rimuoviLibroDaLibreria" styleClass="action-button" />
+                                </HBox>
+                                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                                    <VBox fx:id="libreriaContentContainer" spacing="8" styleClass="result-container" />
+                                </ScrollPane>
+                            </VBox>
+                        </SplitPane>
+                    </VBox>
+                </Tab>
+
+                <!-- Scheda per le Valutazioni -->
+                <Tab text="Valutazioni" closable="false">
+                    <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="valutaLibroBtn" text="Valuta un Libro" onAction="#mostraFormValutazione" styleClass="action-button" />
+                            <Button fx:id="mieValutazioniBtn" text="Le Mie Valutazioni" onAction="#visualizzaMieValutazioni" styleClass="action-button" />
+                            <TextField fx:id="libroIDValutazioniField" promptText="ID Libro" prefWidth="100" />
+                            <Button fx:id="cercaValutazioniBtn" text="Cerca Valutazioni" onAction="#cercaValutazioniLibro" styleClass="action-button" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                            <VBox fx:id="valutazioniContainer" spacing="8" styleClass="result-container" />
+                        </ScrollPane>
+                    </VBox>
+                </Tab>
+
+                <!-- Scheda per i Consigli -->
+                <Tab text="Consigli" closable="false">
+                    <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="ID Libro:" />
+                            <TextField fx:id="libroIDConsigliField" promptText="ID Libro" prefWidth="100" />
+                            <Button fx:id="generaConsigliBtn" text="Genera Consigli" onAction="#generaConsigli" styleClass="action-button" />
+                            <Button fx:id="mieiConsigliBtn" text="I Miei Consigli" onAction="#visualizzaMieiConsigli" styleClass="action-button" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio" styleClass="action-button" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                            <VBox fx:id="consigliContainer" spacing="8" styleClass="result-container" />
+                        </ScrollPane>
+                    </VBox>
+                </Tab>
+
                 <Tab text="Console" closable="false">
                     <TextArea fx:id="output" editable="false" wrapText="true" styleClass="console-output" VBox.vgrow="ALWAYS" />
                 </Tab>

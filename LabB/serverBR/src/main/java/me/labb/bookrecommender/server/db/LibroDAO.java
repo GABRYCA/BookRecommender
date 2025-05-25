@@ -24,7 +24,7 @@ public class LibroDAO {
      * @return Optional contenente il libro se trovato, altrimenti vuoto
      * @throws SQLException In caso di errori SQL
      */
-    public Optional<Libro> getLibroByID(int libroID) throws SQLException {
+    public Optional<Libro> getLibroById(int libroID) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -40,6 +40,7 @@ public class LibroDAO {
 
             if (rs.next()) {
                 Libro libro = new Libro(
+                        rs.getInt("LibroID"),
                         rs.getString("Titolo"),
                         rs.getString("Autori"),
                         rs.getString("Descrizione"),
@@ -90,6 +91,7 @@ public class LibroDAO {
 
             while (rs.next()) {
                 Libro libro = new Libro(
+                        rs.getInt("LibroID"),
                         rs.getString("Titolo"),
                         rs.getString("Autori"),
                         rs.getString("Descrizione"),
@@ -139,6 +141,7 @@ public class LibroDAO {
 
             while (rs.next()) {
                 Libro libro = new Libro(
+                        rs.getInt("LibroID"),
                         rs.getString("Titolo"),
                         rs.getString("Autori"),
                         rs.getString("Descrizione"),

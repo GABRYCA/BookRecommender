@@ -61,6 +61,7 @@ public class CsvReader {
                     }
 
                     Libro libro = new Libro(
+                            Integer.parseInt(record.get("LibroID")),
                             record.get("Title"),
                             record.get("Authors"),
                             record.get("Description"),
