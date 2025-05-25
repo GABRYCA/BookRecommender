@@ -419,7 +419,15 @@
     -fx-text-fill: #e74c3c;
 }
 
-/* Console output */
+.book-id-field {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8a9bbf;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 2px 0px;
+    -fx-cursor: text;
+}
+
 .console-output {
     -fx-font-family: 'Consolas', 'Monaco', monospace;
     -fx-font-size: 13px;

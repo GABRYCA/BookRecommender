@@ -194,8 +194,18 @@ public class ClientController implements Initializable {
         Label prezzo = new Label("Prezzo: €" + libro.prezzo());
         prezzo.getStyleClass().add("book-price");
 
+        // ID del libro
+        TextField idLibroField = new TextField("ID: " + libro.libroId());
+        idLibroField.setEditable(false);
+        idLibroField.getStyleClass().add("book-id-field");
+
+        // Label ma selezionabile
+        idLibroField.setBackground(null);
+        idLibroField.setBorder(null);
+        idLibroField.setPadding(new Insets(2,0,2,0));
+
         // Aggiunge tutti gli elementi alla card
-        bookCard.getChildren().addAll(titolo, autori, categoria, prezzo);
+        bookCard.getChildren().addAll(titolo, autori, categoria, prezzo, idLibroField);
 
         // Aggiungi effetto hover
         bookCard.setOnMouseEntered(e -> {
@@ -1549,8 +1559,18 @@ public class ClientController implements Initializable {
             Label prezzo = new Label("Prezzo: €" + libro.prezzo());
             prezzo.getStyleClass().add("book-price");
 
+            // ID del libro
+            TextField idLibroField = new TextField("ID: " + libro.libroId());
+            idLibroField.setEditable(false);
+            idLibroField.getStyleClass().add("book-id-field");
+
+            // Label ma selezionabile
+            idLibroField.setBackground(null);
+            idLibroField.setBorder(null);
+            idLibroField.setPadding(new Insets(2,0,2,0));
+
             // Aggiunge tutti gli elementi alla card
-            bookCard.getChildren().addAll(titolo, autori, categoria, prezzo);
+            bookCard.getChildren().addAll(titolo, autori, categoria, prezzo, idLibroField);
             resultContainer.getChildren().add(bookCard);
 
             // Aggiungi evento click sulla card
