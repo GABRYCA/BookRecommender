@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="me.labb.bookrecommender.client.clientController">
+            fx:controller="me.labb.bookrecommender.client.ClientController">
     <top>
         <VBox spacing="15" styleClass="header-section">
             <padding>
