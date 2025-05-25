@@ -355,6 +355,25 @@ public class ClientOperazioni {
     }
 
     /**
+     * Elimina una libreria personale.
+     *
+     * @param LibreriaID ID della libreria che si vuole eliminare
+     * @return un valore booleano a seconda se l'eliminazione fallisce o no
+     * @throws IOException           se si verifica un errore durante la comunicazione
+     * @throws IllegalStateException se l'utente non è autenticato
+     */
+    public boolean eliminaLibreria(int LibreriaID) throws IOException {
+        if (!isAutenticato()) {
+            throw new IllegalStateException("Nessun utente autenticato");
+        }
+
+        String risposta = client.inviaComando("ELIMINA_LIBRERIA", String.valueOf(LibreriaID));
+        System.out.println(risposta);
+
+        return client.isSuccesso(risposta);
+    }
+
+    /**
      * Ottiene la lista delle librerie dell'utente autenticato.
      *
      * @return Lista delle librerie dell'utente, o una lista vuota se nessuna libreria è stata trovata
@@ -463,7 +482,7 @@ public class ClientOperazioni {
                 for (Map<String, Object> libroMap : libriList) {
                     // Crea l'oggetto Libro
                     Libro libro = new Libro(
-                            (Integer) libroMap.get("id"),
+                            (Integer) libroMap.get("libroID"),
                             (String) libroMap.get("titolo"),
                             (String) libroMap.get("autori"),
                             (String) libroMap.getOrDefault("descrizione", ""),

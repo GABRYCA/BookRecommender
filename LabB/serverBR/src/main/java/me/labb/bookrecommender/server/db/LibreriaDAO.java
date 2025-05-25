@@ -60,6 +60,68 @@ public class LibreriaDAO {
     }
 
     /**
+     * Elimina una libreria e tutto il suo contenuto.
+     *
+     * @param libreriaID ID della libreria da eliminare
+     * @throws SQLException In caso di errori SQL
+     */
+    public void eliminaLibreria(int libreriaID) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        boolean success = false;
+
+        try {
+            conn = dbManager.getConnection();
+            conn.setAutoCommit(false); // Inizia transazione
+            // Prima elimina tutti i contenuti della libreria
+            String sqlContenuto = """
+                    DELETE FROM "ContenutoLibreria"
+                    WHERE "LibreriaID" = ?
+                    """;
+
+            stmt1 = conn.prepareStatement(sqlContenuto);
+            stmt1.setInt(1, libreriaID);
+            stmt1.executeUpdate();
+
+            // Poi elimina la libreria stessa
+            String sqlLibreria = """
+                    DELETE FROM "Librerie"
+                    WHERE "LibreriaID" = ?
+                    """;
+
+            stmt2 = conn.prepareStatement(sqlLibreria);
+            stmt2.setInt(1, libreriaID);
+            int rowsDeleted = stmt2.executeUpdate();
+
+            conn.commit(); // Conferma la transazione
+            success = (rowsDeleted > 0); // true se almeno una riga è stata eliminata
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Annulla la transazione in caso di errore
+                } catch (SQLException rollbackEx) {
+                    System.err.println("Errore durante il rollback: " + rollbackEx.getMessage());
+                }
+            }
+            throw e;
+        } finally {
+            if (stmt1 != null) stmt1.close();
+            if (stmt2 != null) stmt2.close();
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Ripristina l'auto-commit
+                } catch (SQLException autoCommitEx) {
+                    System.err.println("Errore nel ripristino auto-commit: " + autoCommitEx.getMessage());
+                }
+                conn.close();
+            }
+        }
+
+    }
+
+    /**
      * Ottiene tutte le librerie di un utente.
      *
      * @param userID ID dell'utente

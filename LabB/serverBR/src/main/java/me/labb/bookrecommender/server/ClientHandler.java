@@ -94,11 +94,10 @@ public class ClientHandler implements Runnable {
         RequestParser.ParsedRequest parsedRequest = RequestParser.parseRequest(input);
         String azione = parsedRequest.getComando();
         String parametri = parsedRequest.getParametri();
-
         if (RequestParser.isJsonRequest(input)) {
             System.out.println("Ricevuta richiesta JSON: comando=" + azione + ", parametri=" + parametri);
         }
-
+        System.out.println("Ricevuta richiesta: comando=" + azione + ", parametri=" + parametri);
         switch (azione) {
             case "CERCA":
                 return cercaLibri(parametri);
@@ -130,6 +129,8 @@ public class ClientHandler implements Runnable {
                     return rimuoviLibro(parametri);
                 case "VISUALIZZA_LIBRERIA":
                     return visualizzaLibreria(parametri);
+                case "ELIMINA_LIBRERIA":
+                    return eliminaLibreria(parametri);
                 case "VALUTA_LIBRO":
                     return valutaLibro(parametri);
                 case "VALUTAZIONI_LIBRO":
@@ -146,10 +147,10 @@ public class ClientHandler implements Runnable {
         } else if (azione.equals("LOGOUT") || azione.equals("PROFILO") ||
                 azione.equals("CREA_LIBRERIA") || azione.equals("LIBRERIE") ||
                 azione.equals("AGGIUNGI_LIBRO") || azione.equals("RIMUOVI_LIBRO") ||
-                azione.equals("VISUALIZZA_LIBRERIA") || azione.equals("VALUTA_LIBRO") ||
-                azione.equals("VALUTAZIONI_LIBRO") || azione.equals("MIE_VALUTAZIONI") ||
-                azione.equals("GENERA_CONSIGLI") || azione.equals("SALVA_CONSIGLIO") ||
-                azione.equals("MIEI_CONSIGLI")) {
+                azione.equals("VISUALIZZA_LIBRERIA") || azione.equals("ELIMINA_LIBRERIA") ||
+                azione.equals("VALUTA_LIBRO") || azione.equals("VALUTAZIONI_LIBRO") ||
+                azione.equals("MIE_VALUTAZIONI") || azione.equals("GENERA_CONSIGLI") ||
+                azione.equals("SALVA_CONSIGLIO") || azione.equals("MIEI_CONSIGLI")) {
             return ResponseFormatter.erroreJson("Devi effettuare il login per utilizzare questo comando.");
         }
 
@@ -357,6 +358,7 @@ public class ClientHandler implements Runnable {
             comandiLibrerie.add(createCommandInfo("AGGIUNGI_LIBRO", "Aggiungi un libro a una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("RIMUOVI_LIBRO", "Rimuovi un libro da una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("VISUALIZZA_LIBRERIA", "Visualizza i libri in una libreria", "<libreriaID>"));
+            comandiLibrerie.add(createCommandInfo("ELIMINA_LIBRERIA", "Elimina una libreria personale", "<libreriaID>"));
             comandiValutazioni.add(createCommandInfo("VALUTA_LIBRO", "Valuta un libro", "<libroID> <scoreStile> <noteStile> <scoreContenuto> <noteContenuto> <scoreGradevolezza> <noteGradevolezza> <scoreOriginalita> <noteOriginalita> <scoreEdizione> <noteEdizione>"));
             comandiValutazioni.add(createCommandInfo("VALUTAZIONI_LIBRO", "Visualizza le valutazioni di un libro", "<libroID>"));
             comandiValutazioni.add(createCommandInfo("MIE_VALUTAZIONI", "Visualizza le tue valutazioni", ""));
@@ -463,6 +465,7 @@ public class ClientHandler implements Runnable {
      * @return Messaggio di successo o errore in formato JSON con l'elenco delle librerie
      */
     private String elencaLibrerie() {
+
         try {
             List<Libreria> librerieObj = libreriaDAO.getLibrerieUtente(utenteAutenticato.userID());
             List<Map<String, Object>> librerieData = new ArrayList<>();
@@ -471,6 +474,7 @@ public class ClientHandler implements Runnable {
             }
             for (Libreria libreria : librerieObj) {
                 Map<String, Object> libMap = new HashMap<>();
+                libMap.put("userID", libreria.userID());
                 libMap.put("libreriaID", libreria.libreriaID());
                 libMap.put("nomeLibreria", libreria.nomeLibreria());
                 libMap.put("dataCreazione", libreria.dataCreazione().toString());
@@ -583,6 +587,31 @@ public class ClientHandler implements Runnable {
         } catch (SQLException e) {
             System.err.println("Errore durante il recupero dei libri dalla libreria: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante il recupero dei libri. Riprova più tardi.");
+        }
+    }
+
+    /**
+     * Elimina una libreria dell'utente autenticato.
+     *
+     * @param libreriaID L'ID della libreria da eliminare
+     * @return Messaggio di successo o errore in formato JSON
+     */
+    private String eliminaLibreria(String libreriaID) {
+        try {
+            int libreriaIDInt = Integer.parseInt(libreriaID);
+            Optional<Libreria> libreriaOpt = libreriaDAO.getLibreriaById(libreriaIDInt);
+            if (libreriaOpt.isEmpty() || libreriaOpt.get().userID() != utenteAutenticato.userID()) {
+                return ResponseFormatter.erroreJson("Libreria non trovata o non hai i permessi per eliminarla.");
+            }
+
+            String nomeLibreria = libreriaOpt.get().nomeLibreria();
+            libreriaDAO.eliminaLibreria(libreriaIDInt);
+            return ResponseFormatter.successoJson("Libreria '" + nomeLibreria + "' eliminata con successo.");
+        } catch (NumberFormatException e) {
+            return ResponseFormatter.erroreJson("ID libreria non valido. Assicurati di inserire un numero intero.");
+        } catch (SQLException e) {
+            System.err.println("Errore durante l'eliminazione della libreria: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante l'eliminazione della libreria. Riprova più tardi.");
         }
     }
 

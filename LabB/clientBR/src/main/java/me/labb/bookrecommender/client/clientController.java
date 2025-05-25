@@ -40,6 +40,7 @@ public class clientController implements Initializable {
 
     // Componenti per la gestione delle librerie
     @FXML private Button creaLibreriaBtn;
+    @FXML private Button EliminaLibreriaBtn;
     @FXML private Button aggiornaLibrerieBtn;
     @FXML private ListView<Libreria> librerieListView;
     @FXML private Label libreriaSelezionataLabel;
@@ -257,6 +258,47 @@ public class clientController implements Initializable {
     }
 
     /**
+     * Gestisce l'eliminazione della libreria.
+     */
+    @FXML
+    private void EliminaLibreria() {
+        if (!client.isAutenticato()) {
+            stampaConAnimazione("Devi effettuare il login per eliminare una libreria.");
+            return;
+        }
+
+        Libreria libreriaSelezionata = librerieListView.getSelectionModel().getSelectedItem();
+        if (libreriaSelezionata == null) {
+            stampaConAnimazione("Seleziona prima una libreria da eliminare.");
+            return;
+        }
+
+        // Chiedi conferma prima di eliminare
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Conferma eliminazione");
+        alert.setHeaderText("Elimina libreria");
+        alert.setContentText("Sei sicuro di voler eliminare la libreria '" + libreriaSelezionata.nomeLibreria() + "'?");
+
+        // Aggiungi stile all'alert
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                boolean success = client.eliminaLibreria(libreriaSelezionata.libreriaID());
+                if (success) {
+                    stampaConAnimazione("Libreria '" + libreriaSelezionata.nomeLibreria() + "' eliminata con successo.");
+                    aggiornaLibrerie();
+                } else {
+                    stampaConAnimazione("Errore nell'eliminazione della libreria.");
+                }
+            } catch (IOException e) {
+                stampaConAnimazione("Errore: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
      * Aggiorna la lista delle librerie dell'utente.
      */
     @FXML
@@ -278,6 +320,7 @@ public class clientController implements Initializable {
 
             @Override
             protected void succeeded() {
+
                 List<Libreria> librerie = getValue();
                 librerieListView.getItems().clear();
 
@@ -1836,7 +1879,7 @@ public class clientController implements Initializable {
                 logoutBtn, cercaBtn, consigliaBtn, profiloBtn,
                 searchField, categoriaComboBox,
                 // Nuovi controlli per le librerie
-                creaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,
+                creaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 // Nuovi controlli per i consigli
@@ -1862,7 +1905,7 @@ public class clientController implements Initializable {
             } 
             // Controlli per le librerie
             else if (control == creaLibreriaBtn || control == aggiornaLibrerieBtn || 
-                     control == aggiungiLibroBtn || control == rimuoviLibroBtn) {
+                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
             // Controlli per le valutazioni

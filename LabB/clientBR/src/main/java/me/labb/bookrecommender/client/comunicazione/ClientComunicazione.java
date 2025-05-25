@@ -126,14 +126,12 @@ public class ClientComunicazione {
         if (!isConnesso()) {
             throw new IllegalStateException("Il client non è connesso al server");
         }
-        
         String richiesta;
         if (formatoDefault.equals(FORMAT_JSON)) {
             richiesta = formattaRichiestaJSON(comando, parametri);
         } else {
             richiesta = formattaRichiestaTesto(comando, parametri);
         }
-        
         out.println(richiesta);
         return in.readLine();
     }
