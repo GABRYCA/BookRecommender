@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class clientController implements Initializable {
+public class ClientController implements Initializable {
 
     @FXML private Label statusLabel;
     @FXML private Button connettiBtn;
@@ -119,7 +119,7 @@ public class clientController implements Initializable {
 
     /**
      * Carica i libri presenti in una libreria e li mostra nell'interfaccia.
-     * 
+     *
      * @param libreriaID ID della libreria da visualizzare
      */
     private void caricaLibriInLibreria(int libreriaID) {
@@ -167,7 +167,7 @@ public class clientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un libro.
-     * 
+     *
      * @param libro Il libro da visualizzare
      * @return Un nodo VBox che rappresenta la card del libro
      */
@@ -550,20 +550,20 @@ public class clientController implements Initializable {
 
                     // Crea un oggetto Valutazione temporaneo (senza ID e data)
                     return new Valutazione(
-                        0,
-                        client.getUtenteAutenticato().userID(),
-                        libroID,
-                        scoreStile,
-                        noteStile,
-                        scoreContenuto,
-                        noteContenuto,
-                        scoreGradevolezza,
-                        noteGradevolezza,
-                        scoreOriginalita,
-                        noteOriginalita,
-                        scoreEdizione,
-                        noteEdizione,
-                        null
+                            0,
+                            client.getUtenteAutenticato().userID(),
+                            libroID,
+                            scoreStile,
+                            noteStile,
+                            scoreContenuto,
+                            noteContenuto,
+                            scoreGradevolezza,
+                            noteGradevolezza,
+                            scoreOriginalita,
+                            noteOriginalita,
+                            scoreEdizione,
+                            noteEdizione,
+                            null
                     );
                 } catch (NumberFormatException e) {
                     stampaConAnimazione("ID libro non valido. Inserisci un numero intero.");
@@ -579,17 +579,17 @@ public class clientController implements Initializable {
         result.ifPresent(valutazione -> {
             try {
                 int valutazioneID = client.valutaLibro(
-                    valutazione.libroID(),
-                    valutazione.scoreStile(),
-                    valutazione.noteStile(),
-                    valutazione.scoreContenuto(),
-                    valutazione.noteContenuto(),
-                    valutazione.scoreGradevolezza(),
-                    valutazione.noteGradevolezza(),
-                    valutazione.scoreOriginalita(),
-                    valutazione.noteOriginalita(),
-                    valutazione.scoreEdizione(),
-                    valutazione.noteEdizione()
+                        valutazione.libroID(),
+                        valutazione.scoreStile(),
+                        valutazione.noteStile(),
+                        valutazione.scoreContenuto(),
+                        valutazione.noteContenuto(),
+                        valutazione.scoreGradevolezza(),
+                        valutazione.noteGradevolezza(),
+                        valutazione.scoreOriginalita(),
+                        valutazione.noteOriginalita(),
+                        valutazione.scoreEdizione(),
+                        valutazione.noteEdizione()
                 );
 
                 if (valutazioneID > 0) {
@@ -723,7 +723,7 @@ public class clientController implements Initializable {
 
     /**
      * Crea una card per visualizzare una valutazione.
-     * 
+     *
      * @param valutazione La valutazione da visualizzare
      * @return Un nodo VBox che rappresenta la card della valutazione
      */
@@ -739,11 +739,11 @@ public class clientController implements Initializable {
         // Punteggi
         HBox punteggiBox = new HBox(15);
         punteggiBox.getChildren().addAll(
-            creaPunteggioBox("Stile", valutazione.scoreStile()),
-            creaPunteggioBox("Contenuto", valutazione.scoreContenuto()),
-            creaPunteggioBox("Gradevolezza", valutazione.scoreGradevolezza()),
-            creaPunteggioBox("Originalità", valutazione.scoreOriginalita()),
-            creaPunteggioBox("Edizione", valutazione.scoreEdizione())
+                creaPunteggioBox("Stile", valutazione.scoreStile()),
+                creaPunteggioBox("Contenuto", valutazione.scoreContenuto()),
+                creaPunteggioBox("Gradevolezza", valutazione.scoreGradevolezza()),
+                creaPunteggioBox("Originalità", valutazione.scoreOriginalita()),
+                creaPunteggioBox("Edizione", valutazione.scoreEdizione())
         );
 
         // Note
@@ -791,7 +791,7 @@ public class clientController implements Initializable {
 
     /**
      * Crea un box per visualizzare un punteggio.
-     * 
+     *
      * @param categoria La categoria del punteggio
      * @param punteggio Il punteggio (1-5)
      * @return Un nodo VBox che rappresenta il box del punteggio
@@ -1032,7 +1032,7 @@ public class clientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un libro consigliato con un pulsante per salvare il consiglio.
-     * 
+     *
      * @param libro Il libro consigliato
      * @param libroRiferimentoID L'ID del libro di riferimento
      * @return Un nodo VBox che rappresenta la card del libro consigliato
@@ -1065,7 +1065,7 @@ public class clientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un consiglio.
-     * 
+     *
      * @param consiglio Il consiglio da visualizzare
      * @return Un nodo VBox che rappresenta la card del consiglio
      */
@@ -1902,20 +1902,20 @@ public class clientController implements Initializable {
                 newDisabled = !isConnected || !isLoggedIn;
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;
-            } 
+            }
             // Controlli per le librerie
-            else if (control == creaLibreriaBtn || control == aggiornaLibrerieBtn || 
-                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
+            else if (control == creaLibreriaBtn || control == aggiornaLibrerieBtn ||
+                    control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
             // Controlli per le valutazioni
-            else if (control == valutaLibroBtn || control == mieValutazioniBtn || 
-                     control == cercaValutazioniBtn || control == libroIDValutazioniField) {
+            else if (control == valutaLibroBtn || control == mieValutazioniBtn ||
+                    control == cercaValutazioniBtn || control == libroIDValutazioniField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
             // Controlli per i consigli
-            else if (control == generaConsigliBtn || control == mieiConsigliBtn || 
-                     control == salvaConsiglioBtn || control == libroIDConsigliField) {
+            else if (control == generaConsigliBtn || control == mieiConsigliBtn ||
+                    control == salvaConsiglioBtn || control == libroIDConsigliField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
 
