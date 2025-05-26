@@ -628,23 +628,33 @@ Label{
     -fx-border-color: #778da9;
 }
 
-.action-button {
-    -fx-background-color: #1b263b;
-    -fx-text-fill: #cdd9f5;
+/* Pulsante di rimozione (danger button) */
+.danger-button {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
     -fx-background-radius: 6px;
-    -fx-border-color: #2a3658;
+    -fx-border-color: #b71c1c;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
-    -fx-padding: 8px 16px;
+    -fx-padding: 6px 12px;
     -fx-cursor: hand;
+    -fx-font-size: 12px;
 }
 
-.action-button:hover {
-    -fx-background-color: #2a3658;
-    -fx-border-color: #778da9;
+.danger-button:hover {
+    -fx-background-color: #c62828;
+    -fx-border-color: #f44336;
+    -fx-effect: dropshadow(three-pass-box, rgba(255,0,0,0.3), 4, 0, 0, 1);
 }
 
-.action-button:pressed {
-    -fx-background-color: #2e426d;
+.danger-button:pressed {
+    -fx-background-color: #b71c1c;
+    -fx-effect: none;
+}
+
+/* Pulsante piccolo */
+.small-button {
+    -fx-padding: 4px 8px;
+    -fx-font-size: 11px;
 }

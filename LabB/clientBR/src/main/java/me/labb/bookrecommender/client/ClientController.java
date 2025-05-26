@@ -146,10 +146,9 @@ public class ClientController implements Initializable {
                 if (libri.isEmpty()) {
                     Label emptyLabel = new Label("Questa libreria è vuota. Aggiungi dei libri!");
                     emptyLabel.getStyleClass().add("empty-label");
-                    libreriaContentContainer.getChildren().add(emptyLabel);
-                } else {
+                    libreriaContentContainer.getChildren().add(emptyLabel);                } else {
                     for (Libro libro : libri) {
-                        libreriaContentContainer.getChildren().add(creaCardLibro(libro));
+                        libreriaContentContainer.getChildren().add(creaCardLibro(libro, libreriaID));
                     }
                 }
             }
@@ -164,15 +163,24 @@ public class ClientController implements Initializable {
         };
 
         new Thread(task).start();
-    }
-
-    /**
+    }    /**
      * Crea una card per visualizzare un libro.
      * 
      * @param libro Il libro da visualizzare
      * @return Un nodo VBox che rappresenta la card del libro
      */
     private VBox creaCardLibro(Libro libro) {
+        return creaCardLibro(libro, -1); // Chiama la versione overloaded senza ID libreria
+    }
+
+    /**
+     * Crea una card per visualizzare un libro con possibilità di rimozione.
+     * 
+     * @param libro Il libro da visualizzare
+     * @param libreriaID ID della libreria (se -1, non mostra il pulsante rimuovi)
+     * @return Un nodo VBox che rappresenta la card del libro
+     */
+    private VBox creaCardLibro(Libro libro, int libreriaID) {
         VBox bookCard = new VBox(5);
         bookCard.getStyleClass().add("book-card");
         bookCard.setPadding(new Insets(10));
@@ -200,23 +208,39 @@ public class ClientController implements Initializable {
         Label prezzo = new Label("Prezzo: €" + libro.prezzo());
         prezzo.getStyleClass().add("book-price");
 
-        // Aggiunge tutti gli elementi alla card
-        bookCard.getChildren().addAll(titolo,IDLibro, autori, categoria, prezzo);
+        // Container per i pulsanti
+        HBox pulsantiContainer = new HBox(10);
+        pulsantiContainer.setAlignment(Pos.CENTER);
 
-        // Aggiungi effetto hover
-        bookCard.setOnMouseEntered(e -> {
+        // Pulsante rimuovi (solo se siamo in una libreria)
+        if (libreriaID != -1) {
+            Button rimuoviBtn = new Button("Rimuovi");
+            rimuoviBtn.getStyleClass().addAll("danger-button", "small-button");
+            rimuoviBtn.setOnAction(_ -> rimuoviLibroDaLibreriaConConferma(libro, libreriaID));
+            pulsantiContainer.getChildren().add(rimuoviBtn);
+        }
+
+        // Aggiunge tutti gli elementi alla card
+        if (libreriaID != -1) {
+            bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo, pulsantiContainer);
+        } else {
+            bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo);
+        }        // Aggiungi effetto hover
+        bookCard.setOnMouseEntered(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
             st.setToX(1.03);
             st.setToY(1.03);
             st.play();
         });
 
-        bookCard.setOnMouseExited(e -> {
+        bookCard.setOnMouseExited(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
-        });        return bookCard;
+        });
+        
+        return bookCard;
     }
 
     /**
@@ -1960,5 +1984,65 @@ public class ClientController implements Initializable {
                 fade.play();
             }
         }
+    }
+
+    /**
+     * Rimuove un libro da una libreria con richiesta di conferma e messaggio di successo.
+     * 
+     * @param libro Il libro da rimuovere
+     * @param libreriaID ID della libreria da cui rimuovere il libro
+     */
+    private void rimuoviLibroDaLibreriaConConferma(Libro libro, int libreriaID) {
+        // Chiedi conferma prima di rimuovere
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Conferma rimozione");
+        alert.setHeaderText("Rimuovi libro dalla libreria");
+        alert.setContentText("Sei sicuro di voler rimuovere il libro '" + libro.titolo() + "' dalla libreria?");
+
+        // Aggiungi stile all'alert
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                boolean success = client.rimuoviLibroDaLibreria(libreriaID, libro.libroId());
+                if (success) {
+                    // Messaggio di successo
+                    mostraMessaggioSuccesso("Libro '" + libro.titolo() + "' rimosso con successo dalla libreria!");
+                    
+                    // Aggiorna la visualizzazione della libreria
+                    caricaLibriInLibreria(libreriaID);
+                } else {
+                    stampaConAnimazione("Errore nella rimozione del libro dalla libreria.");
+                }
+            } catch (IOException e) {
+                stampaConAnimazione("Errore di comunicazione: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Mostra un messaggio di successo con animazione.
+     * 
+     * @param messaggio Il messaggio da mostrare
+     */
+    private void mostraMessaggioSuccesso(String messaggio) {
+        // Crea un Alert di tipo INFORMATION per il messaggio di successo
+        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+        successAlert.setTitle("Operazione completata");
+        successAlert.setHeaderText("Successo! ✅");
+        successAlert.setContentText(messaggio);
+
+        // Aggiungi stile all'alert
+        successAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        // Mostra il messaggio senza bloccare e con auto-close dopo 3 secondi
+        successAlert.show();
+          // Auto-close dopo 3 secondi
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), _ -> successAlert.close()));
+        timeline.play();
+        
+        // Stampa anche nella console per coerenza
+        stampaConAnimazione(messaggio);
     }
 }
