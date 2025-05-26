@@ -1290,9 +1290,7 @@ public class ClientController implements Initializable {
         animaCambioStato(statusLabel, "Non connesso", "status-connected", "status-disconnected");
         stampaConAnimazione("🔌 Disconnesso dal server.");
         updateUIState();
-    }
-
-    /**
+    }    /**
      * Effettua il login dell'utente autenticato.
      */
     @FXML
@@ -1308,6 +1306,12 @@ public class ClientController implements Initializable {
                     stampaConAnimazione("👤 Login effettuato con successo.");
                     animaCambioStato(statusLabel, "Connesso come " + creds.getKey(), null, null);
                     updateUIState();
+                    
+                    // Se la tab "Le Mie Librerie" è attualmente selezionata, aggiorna le librerie automaticamente
+                    Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
+                    if (selectedTab != null && "Le Mie Librerie".equals(selectedTab.getText())) {
+                        aggiornaLibrerie();
+                    }
                 } else {
                     stampaConAnimazione("❌ Login fallito. Controlla username e password.");
                     animaShake(loginBtn);
