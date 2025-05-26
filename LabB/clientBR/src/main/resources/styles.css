@@ -175,7 +175,10 @@
     -fx-hgap: 12px;
     -fx-vgap: 12px;
 }
-
+Label{
+    -fx-text-fill: #e0e1dd;
+    -fx-font-weight: bold;
+}
 .custom-grid Label {
     -fx-text-fill: #e0e1dd;
     -fx-font-weight: bold;
