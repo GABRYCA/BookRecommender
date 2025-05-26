@@ -36,10 +36,9 @@ public class ClientController implements Initializable {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> categoriaComboBox;    @FXML private VBox resultContainer;
     @FXML private Label resultLabel;
-    @FXML private TabPane mainTabPane;
-
-    // Componenti per la gestione delle librerie
+    @FXML private TabPane mainTabPane;    // Componenti per la gestione delle librerie
     @FXML private Button creaLibreriaBtn;
+    @FXML private Button rinominaLibreriaBtn;
     @FXML private Button EliminaLibreriaBtn;
     @FXML private Button aggiornaLibrerieBtn;
     @FXML private ListView<Libreria> librerieListView;
@@ -1931,9 +1930,8 @@ public class ClientController implements Initializable {
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, consigliaBtn, profiloBtn,
-                searchField, categoriaComboBox,
-                // Nuovi controlli per le librerie
-                creaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,EliminaLibreriaBtn,
+                searchField, categoriaComboBox,                // Nuovi controlli per le librerie
+                creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 // Nuovi controlli per i consigli
@@ -1956,9 +1954,8 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected || !isLoggedIn;
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;
-            } 
-            // Controlli per le librerie
-            else if (control == creaLibreriaBtn || control == aggiornaLibrerieBtn || 
+            }            // Controlli per le librerie
+            else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn || 
                      control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
@@ -2044,5 +2041,65 @@ public class ClientController implements Initializable {
         
         // Stampa anche nella console per coerenza
         stampaConAnimazione(messaggio);
+    }
+
+    /**
+     * Gestisce la rinomina di una libreria.
+     */
+    @FXML
+    private void rinominaLibreria() {
+        if (!client.isAutenticato()) {
+            stampaConAnimazione("Devi effettuare il login per rinominare una libreria.");
+            return;
+        }
+
+        Libreria libreriaSelezionata = librerieListView.getSelectionModel().getSelectedItem();
+        if (libreriaSelezionata == null) {
+            stampaConAnimazione("Seleziona prima una libreria da rinominare.");
+            return;
+        }
+
+        // Crea un dialogo per inserire il nuovo nome della libreria
+        TextInputDialog dialog = new TextInputDialog(libreriaSelezionata.nomeLibreria());
+        dialog.setTitle("Rinomina Libreria");
+        dialog.setHeaderText("Rinomina la libreria '" + libreriaSelezionata.nomeLibreria() + "'");
+        dialog.setContentText("Nuovo nome:");
+
+        // Aggiungi stile al dialogo
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        // Mostra il dialogo e attendi il risultato
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(nuovoNome -> {
+            if (nuovoNome.trim().isEmpty()) {
+                stampaConAnimazione("Il nome della libreria non può essere vuoto.");
+                return;
+            }
+
+            if (nuovoNome.trim().equals(libreriaSelezionata.nomeLibreria())) {
+                stampaConAnimazione("Il nuovo nome è uguale al precedente.");
+                return;
+            }
+
+            try {
+                boolean success = client.rinominaLibreria(libreriaSelezionata.libreriaID(), nuovoNome.trim());
+                if (success) {
+                    stampaConAnimazione("Libreria rinominata da '" + libreriaSelezionata.nomeLibreria() + "' a '" + nuovoNome.trim() + "' con successo.");
+                    
+                    // Aggiorna la lista delle librerie per riflettere le modifiche
+                    aggiornaLibrerie();
+                    
+                    // Aggiorna anche l'etichetta della libreria selezionata se necessario
+                    if (libreriaSelezionataLabel.getText().contains(libreriaSelezionata.nomeLibreria())) {
+                        libreriaSelezionataLabel.setText("Libreria: " + nuovoNome.trim());
+                    }
+                } else {
+                    stampaConAnimazione("Errore durante la rinomina della libreria.");
+                }
+            } catch (IOException e) {
+                stampaConAnimazione("Errore: " + e.getMessage());
+            }
+        });
     }
 }

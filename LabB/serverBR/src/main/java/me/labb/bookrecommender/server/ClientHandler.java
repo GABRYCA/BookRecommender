@@ -128,9 +128,10 @@ public class ClientHandler implements Runnable {
                 case "RIMUOVI_LIBRO":
                     return rimuoviLibro(parametri);
                 case "VISUALIZZA_LIBRERIA":
-                    return visualizzaLibreria(parametri);
-                case "ELIMINA_LIBRERIA":
+                    return visualizzaLibreria(parametri);                case "ELIMINA_LIBRERIA":
                     return eliminaLibreria(parametri);
+                case "RINOMINA_LIBRERIA":
+                    return rinominaLibreria(parametri);
                 case "VALUTA_LIBRO":
                     return valutaLibro(parametri);
                 case "VALUTAZIONI_LIBRO":
@@ -143,11 +144,11 @@ public class ClientHandler implements Runnable {
                     return salvaConsiglio(parametri);
                 case "MIEI_CONSIGLI":
                     return visualizzaMieiConsigli();
-            }
-        } else if (azione.equals("LOGOUT") || azione.equals("PROFILO") ||
+            }        } else if (azione.equals("LOGOUT") || azione.equals("PROFILO") ||
                 azione.equals("CREA_LIBRERIA") || azione.equals("LIBRERIE") ||
                 azione.equals("AGGIUNGI_LIBRO") || azione.equals("RIMUOVI_LIBRO") ||
                 azione.equals("VISUALIZZA_LIBRERIA") || azione.equals("ELIMINA_LIBRERIA") ||
+                azione.equals("RINOMINA_LIBRERIA") ||
                 azione.equals("VALUTA_LIBRO") || azione.equals("VALUTAZIONI_LIBRO") ||
                 azione.equals("MIE_VALUTAZIONI") || azione.equals("GENERA_CONSIGLI") ||
                 azione.equals("SALVA_CONSIGLIO") || azione.equals("MIEI_CONSIGLI")) {
@@ -359,6 +360,7 @@ public class ClientHandler implements Runnable {
             comandiLibrerie.add(createCommandInfo("RIMUOVI_LIBRO", "Rimuovi un libro da una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("VISUALIZZA_LIBRERIA", "Visualizza i libri in una libreria", "<libreriaID>"));
             comandiLibrerie.add(createCommandInfo("ELIMINA_LIBRERIA", "Elimina una libreria personale", "<libreriaID>"));
+            comandiLibrerie.add(createCommandInfo("RINOMINA_LIBRERIA", "Rinomina una libreria personale", "<libreriaID> <nuovoNome>"));
             comandiValutazioni.add(createCommandInfo("VALUTA_LIBRO", "Valuta un libro", "<libroID> <scoreStile> <noteStile> <scoreContenuto> <noteContenuto> <scoreGradevolezza> <noteGradevolezza> <scoreOriginalita> <noteOriginalita> <scoreEdizione> <noteEdizione>"));
             comandiValutazioni.add(createCommandInfo("VALUTAZIONI_LIBRO", "Visualizza le valutazioni di un libro", "<libroID>"));
             comandiValutazioni.add(createCommandInfo("MIE_VALUTAZIONI", "Visualizza le tue valutazioni", ""));
@@ -876,6 +878,79 @@ public class ClientHandler implements Runnable {
         } catch (SQLException e) {
             System.err.println("Errore durante il recupero dei tuoi consigli: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante il recupero dei tuoi consigli. Riprova più tardi.");
+        }
+    }
+
+    /**
+     * Rinomina una libreria esistente.
+     *
+     * @param parametri Parametri per il comando di rinomina nel formato "libreriaID nuovoNome" o JSON
+     * @return Messaggio di successo o errore in formato JSON
+     */
+    private String rinominaLibreria(String parametri) {
+        if (parametri == null || parametri.trim().isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica l'ID della libreria e il nuovo nome.");
+        }
+
+        // Verifica se i parametri sono in formato JSON
+        Map<String, Object> paramsMap = null;
+        if (parametri.trim().startsWith("{") && parametri.trim().endsWith("}")) {
+            try {
+                paramsMap = new ObjectMapper().readValue(parametri, HashMap.class);
+            } catch (JsonProcessingException e) {
+                System.err.println("Parametri per RINOMINA_LIBRERIA sembravano JSON ma non parsabili: " + e.getMessage());
+            }
+        }
+
+        try {
+            int libreriaID;
+            String nuovoNome;
+
+            if (paramsMap != null) {
+                // Parametri in formato JSON
+                if (!paramsMap.containsKey("libreriaID") || !paramsMap.containsKey("nuovoNome")) {
+                    return ResponseFormatter.erroreJson("Parametri JSON incompleti per RINOMINA_LIBRERIA. Servono libreriaID e nuovoNome.");
+                }
+                libreriaID = ((Number) paramsMap.get("libreriaID")).intValue();
+                nuovoNome = (String) paramsMap.get("nuovoNome");
+            } else {
+                // Parametri in formato stringa: "libreriaID nuovoNome"
+                String[] parti = parametri.trim().split("\\s+", 2);
+                if (parti.length < 2) {
+                    return ResponseFormatter.erroreJson("Formato parametri non valido. Usa: <libreriaID> <nuovoNome>");
+                }
+                libreriaID = Integer.parseInt(parti[0]);
+                nuovoNome = parti[1];
+            }
+
+            if (nuovoNome.trim().isEmpty()) {
+                return ResponseFormatter.erroreJson("Il nuovo nome della libreria non può essere vuoto.");
+            }
+
+            // Verifica che la libreria esista e appartenga all'utente
+            Optional<Libreria> libreriaOpt = libreriaDAO.getLibreriaById(libreriaID);
+            if (libreriaOpt.isEmpty() || libreriaOpt.get().userID() != utenteAutenticato.userID()) {
+                return ResponseFormatter.erroreJson("Libreria non trovata o non hai i permessi per rinominarla.");
+            }
+
+            String vecchioNome = libreriaOpt.get().nomeLibreria();
+            boolean successo = libreriaDAO.rinominaLibreria(libreriaID, nuovoNome.trim());
+            
+            if (successo) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("libreriaID", libreriaID);
+                data.put("vecchioNome", vecchioNome);
+                data.put("nuovoNome", nuovoNome.trim());
+                return ResponseFormatter.successoJson("Libreria rinominata da '" + vecchioNome + "' a '" + nuovoNome.trim() + "'.", data);
+            } else {
+                return ResponseFormatter.erroreJson("Errore durante la rinomina della libreria.");
+            }
+
+        } catch (NumberFormatException e) {
+            return ResponseFormatter.erroreJson("ID libreria non valido. Assicurati di inserire un numero intero.");
+        } catch (SQLException e) {
+            System.err.println("Errore durante la rinomina della libreria: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante la rinomina della libreria. Riprova più tardi.");
         }
     }
 }

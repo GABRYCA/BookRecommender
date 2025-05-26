@@ -765,4 +765,38 @@ public class ClientOperazioni {
 
         return consigli;
     }
+
+    /**
+     * Rinomina una libreria esistente.
+     *
+     * @param libreriaID ID della libreria da rinominare
+     * @param nuovoNome Nuovo nome per la libreria
+     * @return true se la rinomina è andata a buon fine, false altrimenti
+     * @throws IOException           se si verifica un errore durante la comunicazione
+     * @throws IllegalStateException se l'utente non è autenticato
+     */
+    public boolean rinominaLibreria(int libreriaID, String nuovoNome) throws IOException {
+        if (!isAutenticato()) {
+            throw new IllegalStateException("Nessun utente autenticato");
+        }
+
+        if (nuovoNome == null || nuovoNome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il nuovo nome della libreria non può essere vuoto");
+        }
+
+        // Prepara i parametri in formato JSON per una comunicazione più robusta
+        Map<String, Object> parametri = new HashMap<>();
+        parametri.put("libreriaID", libreriaID);
+        parametri.put("nuovoNome", nuovoNome.trim());
+
+        try {
+            String parametriJson = objectMapper.writeValueAsString(parametri);
+            String risposta = client.inviaComando("RINOMINA_LIBRERIA", parametriJson);
+            System.out.println(risposta);
+            return client.isSuccesso(risposta);
+        } catch (JsonProcessingException e) {
+            System.err.println("Errore nella serializzazione dei parametri: " + e.getMessage());
+            return false;
+        }
+    }
 }

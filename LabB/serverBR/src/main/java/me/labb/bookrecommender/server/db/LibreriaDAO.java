@@ -319,4 +319,35 @@ public class LibreriaDAO {
             if (conn != null) conn.close();
         }
     }
+
+    /**
+     * Rinomina una libreria esistente.
+     *
+     * @param libreriaID ID della libreria da rinominare
+     * @param nuovoNome Nuovo nome da assegnare alla libreria
+     * @return true se la libreria è stata rinominata con successo, false altrimenti
+     * @throws SQLException In caso di errori SQL
+     */
+    public boolean rinominaLibreria(int libreriaID, String nuovoNome) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = dbManager.getConnection();
+            String sql = """
+                    UPDATE "Librerie"
+                    SET "NomeLibreria" = ?
+                    WHERE "LibreriaID" = ?
+                    """;
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nuovoNome);
+            stmt.setInt(2, libreriaID);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;        } finally {
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        }
+    }
 }

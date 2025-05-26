@@ -59,9 +59,9 @@
 
                 <!-- Scheda per le Librerie -->
                 <Tab text="Le Mie Librerie" closable="false">
-                    <VBox spacing="10">
-                        <HBox spacing="10" alignment="CENTER_LEFT">
+                    <VBox spacing="10">                        <HBox spacing="10" alignment="CENTER_LEFT">
                             <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria" styleClass="action-button" />
+                            <Button fx:id="rinominaLibreriaBtn" text="Rinomina Libreria" onAction="#rinominaLibreria" styleClass="action-button" />
                             <Button fx:id="EliminaLibreriaBtn" text="Elimina Libreria" onAction="#EliminaLibreria" styleClass="action-button" />
                             <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie" styleClass="action-button" />
                         </HBox>
