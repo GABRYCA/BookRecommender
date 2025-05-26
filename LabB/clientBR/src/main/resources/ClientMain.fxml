@@ -47,7 +47,7 @@
                 <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo" styleClass="profile-button" text="Profilo" />
             </HBox>
 
-            <TabPane VBox.vgrow="ALWAYS" styleClass="tabs-container">
+            <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="tabs-container">
                 <Tab text="Risultati" closable="false">
                     <VBox spacing="10">
                         <Label fx:id="resultLabel" styleClass="section-title" text="" />

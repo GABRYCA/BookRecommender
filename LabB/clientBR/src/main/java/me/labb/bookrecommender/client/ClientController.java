@@ -34,9 +34,9 @@ public class ClientController implements Initializable {
     @FXML private Button profiloBtn;
     @FXML private TextArea output;
     @FXML private TextField searchField;
-    @FXML private ComboBox<String> categoriaComboBox;
-    @FXML private VBox resultContainer;
+    @FXML private ComboBox<String> categoriaComboBox;    @FXML private VBox resultContainer;
     @FXML private Label resultLabel;
+    @FXML private TabPane mainTabPane;
 
     // Componenti per la gestione delle librerie
     @FXML private Button creaLibreriaBtn;
@@ -84,10 +84,11 @@ public class ClientController implements Initializable {
         stampaConAnimazione("Benvenuto nel Book Recommender. Connettiti al server per iniziare.");
 
         // Aggiungi animazione all'hover dei pulsanti
-        configuraAnimazioniPulsanti();
-
-        // Configura la ListView delle librerie
+        configuraAnimazioniPulsanti();        // Configura la ListView delle librerie
         setupLibrerieListView();
+        
+        // Configura il listener per il caricamento automatico delle librerie
+        setupTabListener();
     }
 
     /**
@@ -215,9 +216,24 @@ public class ClientController implements Initializable {
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
-        });
+        });        return bookCard;
+    }
 
-        return bookCard;
+    /**
+     * Configura il listener per il caricamento automatico delle librerie
+     * quando viene selezionata la tab "Le Mie Librerie".
+     */
+    private void setupTabListener() {
+        // Aggiungi un listener al SelectionModel del TabPane
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab != null && "Le Mie Librerie".equals(newTab.getText())) {
+                // La tab "Le Mie Librerie" è stata selezionata
+                // Carica automaticamente le librerie se l'utente è autenticato
+                if (client.isAutenticato() && librerieListView.getItems().isEmpty()) {
+                    aggiornaLibrerie();
+                }
+            }
+        });
     }
 
     /**
