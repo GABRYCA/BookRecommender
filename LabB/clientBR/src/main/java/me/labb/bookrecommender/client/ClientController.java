@@ -8,10 +8,14 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+
 import me.labb.bookrecommender.client.comunicazione.ClientOperazioni;
 import me.labb.bookrecommender.client.oggetti.*;
 
@@ -23,48 +27,120 @@ import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
 
-    @FXML private Label statusLabel;
-    @FXML private Button connettiBtn;
-    @FXML private Button disconnettiBtn;
-    @FXML private Button loginBtn;
-    @FXML private Button registratiBtn;
-    @FXML private Button logoutBtn;
-    @FXML private Button cercaBtn;
-    @FXML private Button consigliaBtn;
-    @FXML private Button profiloBtn;
-    @FXML private TextArea output;
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> categoriaComboBox;
-    @FXML private VBox resultContainer;
-    @FXML private Label resultLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Button connettiBtn;
+    @FXML
+    private Button disconnettiBtn;
+    @FXML
+    private Button loginBtn;
+    @FXML
+    private Button registratiBtn;
+    @FXML
+    private Button logoutBtn;
+    @FXML
+    private Button cercaBtn;
+    @FXML
+    private Button consigliaBtn;
+    @FXML
+    private Button profiloBtn;
+    @FXML
+    private TextArea output;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> categoriaComboBox;
+    @FXML
+    private VBox resultContainer;
+    @FXML
+    private Label resultLabel;
 
     // Componenti per la gestione delle librerie
-    @FXML private Button creaLibreriaBtn;
-    @FXML private Button EliminaLibreriaBtn;
-    @FXML private Button aggiornaLibrerieBtn;
-    @FXML private ListView<Libreria> librerieListView;
-    @FXML private Label libreriaSelezionataLabel;
-    @FXML private Button aggiungiLibroBtn;
-    @FXML private Button rimuoviLibroBtn;
-    @FXML private VBox libreriaContentContainer;
+    @FXML
+    private Button creaLibreriaBtn;
+    @FXML
+    private Button EliminaLibreriaBtn;
+    @FXML
+    private Button aggiornaLibrerieBtn;
+    @FXML
+    private ListView<Libreria> librerieListView;
+    @FXML
+    private Label libreriaSelezionataLabel;
+    @FXML
+    private Button aggiungiLibroBtn;
+    @FXML
+    private Button rimuoviLibroBtn;
+    @FXML
+    private VBox libreriaContentContainer;
 
     // Componenti per la gestione delle valutazioni
-    @FXML private Button valutaLibroBtn;
-    @FXML private Button mieValutazioniBtn;
-    @FXML private TextField libroIDValutazioniField;
-    @FXML private Button cercaValutazioniBtn;
-    @FXML private VBox valutazioniContainer;
+    @FXML
+    private Button valutaLibroBtn;
+    @FXML
+    private Button mieValutazioniBtn;
+    @FXML
+    private TextField libroIDValutazioniField;
+    @FXML
+    private Button cercaValutazioniBtn;
+    @FXML
+    private VBox valutazioniContainer;
 
     // Componenti per la gestione dei consigli
-    @FXML private TextField libroIDConsigliField;
-    @FXML private Button generaConsigliBtn;
-    @FXML private Button mieiConsigliBtn;
-    @FXML private Button salvaConsiglioBtn;
-    @FXML private VBox consigliContainer;
-
+    @FXML
+    private TextField libroIDConsigliField;
+    @FXML
+    private Button generaConsigliBtn;
+    @FXML
+    private Button mieiConsigliBtn;
+    @FXML
+    private Button salvaConsiglioBtn;
+    @FXML
+    private VBox consigliContainer;
     private ClientOperazioni client;
     private boolean isConnected = false;
     private boolean isLoggedIn = false;
+
+    /**
+     * Wrapper class for Libreria to provide better toString() display in ChoiceDialog.
+     */
+    private static class LibreriaDisplay {
+        private final Libreria libreria;
+
+        public LibreriaDisplay(Libreria libreria) {
+            this.libreria = libreria;
+        }
+
+        public Libreria getLibreria() {
+            return libreria;
+        }
+
+        @Override
+        public String toString() {
+            return libreria.nomeLibreria();
+        }
+    }
+
+    /**
+     * Wrapper class for Libro to provide better toString() display in ChoiceDialog.
+     */
+    private static class LibroDisplay {
+        private final Libro libro;
+
+        public LibroDisplay(Libro libro) {
+            this.libro = libro;
+        }
+
+        public Libro getLibro() {
+            return libro;
+        }
+
+        @Override
+        public String toString() {
+            String autori = String.join(", ", libro.autori());
+            return libro.titolo() + " - " + autori;
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -95,7 +171,7 @@ public class ClientController implements Initializable {
      */
     private void setupLibrerieListView() {
         // Configura il cell factory per mostrare il nome della libreria
-        librerieListView.setCellFactory(param -> new ListCell<Libreria>() {
+        librerieListView.setCellFactory(_ -> new ListCell<Libreria>() {
             @Override
             protected void updateItem(Libreria libreria, boolean empty) {
                 super.updateItem(libreria, empty);
@@ -109,7 +185,7 @@ public class ClientController implements Initializable {
         });
 
         // Aggiungi un listener per la selezione di una libreria
-        librerieListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        librerieListView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             if (newValue != null) {
                 libreriaSelezionataLabel.setText("Libreria: " + newValue.nomeLibreria());
                 caricaLibriInLibreria(newValue.libreriaID());
@@ -202,24 +278,35 @@ public class ClientController implements Initializable {
         // Label ma selezionabile
         idLibroField.setBackground(null);
         idLibroField.setBorder(null);
-        idLibroField.setPadding(new Insets(2,0,2,0));
+        idLibroField.setPadding(new Insets(2, 0, 2, 0));
 
-        // Aggiunge tutti gli elementi alla card
-        bookCard.getChildren().addAll(titolo, autori, categoria, prezzo, idLibroField);
-
-        // Aggiungi effetto hover
-        bookCard.setOnMouseEntered(e -> {
+        // Aggiunge tutti gli elementi alla card        bookCard.getChildren().addAll(titolo, autori, categoria, prezzo, idLibroField);        // Aggiungi effetto hover
+        bookCard.setOnMouseEntered(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
             st.setToX(1.03);
             st.setToY(1.03);
             st.play();
         });
 
-        bookCard.setOnMouseExited(e -> {
+        bookCard.setOnMouseExited(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
+        });
+
+        // Aggiungi click handler per aprire il dialogo di dettagli
+        bookCard.setOnMouseClicked(_ -> {
+            // Crea effetto pulsazione
+            ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
+            st.setToX(1.05);
+            st.setToY(1.05);
+            st.setCycleCount(2);
+            st.setAutoReverse(true);
+            st.play();
+
+            // Apri il dialogo di dettagli del libro
+            st.setOnFinished(_ -> mostraDettagliLibro(libro));
         });
 
         return bookCard;
@@ -776,20 +863,18 @@ public class ClientController implements Initializable {
 
         // Data
         Label dataLabel = new Label("Data: " + (valutazione.dataValutazione() != null ? valutazione.dataValutazione().toString() : "N/A"));
-        dataLabel.getStyleClass().add("valutazione-data");
-
-        // Aggiungi tutti gli elementi alla card
+        dataLabel.getStyleClass().add("valutazione-data");        // Aggiungi tutti gli elementi alla card
         card.getChildren().addAll(header, punteggiBox, noteBox, dataLabel);
 
         // Aggiungi effetto hover
-        card.setOnMouseEntered(e -> {
+        card.setOnMouseEntered(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
             st.setToX(1.02);
             st.setToY(1.02);
             st.play();
         });
 
-        card.setOnMouseExited(e -> {
+        card.setOnMouseExited(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
             st.setToX(1.0);
             st.setToY(1.0);
@@ -1043,7 +1128,7 @@ public class ClientController implements Initializable {
     /**
      * Crea una card per visualizzare un libro consigliato con un pulsante per salvare il consiglio.
      *
-     * @param libro Il libro consigliato
+     * @param libro              Il libro consigliato
      * @param libroRiferimentoID L'ID del libro di riferimento
      * @return Un nodo VBox che rappresenta la card del libro consigliato
      */
@@ -1096,18 +1181,17 @@ public class ClientController implements Initializable {
         Label dataLabel = new Label("Data: " + consiglio.dataSuggerimento().toString());
         dataLabel.getStyleClass().add("consiglio-data");
 
-        // Aggiungi tutti gli elementi alla card
-        card.getChildren().addAll(header, libroRiferimentoLabel, libroSuggeritoLabel, dataLabel);
+        // Aggiungi tutti gli elementi alla card        card.getChildren().addAll(header, libroRiferimentoLabel, libroSuggeritoLabel, dataLabel);
 
         // Aggiungi effetto hover
-        card.setOnMouseEntered(e -> {
+        card.setOnMouseEntered(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
             st.setToX(1.02);
             st.setToY(1.02);
             st.play();
         });
 
-        card.setOnMouseExited(e -> {
+        card.setOnMouseExited(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
             st.setToX(1.0);
             st.setToY(1.0);
@@ -1179,30 +1263,29 @@ public class ClientController implements Initializable {
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, consigliaBtn, profiloBtn
         );
-
         for (Button button : buttons) {
-            button.setOnMouseEntered(e -> {
+            button.setOnMouseEntered(_ -> {
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
                 st.setToX(1.05);
                 st.setToY(1.05);
                 st.play();
             });
 
-            button.setOnMouseExited(e -> {
+            button.setOnMouseExited(_ -> {
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
                 st.setToX(1.0);
                 st.setToY(1.0);
                 st.play();
             });
 
-            button.setOnMousePressed(e -> {
+            button.setOnMousePressed(_ -> {
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
                 st.setToX(0.95);
                 st.setToY(0.95);
                 st.play();
             });
 
-            button.setOnMouseReleased(e -> {
+            button.setOnMouseReleased(_ -> {
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
                 st.setToX(1.0);
                 st.setToY(1.0);
@@ -1567,13 +1650,11 @@ public class ClientController implements Initializable {
             // Label ma selezionabile
             idLibroField.setBackground(null);
             idLibroField.setBorder(null);
-            idLibroField.setPadding(new Insets(2,0,2,0));
+            idLibroField.setPadding(new Insets(2, 0, 2, 0));
 
             // Aggiunge tutti gli elementi alla card
             bookCard.getChildren().addAll(titolo, autori, categoria, prezzo, idLibroField);
-            resultContainer.getChildren().add(bookCard);
-
-            // Aggiungi evento click sulla card
+            resultContainer.getChildren().add(bookCard);            // Aggiungi evento click sulla card
             bookCard.setOnMouseClicked(event -> {
                 // Crea effetto pulsazione quando cliccato
                 ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
@@ -1582,6 +1663,9 @@ public class ClientController implements Initializable {
                 st.setCycleCount(2);
                 st.setAutoReverse(true);
                 st.play();
+
+                // Apri il dialogo di dettagli del libro
+                st.setOnFinished(e -> mostraDettagliLibro(libro));
             });
 
             // Animazione di apparizione ritardata e sequenziale
@@ -1641,10 +1725,10 @@ public class ClientController implements Initializable {
     /**
      * Aggiunge un campo al profilo con animazione di apparizione.
      *
-     * @param grid Il GridPane in cui aggiungere il campo
+     * @param grid      Il GridPane in cui aggiungere il campo
      * @param labelText Il testo dell'etichetta del campo
-     * @param value Il valore del campo da visualizzare
-     * @param row La riga in cui posizionare il campo nel GridPane
+     * @param value     Il valore del campo da visualizzare
+     * @param row       La riga in cui posizionare il campo nel GridPane
      */
     private void addAnimatedProfileField(GridPane grid, String labelText, String value, int row) {
         Label label = new Label(labelText);
@@ -1849,9 +1933,9 @@ public class ClientController implements Initializable {
     /**
      * Esegue un'animazione di cambio stato su un'etichetta.
      *
-     * @param label L'etichetta su cui eseguire l'animazione
-     * @param nuovoTesto Il nuovo testo da impostare sull'etichetta
-     * @param classeRimuovere La classe da rimuovere dallo stile dell'etichetta
+     * @param label            L'etichetta su cui eseguire l'animazione
+     * @param nuovoTesto       Il nuovo testo da impostare sull'etichetta
+     * @param classeRimuovere  La classe da rimuovere dallo stile dell'etichetta
      * @param classeAggiungere La classe da aggiungere allo stile dell'etichetta
      */
     private void animaCambioStato(Label label, String nuovoTesto, String classeRimuovere, String classeAggiungere) {
@@ -1899,7 +1983,7 @@ public class ClientController implements Initializable {
                 logoutBtn, cercaBtn, consigliaBtn, profiloBtn,
                 searchField, categoriaComboBox,
                 // Nuovi controlli per le librerie
-                creaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,EliminaLibreriaBtn,
+                creaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 // Nuovi controlli per i consigli
@@ -1930,6 +2014,7 @@ public class ClientController implements Initializable {
             }
             // Controlli per le valutazioni
             else if (control == valutaLibroBtn || control == mieValutazioniBtn ||
+
                     control == cercaValutazioniBtn || control == libroIDValutazioniField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
@@ -1950,5 +2035,701 @@ public class ClientController implements Initializable {
                 fade.play();
             }
         }
+    }
+
+    /**
+     * Mostra un dialogo dettagliato con tutte le informazioni del libro.
+     *
+     * @param libro Il libro di cui mostrare i dettagli
+     */
+    private void mostraDettagliLibro(Libro libro) {
+        // Crea il dialogo principale
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Dettagli Libro - " + libro.titolo());
+        dialogStage.setResizable(false);        // Container principale con scroll
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.getStyleClass().add("scroll-pane");
+
+        VBox mainContainer = new VBox(15);
+        mainContainer.setPadding(new Insets(20));
+        mainContainer.getStyleClass().add("dialog-container");
+
+        // Applica il tema scuro al dialogo
+        scrollPane.getStyleClass().add("root");
+        mainContainer.getStyleClass().add("root");
+
+        // === SEZIONE INFORMAZIONI LIBRO ===
+        VBox bookInfoSection = creaSezioneInformazioniLibro(libro);
+        mainContainer.getChildren().add(bookInfoSection);
+
+        // === SEZIONE VALUTAZIONI AGGREGATE ===
+        VBox ratingsSection = creaSezioneValutazioniAggregate(libro);
+        mainContainer.getChildren().add(ratingsSection);
+
+        // === SEZIONE RECENSIONI UTENTI ===
+        VBox reviewsSection = creaSezioneRecensioni(libro);
+        mainContainer.getChildren().add(reviewsSection);        // === SEZIONE LIBRI CONSIGLIATI (solo per utenti autenticati) ===
+        if (client.isAutenticato()) {
+            VBox recommendationsSection = creaSezioneLibriConsigliati(libro);
+            mainContainer.getChildren().add(recommendationsSection);
+        }
+
+        // === SEZIONE AZIONI UTENTE ===
+        if (client.isAutenticato()) {
+            VBox actionsSection = creaSezioneAzioniUtente(libro, dialogStage);
+            mainContainer.getChildren().add(actionsSection);
+        }
+
+        scrollPane.setContent(mainContainer);        // Configura la scena
+        Scene scene = new Scene(scrollPane, 600, 700);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        scene.setFill(javafx.scene.paint.Color.web("#0d1b2a")); // Forza il colore di sfondo scuro
+        dialogStage.setScene(scene);
+
+        // Animazione di apertura
+        dialogStage.setOpacity(0);
+        dialogStage.show();
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), dialogStage.getScene().getRoot());
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.setOnFinished(e -> dialogStage.setOpacity(1));
+        fadeIn.play();
+    }
+
+    /**
+     * Crea la sezione con le informazioni base del libro.
+     */
+    private VBox creaSezioneInformazioniLibro(Libro libro) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("book-card");
+
+        // Titolo della sezione
+        Label sectionTitle = new Label("📚 INFORMAZIONI LIBRO");
+        sectionTitle.getStyleClass().addAll("book-title", "section-header");
+
+        // Titolo del libro
+        Label titleLabel = new Label(libro.titolo());
+        titleLabel.getStyleClass().add("book-title");
+        titleLabel.setWrapText(true);
+
+        // Autori
+        Label authorsLabel = new Label("👤 Autori: " + libro.autori());
+        authorsLabel.getStyleClass().add("book-author");
+        authorsLabel.setWrapText(true);
+
+        // Categoria
+        Label categoryLabel = new Label("📖 Categoria: " + libro.categoria());
+        categoryLabel.getStyleClass().add("book-category");
+        categoryLabel.setWrapText(true);
+
+        // Editore (solo se non è vuoto)
+        if (!libro.editore().isEmpty()) {
+            Label publisherLabel = new Label("🏢 Editore: " + libro.editore());
+            publisherLabel.getStyleClass().add("book-info");
+            publisherLabel.setWrapText(true);
+            section.getChildren().add(publisherLabel);
+        }
+
+        // Prezzo
+        Label priceLabel = new Label("💰 Prezzo: €" + String.format("%.2f", libro.prezzo()));
+        priceLabel.getStyleClass().add("book-price");
+
+        // Data di pubblicazione (solo se l'anno è valido)
+        if (libro.annoPubblicazione() > 0) {
+            String dataString = libro.mesePubblicazione().isEmpty() ?
+                    String.valueOf(libro.annoPubblicazione()) :
+                    libro.mesePubblicazione() + " " + libro.annoPubblicazione();
+            Label dateLabel = new Label("📅 Pubblicazione: " + dataString);
+            dateLabel.getStyleClass().add("book-info");
+            section.getChildren().add(dateLabel);
+        }
+
+        // Descrizione (se disponibile)
+        if (!libro.descrizione().isEmpty()) {
+            Label descLabel = new Label("📝 Descrizione:");
+            descLabel.getStyleClass().add("book-info");
+
+            Label descText = new Label(libro.descrizione());
+            descText.getStyleClass().add("book-author");
+            descText.setWrapText(true);
+
+            section.getChildren().addAll(sectionTitle, titleLabel, authorsLabel, categoryLabel,
+                    priceLabel, descLabel, descText);
+        } else {
+            section.getChildren().addAll(sectionTitle, titleLabel, authorsLabel, categoryLabel, priceLabel);
+        }
+
+        return section;
+    }
+
+    /**
+     * Crea la sezione con le valutazioni aggregate del libro.
+     */
+    private VBox creaSezioneValutazioniAggregate(Libro libro) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("book-card");
+
+        Label sectionTitle = new Label("⭐ VALUTAZIONI AGGREGATE");
+        sectionTitle.getStyleClass().addAll("book-title", "section-header");
+        section.getChildren().add(sectionTitle);
+
+        // Carica le valutazioni in background
+        Task<List<Valutazione>> loadRatingsTask = new Task<>() {
+            @Override
+            protected List<Valutazione> call() throws Exception {
+                return client.visualizzaValutazioniLibro(libro.libroId());
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Valutazione> valutazioni = getValue();
+                if (valutazioni.isEmpty()) {
+                    Label noRatingsLabel = new Label("Nessuna valutazione disponibile per questo libro.");
+                    noRatingsLabel.getStyleClass().add("book-author");
+                    section.getChildren().add(noRatingsLabel);
+                } else {
+                    // Calcola medie per ogni criterio
+                    double mediaStile = valutazioni.stream().mapToDouble(v -> v.scoreStile()).average().orElse(0);
+                    double mediaContenuto = valutazioni.stream().mapToDouble(v -> v.scoreContenuto()).average().orElse(0);
+                    double mediaGradevolezza = valutazioni.stream().mapToDouble(v -> v.scoreGradevolezza()).average().orElse(0);
+                    double mediaOriginalita = valutazioni.stream().mapToDouble(v -> v.scoreOriginalita()).average().orElse(0);
+                    double mediaEdizione = valutazioni.stream().mapToDouble(v -> v.scoreEdizione()).average().orElse(0);
+                    double mediaComplessiva = (mediaStile + mediaContenuto + mediaGradevolezza + mediaOriginalita + mediaEdizione) / 5;
+
+                    // Mostra numero totale di valutazioni
+                    Label countLabel = new Label("📊 Basato su " + valutazioni.size() + " valutazioni");
+                    countLabel.getStyleClass().add("book-author");
+                    section.getChildren().add(countLabel);
+
+                    // Media complessiva prominente
+                    HBox overallBox = new HBox(10);
+                    overallBox.setAlignment(Pos.CENTER_LEFT);
+                    Label overallLabel = new Label("Media Complessiva: ");
+                    overallLabel.getStyleClass().add("book-info");
+                    Label overallStars = new Label(creaStelle(mediaComplessiva) + " " + String.format("%.1f/5", mediaComplessiva));
+                    overallStars.getStyleClass().add("book-title");
+                    overallBox.getChildren().addAll(overallLabel, overallStars);
+                    section.getChildren().add(overallBox);
+
+                    // Valutazioni dettagliate per criterio
+                    section.getChildren().addAll(
+                            creaRigaValutazione("🎨 Stile", mediaStile),
+                            creaRigaValutazione("📚 Contenuto", mediaContenuto),
+                            creaRigaValutazione("😊 Gradevolezza", mediaGradevolezza),
+                            creaRigaValutazione("💡 Originalità", mediaOriginalita),
+                            creaRigaValutazione("📖 Edizione", mediaEdizione)
+                    );
+                }
+            }
+
+            @Override
+            protected void failed() {
+                Label errorLabel = new Label("Errore nel caricamento delle valutazioni: " + getException().getMessage());
+                errorLabel.getStyleClass().add("book-author");
+                section.getChildren().add(errorLabel);
+            }
+        };
+
+        new Thread(loadRatingsTask).start();
+        return section;
+    }
+
+    /**
+     * Crea una riga di valutazione con stelle.
+     */
+    private HBox creaRigaValutazione(String criterio, double valore) {
+        HBox row = new HBox(10);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        Label criterioLabel = new Label(criterio + ":");
+        criterioLabel.getStyleClass().add("book-info");
+        criterioLabel.setPrefWidth(100);
+
+        Label stelleLabel = new Label(creaStelle(valore) + " " + String.format("%.1f", valore));
+        stelleLabel.getStyleClass().add("book-author");
+
+        row.getChildren().addAll(criterioLabel, stelleLabel);
+        return row;
+    }
+
+    /**
+     * Genera la rappresentazione a stelle di un voto.
+     */
+    private String creaStelle(double voto) {
+        StringBuilder stelle = new StringBuilder();
+        int stellePiene = (int) voto;
+        boolean mezzaStella = (voto - stellePiene) >= 0.5;
+
+        for (int i = 0; i < stellePiene; i++) {
+            stelle.append("⭐");
+        }
+        if (mezzaStella) {
+            stelle.append("✨");
+        }
+        for (int i = stellePiene + (mezzaStella ? 1 : 0); i < 5; i++) {
+            stelle.append("☆");
+        }
+
+        return stelle.toString();
+    }
+
+    /**
+     * Crea la sezione con le recensioni degli utenti.
+     */
+    private VBox creaSezioneRecensioni(Libro libro) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("book-card");
+
+        Label sectionTitle = new Label("💬 RECENSIONI UTENTI");
+        sectionTitle.getStyleClass().addAll("book-title", "section-header");
+        section.getChildren().add(sectionTitle);
+
+        // Carica le recensioni dettagliate
+        Task<List<Valutazione>> loadReviewsTask = new Task<>() {
+            @Override
+            protected List<Valutazione> call() throws Exception {
+                return client.visualizzaValutazioniLibro(libro.libroId());
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Valutazione> valutazioni = getValue();
+                if (valutazioni.isEmpty()) {
+                    Label noReviewsLabel = new Label("Nessuna recensione disponibile.");
+                    noReviewsLabel.getStyleClass().add("book-author");
+                    section.getChildren().add(noReviewsLabel);
+                } else {
+                    // Mostra solo le prime 5 recensioni per non appesantire l'interfaccia
+                    int maxReviews = Math.min(5, valutazioni.size());
+                    for (int i = 0; i < maxReviews; i++) {
+                        Valutazione val = valutazioni.get(i);
+                        VBox reviewCard = creaCardRecensione(val);
+                        section.getChildren().add(reviewCard);
+                    }
+
+                    if (valutazioni.size() > 5) {
+                        Label moreLabel = new Label("... e altre " + (valutazioni.size() - 5) + " recensioni");
+                        moreLabel.getStyleClass().add("book-author");
+                        section.getChildren().add(moreLabel);
+                    }
+                }
+            }
+
+            @Override
+            protected void failed() {
+                Label errorLabel = new Label("Errore nel caricamento delle recensioni: " + getException().getMessage());
+                errorLabel.getStyleClass().add("book-author");
+                section.getChildren().add(errorLabel);
+            }
+        };
+
+        new Thread(loadReviewsTask).start();
+        return section;
+    }
+
+    /**
+     * Crea una card per una singola recensione.
+     */
+    private VBox creaCardRecensione(Valutazione valutazione) {
+        VBox card = new VBox(8);
+        card.getStyleClass().add("book-card");
+        card.setPadding(new Insets(10));
+
+        // Header con data e voto complessivo
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Label dateLabel = new Label("📅 " + valutazione.dataValutazione().toLocalDate().toString());
+        dateLabel.getStyleClass().add("book-info");
+
+        double mediaPersonale = (valutazione.scoreStile() + valutazione.scoreContenuto() +
+                valutazione.scoreGradevolezza() + valutazione.scoreOriginalita() +
+                valutazione.scoreEdizione()) / 5.0;
+        Label overallLabel = new Label(creaStelle(mediaPersonale) + " " + String.format("%.1f/5", mediaPersonale));
+        overallLabel.getStyleClass().add("book-title");
+
+        header.getChildren().addAll(dateLabel, new Region(), overallLabel);
+        HBox.setHgrow(header.getChildren().get(1), Priority.ALWAYS);
+
+        card.getChildren().add(header);
+
+        // Valutazioni dettagliate (solo se hanno note)
+        aggiungiNotaSePresente(card, "🎨 Stile", valutazione.scoreStile(), valutazione.noteStile());
+        aggiungiNotaSePresente(card, "📚 Contenuto", valutazione.scoreContenuto(), valutazione.noteContenuto());
+        aggiungiNotaSePresente(card, "😊 Gradevolezza", valutazione.scoreGradevolezza(), valutazione.noteGradevolezza());
+        aggiungiNotaSePresente(card, "💡 Originalità", valutazione.scoreOriginalita(), valutazione.noteOriginalita());
+        aggiungiNotaSePresente(card, "📖 Edizione", valutazione.scoreEdizione(), valutazione.noteEdizione());
+
+        return card;
+    }
+
+    /**
+     * Aggiunge una nota di valutazione se presente.
+     */
+    private void aggiungiNotaSePresente(VBox container, String criterio, short score, String nota) {
+        if (nota != null && !nota.trim().isEmpty()) {
+            HBox noteBox = new HBox(5);
+            noteBox.setAlignment(Pos.TOP_LEFT);
+            Label criterioLabel = new Label(criterio + " " + creaStelle(score) + ":");
+            criterioLabel.getStyleClass().add("book-info");
+            criterioLabel.setMinWidth(100);
+
+            Label noteLabel = new Label(nota);
+            noteLabel.getStyleClass().add("book-author");
+            noteLabel.setWrapText(true);
+
+            noteBox.getChildren().addAll(criterioLabel, noteLabel);
+            container.getChildren().add(noteBox);
+        }
+    }
+
+    /**
+     * Crea la sezione con i libri consigliati.
+     */
+    private VBox creaSezioneLibriConsigliati(Libro libro) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("book-card");
+
+        Label sectionTitle = new Label("🔗 LIBRI CONSIGLIATI");
+        sectionTitle.getStyleClass().addAll("book-title", "section-header");
+        section.getChildren().add(sectionTitle);
+
+        // Carica i consigli in background
+        Task<List<Libro>> loadRecommendationsTask = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                return client.generaConsigli(libro.libroId());
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Libro> consigli = getValue();
+                if (consigli.isEmpty()) {
+                    Label noRecommendationsLabel = new Label("Nessun libro consigliato al momento.");
+                    noRecommendationsLabel.getStyleClass().add("book-author");
+                    section.getChildren().add(noRecommendationsLabel);
+                } else {
+                    // Mostra fino a 3 libri consigliati
+                    int maxRecommendations = Math.min(3, consigli.size());
+                    for (int i = 0; i < maxRecommendations; i++) {
+                        Libro libroConsigliato = consigli.get(i);
+                        HBox recommendationCard = creaCardConsiglio(libroConsigliato);
+                        section.getChildren().add(recommendationCard);
+                    }
+
+                    if (consigli.size() > 3) {
+                        Label moreLabel = new Label("... e altri " + (consigli.size() - 3) + " libri consigliati");
+                        moreLabel.getStyleClass().add("book-author");
+                        section.getChildren().add(moreLabel);
+                    }
+                }
+            }
+
+            @Override
+            protected void failed() {
+                Label errorLabel = new Label("Errore nel caricamento dei consigli: " + getException().getMessage());
+                errorLabel.getStyleClass().add("book-author");
+                section.getChildren().add(errorLabel);
+            }
+        };
+
+        new Thread(loadRecommendationsTask).start();
+        return section;
+    }
+
+    /**
+     * Crea una card per un libro consigliato.
+     */
+    private HBox creaCardConsiglio(Libro libro) {
+        HBox card = new HBox(10);
+        card.getStyleClass().add("book-card");
+        card.setPadding(new Insets(10));
+        card.setAlignment(Pos.CENTER_LEFT);
+
+        VBox bookInfo = new VBox(3);
+
+        Label titleLabel = new Label(libro.titolo());
+        titleLabel.getStyleClass().add("book-title");
+        titleLabel.setWrapText(true);
+
+        Label authorsLabel = new Label("di " + libro.autori());
+        authorsLabel.getStyleClass().add("book-author");
+
+        Label categoryLabel = new Label(libro.categoria());
+        categoryLabel.getStyleClass().add("book-info");
+
+        bookInfo.getChildren().addAll(titleLabel, authorsLabel, categoryLabel);
+
+        Button detailsButton = new Button("Dettagli");
+        detailsButton.getStyleClass().add("action-button");
+        detailsButton.setOnAction(event -> {
+            // Chiudi il dialogo corrente e apri quello del libro consigliato
+            Stage currentStage = (Stage) card.getScene().getWindow();
+            currentStage.close();
+            mostraDettagliLibro(libro);
+        });
+
+        card.getChildren().addAll(bookInfo, new Region(), detailsButton);
+        HBox.setHgrow(bookInfo, Priority.ALWAYS);
+
+        return card;
+    }
+
+    /**
+     * Crea la sezione con le azioni disponibili per l'utente loggato.
+     */
+    private VBox creaSezioneAzioniUtente(Libro libro, Stage dialogStage) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("book-card");
+
+        Label sectionTitle = new Label("⚡ AZIONI");
+        sectionTitle.getStyleClass().addAll("book-title", "section-header");
+        section.getChildren().add(sectionTitle);
+
+        HBox actionsBox = new HBox(10);
+        actionsBox.setAlignment(Pos.CENTER);
+
+        // Pulsante "Aggiungi alla Libreria"
+        Button addToLibraryButton = new Button("📚 Aggiungi alla Libreria");
+        addToLibraryButton.getStyleClass().add("action-button");
+        addToLibraryButton.setOnAction(event -> mostraDialogoAggiungiLibreria(libro));
+
+        // Pulsante "Valuta Libro"
+        Button rateBookButton = new Button("⭐ Valuta Libro");
+        rateBookButton.getStyleClass().add("action-button");
+        rateBookButton.setOnAction(event -> {
+            dialogStage.close();
+            mostraFormValutazioneLibro(libro);
+        });
+
+        // Pulsante "Suggerisci Libro Correlato"
+        Button suggestButton = new Button("💡 Suggerisci Libro");
+        suggestButton.getStyleClass().add("action-button");
+        suggestButton.setOnAction(event -> mostraDialogoSuggerisciLibro(libro));
+
+        actionsBox.getChildren().addAll(addToLibraryButton, rateBookButton, suggestButton);
+        section.getChildren().add(actionsBox);
+
+        return section;
+    }
+
+    /**
+     * Mostra un dialogo per aggiungere il libro a una libreria.
+     */
+    private void mostraDialogoAggiungiLibreria(Libro libro) {
+        // Carica prima le librerie dell'utente
+        Task<List<Libreria>> loadLibrariesTask = new Task<>() {
+            @Override
+            protected List<Libreria> call() throws Exception {
+                return client.elencaLibrerie();
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Libreria> librerie = getValue();
+
+                if (librerie.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Nessuna Libreria");
+                    alert.setHeaderText("Non hai ancora creato librerie");
+                    alert.setContentText("Crea prima una libreria nella sezione Librerie per poter aggiungere libri.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alert.showAndWait();
+                    return;
+                }                // Crea dialogo di selezione libreria con wrapper per display migliorato
+                List<LibreriaDisplay> librerieDisplay = librerie.stream()
+                        .map(LibreriaDisplay::new)
+                        .collect(java.util.stream.Collectors.toList());
+
+                ChoiceDialog<LibreriaDisplay> dialog = new ChoiceDialog<>(librerieDisplay.get(0), librerieDisplay);
+                dialog.setTitle("Seleziona Libreria");
+                dialog.setHeaderText("Aggiungi \"" + libro.titolo() + "\" alla libreria");
+                dialog.setContentText("Scegli la libreria:");
+                dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+                Optional<LibreriaDisplay> result = dialog.showAndWait();
+                result.ifPresent(libreriaDisplay -> {
+                    Libreria libreria = libreriaDisplay.getLibreria();
+                    // Aggiungi il libro alla libreria selezionata
+                    Task<Boolean> addBookTask = new Task<>() {
+                        @Override
+                        protected Boolean call() throws Exception {
+                            return client.aggiungiLibroALibreria(libreria.libreriaID(), libro.libroId());
+                        }
+
+                        @Override
+                        protected void succeeded() {
+                            boolean success = getValue();
+                            if (success) {
+                                stampaConAnimazione("Libro aggiunto alla libreria \"" + libreria.nomeLibreria() + "\" con successo.");
+                            } else {
+                                stampaConAnimazione("Errore nell'aggiunta del libro alla libreria (potrebbe già essere presente).");
+                            }
+                        }
+
+                        @Override
+                        protected void failed() {
+                            stampaConAnimazione("Errore: " + getException().getMessage());
+                        }
+                    };
+
+                    new Thread(addBookTask).start();
+                });
+            }
+
+            @Override
+            protected void failed() {
+                stampaConAnimazione("Errore nel caricamento delle librerie: " + getException().getMessage());
+            }
+        };
+
+        new Thread(loadLibrariesTask).start();
+    }
+
+    /**
+     * Mostra il form di valutazione per il libro specifico.
+     */
+    private void mostraFormValutazioneLibro(Libro libro) {
+        // Usa il form di valutazione esistente
+        mostraFormValutazione();
+    }
+
+    /**
+     * Mostra un dialogo per suggerire un libro correlato.
+     */
+    private void mostraDialogoSuggerisciLibro(Libro libroRiferimento) {
+        // Prima carica tutte le librerie dell'utente
+        Task<List<Libreria>> loadLibrariesTask = new Task<>() {
+            @Override
+            protected List<Libreria> call() throws Exception {
+                return client.elencaLibrerie();
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Libreria> librerie = getValue();
+
+                if (librerie.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Nessuna Libreria");
+                    alert.setHeaderText("Non hai ancora creato librerie");
+                    alert.setContentText("Crea prima delle librerie e aggiungi libri per poter suggerire libri correlati.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alert.showAndWait();
+                    return;
+                }
+
+                // Carica tutti i libri dalle librerie dell'utente
+                caricaLibriDaLibrerie(librerie, libroRiferimento);
+            }
+
+            @Override
+            protected void failed() {
+                stampaConAnimazione("Errore nel caricamento delle librerie: " + getException().getMessage());
+            }
+        };
+
+        new Thread(loadLibrariesTask).start();
+    }
+
+    /**
+     * Carica tutti i libri dalle librerie dell'utente per la selezione.
+     */
+    private void caricaLibriDaLibrerie(List<Libreria> librerie, Libro libroRiferimento) {
+        Task<List<Libro>> loadBooksTask = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                List<Libro> tuttiLibri = new java.util.ArrayList<>();
+                for (Libreria libreria : librerie) {
+                    List<Libro> libriLibreria = client.visualizzaLibreria(libreria.libreriaID());
+                    tuttiLibri.addAll(libriLibreria);
+                }
+
+                // Rimuovi duplicati basandosi sull'ID del libro
+                return tuttiLibri.stream()
+                        .collect(java.util.stream.Collectors.toMap(
+                                Libro::libroId,
+                                libro -> libro,
+                                (existing, replacement) -> existing
+                        ))
+                        .values()
+                        .stream()
+                        .filter(libro -> libro.libroId() != libroRiferimento.libroId()) // Escludi il libro di riferimento
+                        .collect(java.util.stream.Collectors.toList());
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Libro> libriDisponibili = getValue();
+
+                if (libriDisponibili.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Nessun Libro Disponibile");
+                    alert.setHeaderText("Non ci sono libri disponibili per i suggerimenti");
+                    alert.setContentText("Aggiungi libri alle tue librerie per poter suggerire libri correlati.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alert.showAndWait();
+                    return;
+                }
+
+                // Mostra il dialogo di selezione del libro
+                mostraDialogoSelezioneLibro(libriDisponibili, libroRiferimento);
+            }
+
+            @Override
+            protected void failed() {
+                stampaConAnimazione("Errore nel caricamento dei libri: " + getException().getMessage());
+            }
+        };
+
+        new Thread(loadBooksTask).start();
+    }
+
+    /**
+     * Mostra il dialogo per selezionare un libro da suggerire.
+     */
+    private void mostraDialogoSelezioneLibro(List<Libro> libriDisponibili, Libro libroRiferimento) {
+        // Crea wrapper per display migliorato
+        List<LibroDisplay> libriDisplay = libriDisponibili.stream()
+                .map(LibroDisplay::new)
+                .collect(java.util.stream.Collectors.toList());
+
+        ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), libriDisplay);
+        dialog.setTitle("Suggerisci Libro Correlato");
+        dialog.setHeaderText("Suggerisci un libro correlato a \"" + libroRiferimento.titolo() + "\"");
+        dialog.setContentText("Scegli un libro dalle tue librerie:");
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        Optional<LibroDisplay> result = dialog.showAndWait();
+        result.ifPresent(libroDisplay -> {
+            Libro libroSelezionato = libroDisplay.getLibro();
+            // Salva il suggerimento
+            Task<Integer> suggestTask = new Task<>() {
+                @Override
+                protected Integer call() throws Exception {
+                    return client.salvaConsiglio(libroRiferimento.libroId(), libroSelezionato.libroId());
+                }
+
+                @Override
+                protected void succeeded() {
+                    Integer consiglioId = getValue();
+                    if (consiglioId > 0) {
+                        stampaConAnimazione("Suggerimento \"" + libroSelezionato.titolo() + "\" salvato con successo per \"" + libroRiferimento.titolo() + "\".");
+                    } else {
+                        stampaConAnimazione("Errore nel salvataggio del suggerimento (potrebbe già esistere).");
+                    }
+                }
+
+                @Override
+                protected void failed() {
+                    stampaConAnimazione("Errore: " + getException().getMessage());
+                }
+            };
+
+            new Thread(suggestTask).start();
+        });
     }
 }

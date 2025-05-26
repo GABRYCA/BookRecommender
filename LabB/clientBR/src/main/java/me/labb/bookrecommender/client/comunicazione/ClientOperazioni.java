@@ -566,14 +566,9 @@ public class ClientOperazioni {
      *
      * @param libroID ID del libro di cui visualizzare le valutazioni
      * @return Lista delle valutazioni del libro, o una lista vuota se nessuna valutazione è stata trovata
-     * @throws IOException           se si verifica un errore durante la comunicazione
-     * @throws IllegalStateException se l'utente non è autenticato
+     * @throws IOException se si verifica un errore durante la comunicazione
      */
     public List<Valutazione> visualizzaValutazioniLibro(int libroID) throws IOException {
-        if (!isAutenticato()) {
-            throw new IllegalStateException("Nessun utente autenticato");
-        }
-
         String risposta = client.inviaComando("VALUTAZIONI_LIBRO", String.valueOf(libroID));
 
         List<Valutazione> valutazioni = new ArrayList<>();
