@@ -24,7 +24,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ClientController implements Initializable {
+    // Cache locale dei libri per mostrare titolo/autore nelle valutazioni
+    private final Map<Integer, Libro> libriCache = new HashMap<>();
 
     @FXML private Label statusLabel;
     @FXML private Button connettiBtn;
@@ -187,10 +192,16 @@ public class ClientController implements Initializable {
                 libreriaContentContainer.getChildren().clear();
                 List<Libro> libri = getValue();
 
+                // Aggiorna la cache locale dei libri
+                for (Libro libro : libri) {
+                    libriCache.put(libro.libroId(), libro);
+                }
+
                 if (libri.isEmpty()) {
                     Label emptyLabel = new Label("Questa libreria è vuota. Aggiungi dei libri!");
                     emptyLabel.getStyleClass().add("empty-label");
-                    libreriaContentContainer.getChildren().add(emptyLabel);                } else {
+                    libreriaContentContainer.getChildren().add(emptyLabel);
+                } else {
                     for (Libro libro : libri) {
                         libreriaContentContainer.getChildren().add(creaCardLibro(libro, libreriaID));
                     }
@@ -824,8 +835,15 @@ public class ClientController implements Initializable {
         card.getStyleClass().add("valutazione-card");
         card.setPadding(new Insets(10));
 
-        // Intestazione
-        Label header = new Label("Valutazione Libro ID: " + valutazione.libroID());
+        // Recupera titolo e autore dalla cache se disponibili
+        Libro libro = libriCache.get(valutazione.libroID());
+        String headerText;
+        if (libro != null) {
+            headerText = "Valutazione: " + libro.titolo() + " (" + libro.autori() + ")";
+        } else {
+            headerText = "Valutazione Libro ID: " + valutazione.libroID();
+        }
+        Label header = new Label(headerText);
         header.getStyleClass().add("valutazione-header");
 
         // Punteggi
@@ -857,11 +875,15 @@ public class ClientController implements Initializable {
         }
 
         // Data
-        Label dataLabel = new Label("Data: " + (valutazione.dataValutazione() != null ? valutazione.dataValutazione().toString() : "N/A"));
+        Label dataLabel = new Label("Data: " + (valutazione.dataValutazione() != null ? valutazione.dataValutazione().toLocalDate().toString() : "N/A"));
         dataLabel.getStyleClass().add("valutazione-data");
 
-        // Aggiungi tutti gli elementi alla card
-        card.getChildren().addAll(header, punteggiBox, noteBox, dataLabel);
+        // Voto finale (media)
+        double media = (valutazione.scoreStile() + valutazione.scoreContenuto() + valutazione.scoreGradevolezza() + valutazione.scoreOriginalita() + valutazione.scoreEdizione()) / 5.0;
+        Label mediaLabel = new Label(String.format("Voto medio: %.2f", media));
+        mediaLabel.getStyleClass().add("valutazione-media");
+
+        card.getChildren().addAll(header, punteggiBox, mediaLabel, noteBox, dataLabel);
 
         // Aggiungi effetto hover
         card.setOnMouseEntered(e -> {
