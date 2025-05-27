@@ -128,7 +128,8 @@ public class ClientHandler implements Runnable {
                 case "RIMUOVI_LIBRO":
                     return rimuoviLibro(parametri);
                 case "VISUALIZZA_LIBRERIA":
-                    return visualizzaLibreria(parametri);                case "ELIMINA_LIBRERIA":
+                    return visualizzaLibreria(parametri);
+                case "ELIMINA_LIBRERIA":
                     return eliminaLibreria(parametri);
                 case "RINOMINA_LIBRERIA":
                     return rinominaLibreria(parametri);
@@ -144,7 +145,8 @@ public class ClientHandler implements Runnable {
                     return salvaConsiglio(parametri);
                 case "MIEI_CONSIGLI":
                     return visualizzaMieiConsigli();
-            }        } else if (azione.equals("LOGOUT") || azione.equals("PROFILO") ||
+            }
+        } else if (azione.equals("LOGOUT") || azione.equals("PROFILO") ||
                 azione.equals("CREA_LIBRERIA") || azione.equals("LIBRERIE") ||
                 azione.equals("AGGIUNGI_LIBRO") || azione.equals("RIMUOVI_LIBRO") ||
                 azione.equals("VISUALIZZA_LIBRERIA") || azione.equals("ELIMINA_LIBRERIA") ||
@@ -162,7 +164,7 @@ public class ClientHandler implements Runnable {
      * Logout dell'utente autenticato.
      *
      * @return Messaggio di successo in formato JSON
-     * */
+     */
     private String logout() {
         String nomeUtente = utenteAutenticato.nomeCompleto();
         utenteAutenticato = null;
@@ -393,9 +395,9 @@ public class ClientHandler implements Runnable {
     /**
      * Crea informazioni per il comando.
      *
-     * @param nome Il nome del comando
+     * @param nome        Il nome del comando
      * @param descrizione La descrizione del comando
-     * @param parametri I parametri richiesti dal comando
+     * @param parametri   I parametri richiesti dal comando
      * @return Una mappa contenente le informazioni del comando
      */
     private Map<String, Object> createCommandInfo(String nome, String descrizione, String parametri) {
@@ -445,7 +447,7 @@ public class ClientHandler implements Runnable {
      *
      * @param nomeLibreria Il nome della libreria da creare
      * @return Messaggio di successo o errore in formato JSON
-     * */
+     */
     private String creaLibreria(String nomeLibreria) {
         if (nomeLibreria.isEmpty()) {
             return ResponseFormatter.erroreJson("Specifica un nome per la libreria.");
@@ -867,6 +869,7 @@ public class ClientHandler implements Runnable {
             for (Consiglio consiglio : consigliObj) {
                 Map<String, Object> consiglioMap = new HashMap<>();
                 consiglioMap.put("consiglioID", consiglio.consiglioID());
+                consiglioMap.put("userID", consiglio.userID());
                 consiglioMap.put("libroRiferimentoID", consiglio.libroRiferimentoID());
                 libroDAO.getLibroById(consiglio.libroRiferimentoID()).ifPresent(l -> consiglioMap.put("titoloLibroRiferimento", l.titolo()));
                 consiglioMap.put("libroSuggeritoID", consiglio.libroSuggeritoID());
@@ -935,7 +938,7 @@ public class ClientHandler implements Runnable {
 
             String vecchioNome = libreriaOpt.get().nomeLibreria();
             boolean successo = libreriaDAO.rinominaLibreria(libreriaID, nuovoNome.trim());
-            
+
             if (successo) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("libreriaID", libreriaID);

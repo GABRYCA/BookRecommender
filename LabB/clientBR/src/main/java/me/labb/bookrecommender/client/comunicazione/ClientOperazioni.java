@@ -746,16 +746,27 @@ public class ClientOperazioni {
         if (client.isSuccesso(risposta)) {
             Map<String, Object> dati = client.estraiDati(risposta);
             if (dati != null && dati.containsKey("consigli")) {
-                List<Map<String, Object>> consigliList = (List<Map<String, Object>>) dati.get("consigli");
-
-                for (Map<String, Object> consiglioMap : consigliList) {
+                List<Map<String, Object>> consigliList = (List<Map<String, Object>>) dati.get("consigli");                for (Map<String, Object> consiglioMap : consigliList) {
+                    // Verifica che tutti i campi necessari siano presenti
+                    Object consiglioIdObj = consiglioMap.get("consiglioID");
+                    Object userIdObj = consiglioMap.get("userID");
+                    Object libroRiferimentoIdObj = consiglioMap.get("libroRiferimentoID");
+                    Object libroSuggeritoIdObj = consiglioMap.get("libroSuggeritoID");
+                    Object dataSuggerimentoObj = consiglioMap.get("dataSuggerimento");
+                    
+                    if (consiglioIdObj == null || userIdObj == null || libroRiferimentoIdObj == null || 
+                        libroSuggeritoIdObj == null || dataSuggerimentoObj == null) {
+                        System.err.println("Consiglio incompleto ricevuto dal server: " + consiglioMap);
+                        continue; // Salta questo consiglio incompleto
+                    }
+                    
                     // Crea l'oggetto Consiglio
                     Consiglio consiglio = new Consiglio(
-                            ((Number) consiglioMap.get("consiglioID")).intValue(),
-                            ((Number) consiglioMap.get("userID")).intValue(),
-                            ((Number) consiglioMap.get("libroRiferimentoID")).intValue(),
-                            ((Number) consiglioMap.get("libroSuggeritoID")).intValue(),
-                            ZonedDateTime.parse((String) consiglioMap.get("dataSuggerimento"))
+                            ((Number) consiglioIdObj).intValue(),
+                            ((Number) userIdObj).intValue(),
+                            ((Number) libroRiferimentoIdObj).intValue(),
+                            ((Number) libroSuggeritoIdObj).intValue(),
+                            ZonedDateTime.parse((String) dataSuggerimentoObj)
                     );
 
                     consigli.add(consiglio);
