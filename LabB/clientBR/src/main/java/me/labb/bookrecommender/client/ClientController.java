@@ -2090,6 +2090,30 @@ public class ClientController implements Initializable {
     }
 
     /**
+     * Mostra un messaggio di errore con un popup Alert che si chiude automaticamente dopo 3 secondi
+     * @param messaggio Il messaggio di errore da mostrare
+     */
+    private void mostraMessaggioErrore(String messaggio) {
+        // Crea un Alert di tipo ERROR per il messaggio di errore
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setTitle("Operazione fallita");
+        errorAlert.setHeaderText("Errore! ❌");
+        errorAlert.setContentText(messaggio);
+
+        // Aggiungi stile all'alert
+        errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        // Mostra il messaggio senza bloccare e con auto-close dopo 3 secondi
+        errorAlert.show();
+        // Auto-close dopo 3 secondi
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), _ -> errorAlert.close()));
+        timeline.play();
+        
+        // Stampa anche nella console per coerenza
+        stampaConAnimazione("ERRORE: " + messaggio);
+    }
+
+    /**
      * Gestisce la rinomina di una libreria.
      */
     @FXML
@@ -2677,31 +2701,28 @@ public class ClientController implements Initializable {
                         @Override
                         protected Boolean call() throws Exception {
                             return client.aggiungiLibroALibreria(libreria.libreriaID(), libro.libroId());
-                        }
-
-                        @Override
+                        }                        @Override
                         protected void succeeded() {
                             boolean success = getValue();
                             if (success) {
-                                stampaConAnimazione("Libro aggiunto alla libreria \"" + libreria.nomeLibreria() + "\" con successo.");
+                                mostraMessaggioSuccesso("Libro \"" + libro.titolo() + "\" aggiunto alla libreria \"" + libreria.nomeLibreria() + "\" con successo!");
                             } else {
-                                stampaConAnimazione("Errore nell'aggiunta del libro alla libreria (potrebbe già essere presente).");
+                                mostraMessaggioErrore("Impossibile aggiungere il libro alla libreria. Il libro potrebbe già essere presente.");
                             }
                         }
 
                         @Override
                         protected void failed() {
-                            stampaConAnimazione("Errore: " + getException().getMessage());
+                            mostraMessaggioErrore("Errore durante l'aggiunta del libro: " + getException().getMessage());
                         }
                     };
 
-                    new Thread(addBookTask).start();
-                });
+                    new Thread(addBookTask).start();                });
             }
 
             @Override
             protected void failed() {
-                stampaConAnimazione("Errore nel caricamento delle librerie: " + getException().getMessage());
+                mostraMessaggioErrore("Errore nel caricamento delle librerie: " + getException().getMessage());
             }
         };
 
@@ -2816,7 +2837,7 @@ public class ClientController implements Initializable {
                 .map(LibroDisplay::new)
                 .collect(java.util.stream.Collectors.toList());
 
-        ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), libriDisplay);
+        ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), librerieDisplay);
         dialog.setTitle("Suggerisci Libro Correlato");
         dialog.setHeaderText("Suggerisci un libro correlato a \"" + libroRiferimento.titolo() + "\"");
         dialog.setContentText("Scegli un libro dalle tue librerie:");

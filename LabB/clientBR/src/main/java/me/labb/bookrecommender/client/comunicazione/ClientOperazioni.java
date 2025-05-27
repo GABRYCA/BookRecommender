@@ -753,13 +753,13 @@ public class ClientOperazioni {
                     Object libroRiferimentoIdObj = consiglioMap.get("libroRiferimentoID");
                     Object libroSuggeritoIdObj = consiglioMap.get("libroSuggeritoID");
                     Object dataSuggerimentoObj = consiglioMap.get("dataSuggerimento");
-                    
-                    if (consiglioIdObj == null || userIdObj == null || libroRiferimentoIdObj == null || 
-                        libroSuggeritoIdObj == null || dataSuggerimentoObj == null) {
+
+                    if (consiglioIdObj == null || userIdObj == null || libroRiferimentoIdObj == null ||
+                            libroSuggeritoIdObj == null || dataSuggerimentoObj == null) {
                         System.err.println("Consiglio incompleto ricevuto dal server: " + consiglioMap);
                         continue; // Salta questo consiglio incompleto
                     }
-                    
+
                     // Crea l'oggetto Consiglio
                     Consiglio consiglio = new Consiglio(
                             ((Number) consiglioIdObj).intValue(),
