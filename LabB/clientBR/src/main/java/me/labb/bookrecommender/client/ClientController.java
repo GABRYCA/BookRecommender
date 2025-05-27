@@ -1315,19 +1315,64 @@ public class ClientController implements Initializable {
         Label dataLabel = new Label("Salvato il: " + consiglio.dataSuggerimento().toLocalDate().toString());
         dataLabel.getStyleClass().add("consiglio-data");
         
-        footerBox.getChildren().addAll(calendarIcon, dataLabel);
-
-        // Pulsanti di azione (se necessari)
-        HBox pulsantiBox = new HBox(10);
-        pulsantiBox.setAlignment(Pos.CENTER_RIGHT);
-        
-        Button dettagliRifBtn = new Button("Dettagli libro di riferimento");
+        footerBox.getChildren().addAll(calendarIcon, dataLabel);        // Pulsanti di azione con miglior layout
+        HBox pulsantiBox = new HBox(15);        pulsantiBox.setAlignment(Pos.CENTER);
+        pulsantiBox.setPadding(new Insets(10, 0, 0, 0));
+          Button dettagliRifBtn = new Button("Dettagli libro di riferimento");
         dettagliRifBtn.getStyleClass().addAll("secondary-button", "small-button");
         dettagliRifBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroRiferimentoID()));
+        
+        // Tooltip informativo per il pulsante di riferimento
+        Tooltip tooltipRif = new Tooltip("Visualizza i dettagli del libro che ti è piaciuto");
+        tooltipRif.setShowDelay(Duration.millis(500));
+        dettagliRifBtn.setTooltip(tooltipRif);
+        
+        // Animazioni per il pulsante secondario
+        dettagliRifBtn.setOnMouseEntered(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliRifBtn);
+            st.setToX(1.05);
+            st.setToY(1.05);
+            st.play();
+        });
+        
+        dettagliRifBtn.setOnMouseExited(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliRifBtn);
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.play();
+        });
         
         Button dettagliSugBtn = new Button("Dettagli libro suggerito");
         dettagliSugBtn.getStyleClass().addAll("primary-button", "small-button");
         dettagliSugBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroSuggeritoID()));
+        
+        // Tooltip informativo per il pulsante suggerito
+        Tooltip tooltipSug = new Tooltip("Visualizza i dettagli del libro che ti viene consigliato");
+        tooltipSug.setShowDelay(Duration.millis(500));
+        dettagliSugBtn.setTooltip(tooltipSug);
+        
+        // Animazioni per il pulsante primario
+        dettagliSugBtn.setOnMouseEntered(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliSugBtn);
+            st.setToX(1.05);
+            st.setToY(1.05);
+            st.play();
+            
+            // Effetto pulsazione per il pulsante principale
+            FadeTransition ft = new FadeTransition(Duration.millis(300), dettagliSugBtn);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.8);
+            ft.setCycleCount(2);
+            ft.setAutoReverse(true);
+            ft.play();
+        });
+        
+        dettagliSugBtn.setOnMouseExited(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliSugBtn);
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.play();
+        });
         
         pulsantiBox.getChildren().addAll(dettagliRifBtn, dettagliSugBtn);
 

@@ -770,25 +770,108 @@ Label{
     -fx-padding: 10px;
 }
 
-/* Miglioramenti per i pulsanti nei consigli */
+/* Pulsanti per i consigli */
 .consiglio-card .secondary-button {
-    -fx-background-color: #4b5563;
-    -fx-text-fill: #e5e7eb;
-    -fx-border-color: #6b7280;
+    -fx-background-color: #5a6983;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #3a4f74;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 3, 0, 0, 1);
+    -fx-min-width: 140px;
+    -fx-max-width: 200px;
+    -fx-pref-width: 170px;
 }
 
 .consiglio-card .secondary-button:hover {
-    -fx-background-color: #6b7280;
-    -fx-border-color: #9ca3af;
+    -fx-background-color: #6b7a9a;
+    -fx-border-color: #4f6ba3;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 2);
+    -fx-translate-y: -1px;
+}
+
+.consiglio-card .secondary-button:pressed {
+    -fx-background-color: #3a4f74;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
 }
 
 .consiglio-card .primary-button {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #2e426d;
     -fx-text-fill: white;
-    -fx-border-color: #2563eb;
+    -fx-border-color: #1a2946;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(46,66,109,0.4), 4, 0, 0, 1);
+    -fx-min-width: 140px;
+    -fx-max-width: 200px;
+    -fx-pref-width: 170px;
 }
 
 .consiglio-card .primary-button:hover {
-    -fx-background-color: #2563eb;
-    -fx-border-color: #1d4ed8;
+    -fx-background-color: #3a5084;
+    -fx-border-color: #4f6ba3;
+    -fx-effect: dropshadow(three-pass-box, rgba(46,66,109,0.6), 6, 0, 0, 3);
+    -fx-translate-y: -1px;
+}
+
+.consiglio-card .primary-button:pressed {
+    -fx-background-color: #1a2946;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+/* Migliora i pulsanti piccoli */
+.consiglio-card .small-button {
+    -fx-padding: 8px 14px;
+    -fx-font-size: 11px;
+}
+
+/* Transizioni fluide e baseline comune */
+.consiglio-card .secondary-button,
+.consiglio-card .primary-button {
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-transition: -fx-background-color 0.2s ease, -fx-border-color 0.2s ease, -fx-effect 0.2s ease;
+}
+
+/* Effetti focus per accessibilità */
+.consiglio-card .secondary-button:focused,
+.consiglio-card .primary-button:focused {
+    -fx-border-width: 2px;
+    -fx-border-color: #5b78a8;
+    -fx-effect: dropshadow(three-pass-box, rgba(91,120,168,0.6), 6, 0, 0, 0);
+}
+
+/* Pulsanti disabilitati */
+.consiglio-card .secondary-button:disabled,
+.consiglio-card .primary-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-background-color: #4b5563;
+    -fx-text-fill: #9ca3af;
+    -fx-border-color: #374151;
+    -fx-cursor: default;
+}
+
+/* Layout migliorato per i pulsanti - solo pulsanti centrati */
+.consiglio-card HBox {
+    -fx-spacing: 15px;
+    -fx-alignment: center-left;
+}
+
+/* Icone nei pulsanti */
+.consiglio-card .button .glyph-icon {
+    -fx-fill: currentColor;
+    -fx-font-size: 12px;
 }
