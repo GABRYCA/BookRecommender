@@ -2526,11 +2526,9 @@ public class ClientController implements Initializable {
 
         // Prezzo
         Label priceLabel = new Label("💰 Prezzo: €" + String.format("%.2f", libro.prezzo()));
-        priceLabel.getStyleClass().add("book-price");
-
-        // Data di pubblicazione (solo se l'anno è valido)
+        priceLabel.getStyleClass().add("book-price");        // Data di pubblicazione (solo se l'anno è valido)
         if (libro.annoPubblicazione() > 0) {
-            String dataString = libro.mesePubblicazione().isEmpty() ?
+            String dataString = (libro.mesePubblicazione() == null || libro.mesePubblicazione().isEmpty()) ?
                     String.valueOf(libro.annoPubblicazione()) :
                     libro.mesePubblicazione() + " " + libro.annoPubblicazione();
             Label dateLabel = new Label("📅 Pubblicazione: " + dataString);
@@ -3273,8 +3271,7 @@ public class ClientController implements Initializable {
      * Mostra i dettagli di un libro dato il suo ID. Recupera prima il libro dalla cache o dal server.
      *
      * @param libroId L'ID del libro di cui mostrare i dettagli
-     */
-    private void mostraDettagliLibro(int libroId) {
+     */    private void mostraDettagliLibro(int libroId) {
         // Prima controlla la cache locale
         if (libriCache.containsKey(libroId)) {
             mostraDettagliLibro(libriCache.get(libroId));
@@ -3282,7 +3279,6 @@ public class ClientController implements Initializable {
         }
 
         // Se non è in cache, cerca nei risultati già caricati
-        // Questo dovrebbe funzionare se l'utente ha già effettuato ricerche
         boolean libroTrovato = false;
         for (Node node : resultContainer.getChildren()) {
             if (node instanceof VBox) {
@@ -3300,8 +3296,20 @@ public class ClientController implements Initializable {
         }
 
         if (!libroTrovato) {
-            // Se il libro non è trovato, mostra un messaggio informativo
-            stampaConAnimazione("Dettagli libro non disponibili. Cerca prima il libro per visualizzarne i dettagli completi.");
+            // Se il libro non è trovato localmente, effettua una chiamata al server
+            try {
+                Libro libro = client.ottieniDettagliLibro(libroId);
+                if (libro != null) {
+                    // Aggiungi alla cache per future richieste
+                    libriCache.put(libroId, libro);
+                    mostraDettagliLibro(libro);
+                } else {
+                    stampaConAnimazione("Libro con ID " + libroId + " non trovato.");
+                }
+            } catch (IOException e) {
+                System.err.println("Errore durante il recupero dei dettagli del libro: " + e.getMessage());
+                stampaConAnimazione("Errore durante il recupero dei dettagli del libro. Riprova più tardi.");
+            }
         }
     }
 }

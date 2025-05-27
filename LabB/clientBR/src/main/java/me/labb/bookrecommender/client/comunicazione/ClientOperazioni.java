@@ -875,10 +875,40 @@ public class ClientOperazioni {
             String parametriJson = objectMapper.writeValueAsString(parametri);
             String risposta = client.inviaComando("RINOMINA_LIBRERIA", parametriJson);
             System.out.println(risposta);
-            return client.isSuccesso(risposta);
-        } catch (JsonProcessingException e) {
+            return client.isSuccesso(risposta);        } catch (JsonProcessingException e) {
             System.err.println("Errore nella serializzazione dei parametri: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Ottiene i dettagli completi di un libro specifico tramite il suo ID.
+     *
+     * @param libroID ID del libro di cui ottenere i dettagli
+     * @return L'oggetto Libro con tutti i dettagli, o null se non trovato
+     * @throws IOException se si verifica un errore durante la comunicazione
+     */
+    public Libro ottieniDettagliLibro(int libroID) throws IOException {
+        String risposta = client.inviaComando("DETTAGLI_LIBRO", String.valueOf(libroID));
+
+        if (client.isSuccesso(risposta)) {
+            Map<String, Object> dati = client.estraiDati(risposta);
+            if (dati != null && dati.containsKey("libro")) {
+                Map<String, Object> libroMap = (Map<String, Object>) dati.get("libro");
+                  return new Libro(
+                    (Integer) libroMap.get("libroID"),
+                    (String) libroMap.get("titolo"),
+                    (String) libroMap.get("autori"),
+                    (String) libroMap.get("descrizione"),
+                    (String) libroMap.get("categoria"),
+                    (String) libroMap.get("editore"),
+                    ((Number) libroMap.get("prezzo")).floatValue(),
+                    (String) libroMap.get("mesePubblicazione"),
+                    (Integer) libroMap.get("annoPubblicazione")
+                );
+            }
+        }
+        
+        return null;
     }
 }

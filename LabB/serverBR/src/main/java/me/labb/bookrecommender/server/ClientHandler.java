@@ -98,11 +98,12 @@ public class ClientHandler implements Runnable {
             System.out.println("Ricevuta richiesta JSON: comando=" + azione + ", parametri=" + parametri);
         }
         System.out.println("Ricevuta richiesta: comando=" + azione + ", parametri=" + parametri);
-        switch (azione) {
-            case "CERCA":
+        switch (azione) {            case "CERCA":
                 return cercaLibri(parametri);
             case "CONSIGLIA":
                 return consigliaLibri(parametri);
+            case "DETTAGLI_LIBRO":
+                return dettagliLibro(parametri);
             case "HELP":
                 return getComandi();
             case "LOGIN":
@@ -226,6 +227,43 @@ public class ClientHandler implements Runnable {
         } catch (SQLException e) {
             System.err.println("Errore durante la ricerca dei libri: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
+        }    }
+
+    /**
+     * Ottiene i dettagli di un libro specifico dal suo ID.
+     *
+     * @param libroIDStr L'ID del libro di cui ottenere i dettagli
+     * @return Messaggio di successo o errore in formato JSON con i dettagli del libro
+     */
+    private String dettagliLibro(String libroIDStr) {
+        if (libroIDStr.isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica l'ID del libro di cui visualizzare i dettagli.");
+        }
+        try {
+            int libroID = Integer.parseInt(libroIDStr);
+            Optional<Libro> libroOpt = libroDAO.getLibroById(libroID);
+            
+            if (libroOpt.isEmpty()) {
+                return ResponseFormatter.erroreJson("Libro con ID " + libroID + " non trovato.");
+            }
+            
+            Libro libro = libroOpt.get();            Map<String, Object> libroMap = new HashMap<>();
+            libroMap.put("libroID", libro.libroId());
+            libroMap.put("titolo", libro.titolo());
+            libroMap.put("autori", libro.autori());
+            libroMap.put("categoria", libro.categoria());
+            libroMap.put("prezzo", libro.prezzo());
+            libroMap.put("descrizione", libro.descrizione());
+            libroMap.put("annoPubblicazione", libro.annoPubblicazione());
+            libroMap.put("editore", libro.editore());
+            libroMap.put("mesePubblicazione", libro.mesePubblicazione());
+            
+            return ResponseFormatter.successoJson("Dettagli libro ID: " + libroID, ResponseFormatter.singletonMap("libro", libroMap));
+        } catch (NumberFormatException e) {
+            return ResponseFormatter.erroreJson("ID libro non valido. Assicurati di inserire un numero intero.");
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero dei dettagli del libro: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante il recupero dei dettagli del libro. Riprova più tardi.");
         }
     }
 
@@ -343,10 +381,9 @@ public class ClientHandler implements Runnable {
         List<Map<String, Object>> comandiAccount = new ArrayList<>();
         List<Map<String, Object>> comandiLibrerie = new ArrayList<>();
         List<Map<String, Object>> comandiValutazioni = new ArrayList<>();
-        List<Map<String, Object>> comandiConsigli = new ArrayList<>();
-
-        comandiGenerali.add(createCommandInfo("CERCA", "Cerca libri con il termine indicato nel titolo o nella descrizione", "<termine>"));
+        List<Map<String, Object>> comandiConsigli = new ArrayList<>();        comandiGenerali.add(createCommandInfo("CERCA", "Cerca libri con il termine indicato nel titolo o nella descrizione", "<termine>"));
         comandiGenerali.add(createCommandInfo("CONSIGLIA", "Ottieni consigli di libri in una determinata categoria", "<categoria>"));
+        comandiGenerali.add(createCommandInfo("DETTAGLI_LIBRO", "Ottieni i dettagli completi di un libro specifico", "<libroID>"));
         comandiGenerali.add(createCommandInfo("FORMAT", "Imposta il formato di risposta (TEXT o JSON)", "<formato>"));
         comandiGenerali.add(createCommandInfo("HELP", "Mostra questa lista di comandi", ""));
         comandiGenerali.add(createCommandInfo("EXIT", "Chiudi la connessione", ""));
