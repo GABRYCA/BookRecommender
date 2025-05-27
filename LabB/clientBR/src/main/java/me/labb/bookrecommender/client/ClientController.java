@@ -2636,14 +2636,11 @@ public class ClientController implements Initializable {
         // Pulsante "Aggiungi alla Libreria"
         Button addToLibraryButton = new Button("📚 Aggiungi alla Libreria");
         addToLibraryButton.getStyleClass().add("action-button");
-        addToLibraryButton.setOnAction(event -> mostraDialogoAggiungiLibreria(libro));
-
-        // Pulsante "Valuta Libro"
+        addToLibraryButton.setOnAction(event -> mostraDialogoAggiungiLibreria(libro));        // Pulsante "Valuta Libro"
         Button rateBookButton = new Button("⭐ Valuta Libro");
         rateBookButton.getStyleClass().add("action-button");
         rateBookButton.setOnAction(event -> {
-            dialogStage.close();
-            mostraFormValutazioneLibro(libro);
+            mostraFormValutazioneLibro(libro, dialogStage);
         });
 
         // Pulsante "Suggerisci Libro Correlato"
@@ -2727,14 +2724,156 @@ public class ClientController implements Initializable {
         };
 
         new Thread(loadLibrariesTask).start();
-    }
-
-    /**
+    }    /**
      * Mostra il form di valutazione per il libro specifico.
      */
-    private void mostraFormValutazioneLibro(Libro libro) {
-        // Usa il form di valutazione esistente
-        mostraFormValutazione();
+    private void mostraFormValutazioneLibro(Libro libro, Stage ownerStage) {
+        if (!client.isAutenticato()) {
+            stampaConAnimazione("Devi effettuare il login per valutare un libro.");
+            return;
+        }        // Crea un dialogo per inserire i punteggi (ID libro già impostato)
+        Dialog<Valutazione> dialog = new Dialog<>();
+        dialog.setTitle("Valuta Libro");
+        dialog.setHeaderText("Valuta: " + libro.titolo() + " (ID: " + libro.libroId() + ")");
+
+        // Imposta il dialogo dei dettagli del libro come owner per mantenere la gerarchia corretta
+        dialog.initOwner(ownerStage);
+
+        // Aggiungi stile al dialogo
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        // Configura i pulsanti
+        ButtonType valutaButtonType = new ButtonType("Valuta", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(valutaButtonType, ButtonType.CANCEL);
+
+        // Crea la griglia per i campi
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        // Campi per i punteggi e le note
+        Spinner<Integer> scoreStileSpinner = new Spinner<>(1, 5, 3);
+        scoreStileSpinner.setEditable(true);
+        TextField noteStileField = new TextField();
+        noteStileField.setPromptText("Note sullo stile");
+
+        Spinner<Integer> scoreContenutoSpinner = new Spinner<>(1, 5, 3);
+        scoreContenutoSpinner.setEditable(true);
+        TextField noteContenutoField = new TextField();
+        noteContenutoField.setPromptText("Note sul contenuto");
+
+        Spinner<Integer> scoreGradevolezzaSpinner = new Spinner<>(1, 5, 3);
+        scoreGradevolezzaSpinner.setEditable(true);
+        TextField noteGradevolezzaField = new TextField();
+        noteGradevolezzaField.setPromptText("Note sulla gradevolezza");
+
+        Spinner<Integer> scoreOriginalitaSpinner = new Spinner<>(1, 5, 3);
+        scoreOriginalitaSpinner.setEditable(true);
+        TextField noteOriginalitaField = new TextField();
+        noteOriginalitaField.setPromptText("Note sull'originalità");
+
+        Spinner<Integer> scoreEdizioneSpinner = new Spinner<>(1, 5, 3);
+        scoreEdizioneSpinner.setEditable(true);
+        TextField noteEdizioneField = new TextField();
+        noteEdizioneField.setPromptText("Note sull'edizione");
+
+        // Aggiungi i campi alla griglia (senza campo ID libro)
+        grid.add(new Label("Stile (1-5):"), 0, 0);
+        grid.add(scoreStileSpinner, 1, 0);
+        grid.add(new Label("Note:"), 2, 0);
+        grid.add(noteStileField, 3, 0);
+
+        grid.add(new Label("Contenuto (1-5):"), 0, 1);
+        grid.add(scoreContenutoSpinner, 1, 1);
+        grid.add(new Label("Note:"), 2, 1);
+        grid.add(noteContenutoField, 3, 1);
+
+        grid.add(new Label("Gradevolezza (1-5):"), 0, 2);
+        grid.add(scoreGradevolezzaSpinner, 1, 2);
+        grid.add(new Label("Note:"), 2, 2);
+        grid.add(noteGradevolezzaField, 3, 2);
+
+        grid.add(new Label("Originalità (1-5):"), 0, 3);
+        grid.add(scoreOriginalitaSpinner, 1, 3);
+        grid.add(new Label("Note:"), 2, 3);
+        grid.add(noteOriginalitaField, 3, 3);
+
+        grid.add(new Label("Edizione (1-5):"), 0, 4);
+        grid.add(scoreEdizioneSpinner, 1, 4);
+        grid.add(new Label("Note:"), 2, 4);
+        grid.add(noteEdizioneField, 3, 4);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Richiedi il focus sul primo spinner
+        Platform.runLater(scoreStileSpinner::requestFocus);
+
+        // Converti il risultato
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == valutaButtonType) {
+                short scoreStile = scoreStileSpinner.getValue().shortValue();
+                String noteStile = noteStileField.getText();
+                short scoreContenuto = scoreContenutoSpinner.getValue().shortValue();
+                String noteContenuto = noteContenutoField.getText();
+                short scoreGradevolezza = scoreGradevolezzaSpinner.getValue().shortValue();
+                String noteGradevolezza = noteGradevolezzaField.getText();
+                short scoreOriginalita = scoreOriginalitaSpinner.getValue().shortValue();
+                String noteOriginalita = noteOriginalitaField.getText();
+                short scoreEdizione = scoreEdizioneSpinner.getValue().shortValue();
+                String noteEdizione = noteEdizioneField.getText();
+
+                // Crea un oggetto Valutazione temporaneo (senza ID e data)
+                return new Valutazione(
+                    0,
+                    client.getUtenteAutenticato().userID(),
+                    libro.libroId(), // Usa l'ID del libro passato come parametro
+                    scoreStile,
+                    noteStile,
+                    scoreContenuto,
+                    noteContenuto,
+                    scoreGradevolezza,
+                    noteGradevolezza,
+                    scoreOriginalita,
+                    noteOriginalita,
+                    scoreEdizione,
+                    noteEdizione,
+                    null
+                );
+            }
+            return null;
+        });
+
+        // Mostra il dialogo e processa il risultato
+        Optional<Valutazione> result = dialog.showAndWait();
+
+        result.ifPresent(valutazione -> {
+            try {
+                int valutazioneID = client.valutaLibro(
+                    valutazione.libroID(),
+                    valutazione.scoreStile(),
+                    valutazione.noteStile(),
+                    valutazione.scoreContenuto(),
+                    valutazione.noteContenuto(),
+                    valutazione.scoreGradevolezza(),
+                    valutazione.noteGradevolezza(),
+                    valutazione.scoreOriginalita(),
+                    valutazione.noteOriginalita(),
+                    valutazione.scoreEdizione(),
+                    valutazione.noteEdizione()
+                );
+
+                if (valutazioneID > 0) {
+                    stampaConAnimazione("Valutazione salvata con successo (ID: " + valutazioneID + ").");
+                } else {
+                    stampaConAnimazione("Errore nel salvataggio della valutazione.");
+                }
+            } catch (IOException e) {
+                stampaConAnimazione("Errore: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                stampaConAnimazione("Errore: " + e.getMessage());
+            }
+        });
     }
 
     /**
@@ -2837,7 +2976,7 @@ public class ClientController implements Initializable {
                 .map(LibroDisplay::new)
                 .collect(java.util.stream.Collectors.toList());
 
-        ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), librerieDisplay);
+        ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), libriDisplay);
         dialog.setTitle("Suggerisci Libro Correlato");
         dialog.setHeaderText("Suggerisci un libro correlato a \"" + libroRiferimento.titolo() + "\"");
         dialog.setContentText("Scegli un libro dalle tue librerie:");
