@@ -825,7 +825,9 @@ public class ClientOperazioni {
                             libroSuggeritoIdObj == null || dataSuggerimentoObj == null) {
                         System.err.println("Consiglio incompleto ricevuto dal server: " + consiglioMap);
                         continue; // Salta questo consiglio incompleto
-                    }
+                    }                    // Estrai i titoli dei libri se disponibili
+                    String titoloLibroRiferimento = (String) consiglioMap.get("titoloLibroRiferimento");
+                    String titoloLibroSuggerito = (String) consiglioMap.get("titoloLibroSuggerito");
 
                     // Crea l'oggetto Consiglio
                     Consiglio consiglio = new Consiglio(
@@ -833,7 +835,9 @@ public class ClientOperazioni {
                             ((Number) userIdObj).intValue(),
                             ((Number) libroRiferimentoIdObj).intValue(),
                             ((Number) libroSuggeritoIdObj).intValue(),
-                            ZonedDateTime.parse((String) dataSuggerimentoObj)
+                            ZonedDateTime.parse((String) dataSuggerimentoObj),
+                            titoloLibroRiferimento,
+                            titoloLibroSuggerito
                     );
 
                     consigli.add(consiglio);

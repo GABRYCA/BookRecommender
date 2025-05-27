@@ -1094,11 +1094,9 @@ public class ClientController implements Initializable {
                     // Aggiungi un'etichetta con il numero di consigli
                     Label titleLabel = new Label("I tuoi consigli salvati (" + consigli.size() + ")");
                     titleLabel.getStyleClass().add("section-title");
-                    consigliContainer.getChildren().add(titleLabel);
-
-                    // Aggiungi le card dei consigli
+                    consigliContainer.getChildren().add(titleLabel);                    // Aggiungi le card dei consigli con la nuova implementazione migliorata
                     for (Consiglio consiglio : consigli) {
-                        VBox consiglioCard = creaCardConsiglio(consiglio);
+                        VBox consiglioCard = creaCardConsiglioMigliorata(consiglio);
                         consigliContainer.getChildren().add(consiglioCard);
                     }
                 }
@@ -1227,44 +1225,133 @@ public class ClientController implements Initializable {
         bookCard.getChildren().add(salvaConsiglioBtn);
 
         return bookCard;
-    }
-
-    /**
-     * Crea una card per visualizzare un consiglio.
+    }    /**
+     * Crea una card migliorata per visualizzare un consiglio con informazioni dettagliate sui libri.
      * 
      * @param consiglio Il consiglio da visualizzare
      * @return Un nodo VBox che rappresenta la card del consiglio
      */
-    private VBox creaCardConsiglio(Consiglio consiglio) {
-        VBox card = new VBox(5);
+    private VBox creaCardConsiglioMigliorata(Consiglio consiglio) {
+        VBox card = new VBox(10);
         card.getStyleClass().add("consiglio-card");
-        card.setPadding(new Insets(10));
+        card.setPadding(new Insets(15));
 
-        // Intestazione
-        Label header = new Label("Consiglio ID: " + consiglio.consiglioID());
+        // Intestazione della card
+        HBox headerBox = new HBox(10);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        
+        Label headerIcon = new Label("💡");
+        headerIcon.getStyleClass().add("consiglio-icon");
+        
+        Label header = new Label("Consiglio #" + consiglio.consiglioID());
         header.getStyleClass().add("consiglio-header");
+        
+        headerBox.getChildren().addAll(headerIcon, header);
 
-        // Dettagli
-        Label libroRiferimentoLabel = new Label("Libro Riferimento ID: " + consiglio.libroRiferimentoID());
-        Label libroSuggeritoLabel = new Label("Libro Suggerito ID: " + consiglio.libroSuggeritoID());
+        // Sezione "Se ti è piaciuto"
+        VBox libroRiferimentoSection = new VBox(5);
+        Label labelRiferimento = new Label("Se ti è piaciuto:");
+        labelRiferimento.getStyleClass().add("consiglio-section-label");
+        
+        HBox libroRiferimentoBox = new HBox(10);
+        libroRiferimentoBox.setAlignment(Pos.CENTER_LEFT);
+        
+        Label iconRiferimento = new Label("📖");
+        
+        VBox infoRiferimento = new VBox(2);
+        String titoloRiferimento = consiglio.titoloLibroRiferimento() != null ? 
+            consiglio.titoloLibroRiferimento() : 
+            "Libro ID: " + consiglio.libroRiferimentoID();
+        Label titoloRifLabel = new Label(titoloRiferimento);
+        titoloRifLabel.getStyleClass().add("libro-titolo");
+        titoloRifLabel.setWrapText(true);
+        
+        Label idRifLabel = new Label("ID: " + consiglio.libroRiferimentoID());
+        idRifLabel.getStyleClass().add("libro-id");
+        
+        infoRiferimento.getChildren().addAll(titoloRifLabel, idRifLabel);
+        libroRiferimentoBox.getChildren().addAll(iconRiferimento, infoRiferimento);
+        libroRiferimentoSection.getChildren().addAll(labelRiferimento, libroRiferimentoBox);
 
-        // Data
-        Label dataLabel = new Label("Data: " + consiglio.dataSuggerimento().toString());
+        // Freccia indicativa
+        Label freccia = new Label("⬇");
+        freccia.getStyleClass().add("consiglio-freccia");
+        freccia.setAlignment(Pos.CENTER);
+
+        // Sezione "Ti potrebbe piacere"
+        VBox libroSuggeritoSection = new VBox(5);
+        Label labelSuggerito = new Label("Ti potrebbe piacere:");
+        labelSuggerito.getStyleClass().add("consiglio-section-label");
+        
+        HBox libroSuggeritoBox = new HBox(10);
+        libroSuggeritoBox.setAlignment(Pos.CENTER_LEFT);
+        
+        Label iconSuggerito = new Label("⭐");
+        
+        VBox infoSuggerito = new VBox(2);
+        String titoloSuggerito = consiglio.titoloLibroSuggerito() != null ? 
+            consiglio.titoloLibroSuggerito() : 
+            "Libro ID: " + consiglio.libroSuggeritoID();
+        Label titoloSugLabel = new Label(titoloSuggerito);
+        titoloSugLabel.getStyleClass().add("libro-titolo");
+        titoloSugLabel.setWrapText(true);
+        
+        Label idSugLabel = new Label("ID: " + consiglio.libroSuggeritoID());
+        idSugLabel.getStyleClass().add("libro-id");
+        
+        infoSuggerito.getChildren().addAll(titoloSugLabel, idSugLabel);
+        libroSuggeritoBox.getChildren().addAll(iconSuggerito, infoSuggerito);
+        libroSuggeritoSection.getChildren().addAll(labelSuggerito, libroSuggeritoBox);
+
+        // Separatore
+        Separator separator = new Separator();
+        separator.getStyleClass().add("consiglio-separator");
+
+        // Footer con data
+        HBox footerBox = new HBox(10);
+        footerBox.setAlignment(Pos.CENTER_LEFT);
+        
+        Label calendarIcon = new Label("📅");
+        Label dataLabel = new Label("Salvato il: " + consiglio.dataSuggerimento().toLocalDate().toString());
         dataLabel.getStyleClass().add("consiglio-data");
+        
+        footerBox.getChildren().addAll(calendarIcon, dataLabel);
+
+        // Pulsanti di azione (se necessari)
+        HBox pulsantiBox = new HBox(10);
+        pulsantiBox.setAlignment(Pos.CENTER_RIGHT);
+        
+        Button dettagliRifBtn = new Button("Dettagli libro di riferimento");
+        dettagliRifBtn.getStyleClass().addAll("secondary-button", "small-button");
+        dettagliRifBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroRiferimentoID()));
+        
+        Button dettagliSugBtn = new Button("Dettagli libro suggerito");
+        dettagliSugBtn.getStyleClass().addAll("primary-button", "small-button");
+        dettagliSugBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroSuggeritoID()));
+        
+        pulsantiBox.getChildren().addAll(dettagliRifBtn, dettagliSugBtn);
 
         // Aggiungi tutti gli elementi alla card
-        card.getChildren().addAll(header, libroRiferimentoLabel, libroSuggeritoLabel, dataLabel);
+        card.getChildren().addAll(
+            headerBox,
+            libroRiferimentoSection,
+            freccia,
+            libroSuggeritoSection,
+            separator,
+            footerBox,
+            pulsantiBox
+        );
 
-        // Aggiungi effetto hover
+        // Aggiungi effetti di animazione
         card.setOnMouseEntered(e -> {
-            ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), card);
             st.setToX(1.02);
             st.setToY(1.02);
             st.play();
         });
 
         card.setOnMouseExited(e -> {
-            ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), card);
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
@@ -1274,6 +1361,11 @@ public class ClientController implements Initializable {
     }
 
     /**
+     * Crea una card per visualizzare un consiglio.
+     * 
+     * @param consiglio Il consiglio da visualizzare
+     * @return Un nodo VBox che rappresenta la card del consiglio
+     */    /**
      * Configura il ComboBox per la selezione delle categorie di libri.
      */
     private void setupCategoriaComboBox() {
@@ -2563,7 +2655,7 @@ public class ClientController implements Initializable {
         boolean mezzaStella = (voto - stellePiene) >= 0.5;
 
         for (int i = 0; i < stellePiene; i++) {
-            stelle.append("⭐");
+            stelle.append("★");
         }
         if (mezzaStella) {
             stelle.append("✨");
@@ -3176,4 +3268,40 @@ public class ClientController implements Initializable {
 
             new Thread(suggestTask).start();
         });    }
+
+    /**
+     * Mostra i dettagli di un libro dato il suo ID. Recupera prima il libro dalla cache o dal server.
+     *
+     * @param libroId L'ID del libro di cui mostrare i dettagli
+     */
+    private void mostraDettagliLibro(int libroId) {
+        // Prima controlla la cache locale
+        if (libriCache.containsKey(libroId)) {
+            mostraDettagliLibro(libriCache.get(libroId));
+            return;
+        }
+
+        // Se non è in cache, cerca nei risultati già caricati
+        // Questo dovrebbe funzionare se l'utente ha già effettuato ricerche
+        boolean libroTrovato = false;
+        for (Node node : resultContainer.getChildren()) {
+            if (node instanceof VBox) {
+                VBox bookCard = (VBox) node;
+                // Cerca nell'userData se è stata impostata con il libro
+                if (bookCard.getUserData() instanceof Libro) {
+                    Libro libro = (Libro) bookCard.getUserData();
+                    if (libro.libroId() == libroId) {
+                        mostraDettagliLibro(libro);
+                        libroTrovato = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!libroTrovato) {
+            // Se il libro non è trovato, mostra un messaggio informativo
+            stampaConAnimazione("Dettagli libro non disponibili. Cerca prima il libro per visualizzarne i dettagli completi.");
+        }
+    }
 }
