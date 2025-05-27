@@ -124,9 +124,10 @@ public class ClientHandler implements Runnable {
                 case "LIBRERIE":
                     return elencaLibrerie();
                 case "AGGIUNGI_LIBRO":
-                    return aggiungiLibro(parametri);
-                case "RIMUOVI_LIBRO":
+                    return aggiungiLibro(parametri);                case "RIMUOVI_LIBRO":
                     return rimuoviLibro(parametri);
+                case "SPOSTA_LIBRO":
+                    return spostaLibro(parametri);
                 case "VISUALIZZA_LIBRERIA":
                     return visualizzaLibreria(parametri);
                 case "ELIMINA_LIBRERIA":
@@ -357,9 +358,9 @@ public class ClientHandler implements Runnable {
             comandiAccount.add(createCommandInfo("LOGOUT", "Esci dal tuo account", ""));
             comandiAccount.add(createCommandInfo("PROFILO", "Visualizza i dettagli del tuo profilo", ""));
             comandiLibrerie.add(createCommandInfo("CREA_LIBRERIA", "Crea una nuova libreria personale", "<nomeLibreria>"));
-            comandiLibrerie.add(createCommandInfo("LIBRERIE", "Visualizza tutte le tue librerie", ""));
-            comandiLibrerie.add(createCommandInfo("AGGIUNGI_LIBRO", "Aggiungi un libro a una libreria", "<libreriaID> <libroID>"));
+            comandiLibrerie.add(createCommandInfo("LIBRERIE", "Visualizza tutte le tue librerie", ""));            comandiLibrerie.add(createCommandInfo("AGGIUNGI_LIBRO", "Aggiungi un libro a una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("RIMUOVI_LIBRO", "Rimuovi un libro da una libreria", "<libreriaID> <libroID>"));
+            comandiLibrerie.add(createCommandInfo("SPOSTA_LIBRO", "Sposta un libro da una libreria a un'altra", "<libreriaOrigineID> <libreriaDestinazioneID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("VISUALIZZA_LIBRERIA", "Visualizza i libri in una libreria", "<libreriaID>"));
             comandiLibrerie.add(createCommandInfo("ELIMINA_LIBRERIA", "Elimina una libreria personale", "<libreriaID>"));
             comandiLibrerie.add(createCommandInfo("RINOMINA_LIBRERIA", "Rinomina una libreria personale", "<libreriaID> <nuovoNome>"));
@@ -543,7 +544,55 @@ public class ClientHandler implements Runnable {
             return ResponseFormatter.erroreJson("ID non validi. Assicurati di inserire numeri interi.");
         } catch (SQLException e) {
             System.err.println("Errore durante la rimozione del libro dalla libreria: " + e.getMessage());
-            return ResponseFormatter.erroreJson("Errore durante la rimozione del libro. Il libro potrebbe non essere presente nella libreria.");
+            return ResponseFormatter.erroreJson("Errore durante la rimozione del libro. Il libro potrebbe non essere presente nella libreria.");        }
+    }
+
+    /**
+     * Sposta un libro da una libreria all'altra per l'utente autenticato.
+     *
+     * @param parametri I parametri per lo spostamento (libreriaOrigineID libreriaDestinazioneID libroID)
+     * @return Messaggio di successo o errore in formato JSON
+     */
+    private String spostaLibro(String parametri) {
+        String[] parti = parametri.split("\\s+", 3);
+        if (parti.length < 3) {
+            return ResponseFormatter.erroreJson("Formato non valido. Usa: SPOSTA_LIBRO libreriaOrigineID libreriaDestinazioneID libroID");
+        }
+        try {
+            int libreriaOrigineID = Integer.parseInt(parti[0]);
+            int libreriaDestinazioneID = Integer.parseInt(parti[1]);
+            int libroID = Integer.parseInt(parti[2]);
+
+            // Verifica che entrambe le librerie esistano e appartengano all'utente
+            Optional<Libreria> libreriaOrigineOpt = libreriaDAO.getLibreriaById(libreriaOrigineID);
+            Optional<Libreria> libreriaDestinazioneOpt = libreriaDAO.getLibreriaById(libreriaDestinazioneID);
+
+            if (libreriaOrigineOpt.isEmpty() || libreriaOrigineOpt.get().userID() != utenteAutenticato.userID()) {
+                return ResponseFormatter.erroreJson("Libreria di origine non trovata o non hai i permessi per modificarla.");
+            }
+
+            if (libreriaDestinazioneOpt.isEmpty() || libreriaDestinazioneOpt.get().userID() != utenteAutenticato.userID()) {
+                return ResponseFormatter.erroreJson("Libreria di destinazione non trovata o non hai i permessi per modificarla.");
+            }
+
+            if (libreriaOrigineID == libreriaDestinazioneID) {
+                return ResponseFormatter.erroreJson("Le librerie di origine e destinazione devono essere diverse.");
+            }
+
+            // Rimuovi il libro dalla libreria di origine
+            libreriaDAO.rimuoviLibroDaLibreria(libreriaOrigineID, libroID);
+            
+            // Aggiungi il libro alla libreria di destinazione
+            libreriaDAO.aggiungiLibroALibreria(libreriaDestinazioneID, libroID);
+
+            return ResponseFormatter.successoJson("Libro spostato con successo dalla libreria '" + 
+                    libreriaOrigineOpt.get().nomeLibreria() + "' alla libreria '" + 
+                    libreriaDestinazioneOpt.get().nomeLibreria() + "'.");
+        } catch (NumberFormatException e) {
+            return ResponseFormatter.erroreJson("ID non validi. Assicurati di inserire numeri interi.");
+        } catch (SQLException e) {
+            System.err.println("Errore durante lo spostamento del libro: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante lo spostamento del libro. Il libro potrebbe non essere presente nella libreria di origine o già presente in quella di destinazione.");
         }
     }
 

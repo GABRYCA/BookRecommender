@@ -250,18 +250,21 @@ public class ClientController implements Initializable {
 
         // Prezzo
         Label prezzo = new Label("Prezzo: €" + libro.prezzo());
-        prezzo.getStyleClass().add("book-price");
-
-        // Container per i pulsanti
+        prezzo.getStyleClass().add("book-price");        // Container per i pulsanti
         HBox pulsantiContainer = new HBox(10);
         pulsantiContainer.setAlignment(Pos.CENTER);
 
-        // Pulsante rimuovi (solo se siamo in una libreria)
+        // Pulsante rimuovi e sposta (solo se siamo in una libreria)
         if (libreriaID != -1) {
             Button rimuoviBtn = new Button("Rimuovi");
             rimuoviBtn.getStyleClass().addAll("danger-button", "small-button");
             rimuoviBtn.setOnAction(_ -> rimuoviLibroDaLibreriaConConferma(libro, libreriaID));
-            pulsantiContainer.getChildren().add(rimuoviBtn);
+            
+            Button spostaBtn = new Button("Sposta");
+            spostaBtn.getStyleClass().addAll("primary-button", "small-button");
+            spostaBtn.setOnAction(_ -> spostaLibroConDialogo(libro, libreriaID));
+            
+            pulsantiContainer.getChildren().addAll(spostaBtn, rimuoviBtn);
         }
 
         // Aggiunge tutti gli elementi alla card
@@ -2060,8 +2063,89 @@ public class ClientController implements Initializable {
                 }
             } catch (IOException e) {
                 stampaConAnimazione("Errore di comunicazione: " + e.getMessage());
+            }        }
+    }
+
+    /**
+     * Sposta un libro da una libreria all'altra con dialogo di selezione.
+     */
+    private void spostaLibroConDialogo(Libro libro, int libreriaCorrenteID) {
+        // Carica le librerie dell'utente
+        Task<List<Libreria>> loadLibrariesTask = new Task<>() {
+            @Override
+            protected List<Libreria> call() throws Exception {
+                return client.elencaLibrerie();
             }
-        }
+
+            @Override
+            protected void succeeded() {
+                List<Libreria> librerie = getValue();
+                
+                // Filtra escludendo la libreria corrente
+                List<Libreria> librerieDestinazione = librerie.stream()
+                        .filter(lib -> lib.libreriaID() != libreriaCorrenteID)
+                        .collect(java.util.stream.Collectors.toList());
+
+                if (librerieDestinazione.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Nessuna Libreria");
+                    alert.setHeaderText("Non hai altre librerie");
+                    alert.setContentText("Crea un'altra libreria per spostare i libri.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alert.showAndWait();
+                    return;
+                }
+
+                // Dialogo selezione libreria destinazione
+                List<LibreriaDisplay> librerieDisplay = librerieDestinazione.stream()
+                        .map(LibreriaDisplay::new)
+                        .collect(java.util.stream.Collectors.toList());
+
+                ChoiceDialog<LibreriaDisplay> dialog = new ChoiceDialog<>(librerieDisplay.get(0), librerieDisplay);
+                dialog.setTitle("Sposta Libro");
+                dialog.setHeaderText("Sposta \"" + libro.titolo() + "\" in un'altra libreria");
+                dialog.setContentText("Scegli la libreria di destinazione:");
+                dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+                Optional<LibreriaDisplay> result = dialog.showAndWait();
+                result.ifPresent(libreriaDisplay -> {
+                    Libreria libreriaDestinazione = libreriaDisplay.getLibreria();
+                    
+                    // Task per spostare il libro
+                    Task<Boolean> moveBookTask = new Task<>() {
+                        @Override
+                        protected Boolean call() throws Exception {
+                            return client.spostaLibro(libreriaCorrenteID, libreriaDestinazione.libreriaID(), libro.libroId());
+                        }
+
+                        @Override
+                        protected void succeeded() {
+                            boolean success = getValue();
+                            if (success) {
+                                mostraMessaggioSuccesso("Libro \"" + libro.titolo() + "\" spostato con successo!");
+                                caricaLibriInLibreria(libreriaCorrenteID);
+                            } else {
+                                mostraMessaggioErrore("Impossibile spostare il libro.");
+                            }
+                        }
+
+                        @Override
+                        protected void failed() {
+                            mostraMessaggioErrore("Errore: " + getException().getMessage());
+                        }
+                    };
+
+                    new Thread(moveBookTask).start();
+                });
+            }
+
+            @Override
+            protected void failed() {
+                mostraMessaggioErrore("Errore nel caricamento delle librerie: " + getException().getMessage());
+            }
+        };
+
+        new Thread(loadLibrariesTask).start();
     }
 
     /**
@@ -2714,7 +2798,8 @@ public class ClientController implements Initializable {
                         }
                     };
 
-                    new Thread(addBookTask).start();                });
+                    new Thread(addBookTask).start();
+                });
             }
 
             @Override
@@ -3009,6 +3094,5 @@ public class ClientController implements Initializable {
             };
 
             new Thread(suggestTask).start();
-        });
-    }
+        });    }
 }

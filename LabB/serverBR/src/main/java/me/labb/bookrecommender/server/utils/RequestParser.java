@@ -112,8 +112,8 @@ public class RequestParser {
                     parametri = switch (comando) {
                         case "LOGIN" -> formatLoginParams(paramsNode);
                         case "REGISTRA" -> formatRegistraParams(paramsNode);
-                        case "VALUTA_LIBRO" -> formatValutaLibroParams(paramsNode);
-                        case "AGGIUNGI_LIBRO", "RIMUOVI_LIBRO" -> formatLibroParams(paramsNode);
+                        case "VALUTA_LIBRO" -> formatValutaLibroParams(paramsNode);                        case "AGGIUNGI_LIBRO", "RIMUOVI_LIBRO" -> formatLibroParams(paramsNode);
+                        case "SPOSTA_LIBRO" -> formatSpostaLibroParams(paramsNode);
                         case "SALVA_CONSIGLIO" -> formatConsiglioParams(paramsNode);
                         default -> objectMapper.writeValueAsString(paramsNode);
                     };
@@ -186,11 +186,23 @@ public class RequestParser {
      *
      * @param paramsNode JSON dei parametri
      * @return Stringa formattata dei parametri
-     */
-    private static String formatLibroParams(JsonNode paramsNode) {
+     */    private static String formatLibroParams(JsonNode paramsNode) {
         String libreriaID = paramsNode.has("libreriaID") ? paramsNode.get("libreriaID").asText() : "";
         String libroID = paramsNode.has("libroID") ? paramsNode.get("libroID").asText() : "";
         return libreriaID + " " + libroID;
+    }
+
+    /**
+     * Formatta i parametri per il comando SPOSTA_LIBRO.
+     *
+     * @param paramsNode JSON dei parametri
+     * @return Stringa formattata dei parametri
+     */
+    private static String formatSpostaLibroParams(JsonNode paramsNode) {
+        String libreriaOrigineID = paramsNode.has("libreriaOrigineID") ? paramsNode.get("libreriaOrigineID").asText() : "";
+        String libreriaDestinazioneID = paramsNode.has("libreriaDestinazioneID") ? paramsNode.get("libreriaDestinazioneID").asText() : "";
+        String libroID = paramsNode.has("libroID") ? paramsNode.get("libroID").asText() : "";
+        return libreriaOrigineID + " " + libreriaDestinazioneID + " " + libroID;
     }
 
     /**

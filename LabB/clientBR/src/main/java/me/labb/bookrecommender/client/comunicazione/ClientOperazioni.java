@@ -450,9 +450,32 @@ public class ClientOperazioni {
 
         Map<String, Object> parametri = new HashMap<>();
         parametri.put("libreriaID", libreriaID);
+        parametri.put("libroID", libroID);        String risposta = client.inviaComando("RIMUOVI_LIBRO", parametri);
+
+        return client.isSuccesso(risposta);
+    }
+
+    /**
+     * Sposta un libro da una libreria all'altra.
+     *
+     * @param libreriaOrigineID ID della libreria di origine
+     * @param libreriaDestinazioneID ID della libreria di destinazione
+     * @param libroID ID del libro da spostare
+     * @return true se il libro è stato spostato con successo, false altrimenti
+     * @throws IOException se si verifica un errore durante la comunicazione
+     * @throws IllegalStateException se l'utente non è autenticato
+     */
+    public boolean spostaLibro(int libreriaOrigineID, int libreriaDestinazioneID, int libroID) throws IOException {
+        if (!isAutenticato()) {
+            throw new IllegalStateException("Nessun utente autenticato");
+        }
+
+        Map<String, Object> parametri = new HashMap<>();
+        parametri.put("libreriaOrigineID", libreriaOrigineID);
+        parametri.put("libreriaDestinazioneID", libreriaDestinazioneID);
         parametri.put("libroID", libroID);
 
-        String risposta = client.inviaComando("RIMUOVI_LIBRO", parametri);
+        String risposta = client.inviaComando("SPOSTA_LIBRO", parametri);
 
         return client.isSuccesso(risposta);
     }
