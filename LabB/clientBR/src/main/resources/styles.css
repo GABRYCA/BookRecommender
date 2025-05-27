@@ -653,6 +653,31 @@ Label{
     -fx-effect: none;
 }
 
+/* Pulsante primario (primary button) */
+.primary-button {
+    -fx-background-color: #2e426d;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-color: #1a2946;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #3a5084;
+    -fx-border-color: #4f6ba3;
+    -fx-effect: dropshadow(three-pass-box, rgba(46,66,109,0.4), 4, 0, 0, 1);
+}
+
+.primary-button:pressed {
+    -fx-background-color: #1a2946;
+    -fx-effect: none;
+}
+
 /* Pulsante piccolo */
 .small-button {
     -fx-padding: 4px 8px;
