@@ -805,10 +805,10 @@ public class ClientHandler implements Runnable {
             List<Map<String, Object>> valutazioniData = new ArrayList<>();
             if (valutazioniObj.isEmpty()) {
                 return ResponseFormatter.successoJson("Non hai ancora valutato nessun libro.", ResponseFormatter.singletonMap("valutazioni", valutazioniData));
-            }
-            for (Valutazione val : valutazioniObj) {
+            }            for (Valutazione val : valutazioniObj) {
                 Map<String, Object> valMap = new HashMap<>();
                 valMap.put("valutazioneID", val.valutazioneID());
+                valMap.put("userID", val.userID());
                 valMap.put("libroID", val.libroID());
                 libroDAO.getLibroById(val.libroID()).ifPresent(l -> valMap.put("titoloLibro", l.titolo()));
                 valMap.put("scoreStile", val.scoreStile());

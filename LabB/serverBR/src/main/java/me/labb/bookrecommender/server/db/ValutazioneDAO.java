@@ -36,8 +36,7 @@ public class ValutazioneDAO {
      * @param noteEdizione Note sull'edizione
      * @return ID della valutazione appena creata
      * @throws SQLException In caso di errori SQL
-     */
-    public int salvaValutazione(int userID, int libroID,
+     */    public int salvaValutazione(int userID, int libroID,
                                 short scoreStile, String noteStile,
                                 short scoreContenuto, String noteContenuto,
                                 short scoreGradevolezza, String noteGradevolezza,
@@ -49,6 +48,11 @@ public class ValutazioneDAO {
 
         try {
             conn = dbManager.getConnection();
+            
+            // Disabilita autocommit per gestire la transazione manualmente
+            conn.setAutoCommit(false);
+            
+            System.out.println("INFO: Salvando valutazione per userID=" + userID + ", libroID=" + libroID);
             
             // Verifica se esiste già una valutazione per questo utente e libro
             String checkSql = """
@@ -64,6 +68,7 @@ public class ValutazioneDAO {
                     if (checkRs.next()) {
                         // Aggiorna la valutazione esistente
                         int valutazioneID = checkRs.getInt("ValutazioneID");
+                        System.out.println("INFO: Aggiornando valutazione esistente ID=" + valutazioneID);
                         
                         String updateSql = """
                                 UPDATE "ValutazioniLibri" SET
@@ -89,7 +94,13 @@ public class ValutazioneDAO {
                             updateStmt.setString(10, noteEdizione);
                             updateStmt.setInt(11, valutazioneID);
                             
-                            updateStmt.executeUpdate();
+                            int rowsAffected = updateStmt.executeUpdate();
+                            System.out.println("INFO: Update eseguito, righe modificate: " + rowsAffected);
+                            
+                            // Commit della transazione
+                            conn.commit();
+                            System.out.println("INFO: Transazione di aggiornamento committata con successo");
+                            
                             return valutazioneID;
                         }
                     }
@@ -97,6 +108,7 @@ public class ValutazioneDAO {
             }
             
             // Inserisci una nuova valutazione
+            System.out.println("INFO: Inserendo nuova valutazione");
             String insertSql = """
                     INSERT INTO "ValutazioniLibri" (
                         "UserID", "LibroID",
@@ -127,14 +139,40 @@ public class ValutazioneDAO {
             rs = stmt.executeQuery();
             
             if (rs.next()) {
-                return rs.getInt(1);
+                int newValutazioneID = rs.getInt(1);
+                System.out.println("INFO: Nuova valutazione inserita con ID=" + newValutazioneID);
+                
+                // Commit della transazione
+                conn.commit();
+                System.out.println("INFO: Transazione di inserimento committata con successo");
+                
+                return newValutazioneID;
             } else {
+                conn.rollback();
                 throw new SQLException("Errore nel salvataggio della valutazione, nessun ID ritornato");
             }
+        } catch (SQLException e) {
+            System.err.println("ERRORE: Eccezione SQL durante il salvataggio della valutazione: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("INFO: Transazione rollback eseguito");
+                } catch (SQLException rollbackEx) {
+                    System.err.println("ERRORE: Impossibile eseguire rollback: " + rollbackEx.getMessage());
+                }
+            }
+            throw e;
         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (conn != null) conn.close();
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Ripristina autocommit
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("ERRORE: Errore nella chiusura delle risorse: " + e.getMessage());
+            }
         }
     }
 

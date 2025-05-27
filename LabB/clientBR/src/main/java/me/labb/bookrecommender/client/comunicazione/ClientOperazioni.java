@@ -599,36 +599,56 @@ public class ClientOperazioni {
         if (client.isSuccesso(risposta)) {
             Map<String, Object> dati = client.estraiDati(risposta);
             if (dati != null && dati.containsKey("valutazioni")) {
-                List<Map<String, Object>> valutazioniList = (List<Map<String, Object>>) dati.get("valutazioni");
+                List<Map<String, Object>> valutazioniList = (List<Map<String, Object>>) dati.get("valutazioni");                for (Map<String, Object> valutazioneMap : valutazioniList) {
+                    try {
+                        // Parse con controlli null-safe
+                        Number valutazioneIDNum = (Number) valutazioneMap.get("valutazioneID");
+                        Number userIDNum = (Number) valutazioneMap.get("userID");
+                        Number libroIDNum = (Number) valutazioneMap.get("libroID");
+                        Number scoreStileNum = (Number) valutazioneMap.get("scoreStile");
+                        Number scoreContenutoNum = (Number) valutazioneMap.get("scoreContenuto");
+                        Number scoreGradevolezzaNum = (Number) valutazioneMap.get("scoreGradevolezza");
+                        Number scoreOriginalitaNum = (Number) valutazioneMap.get("scoreOriginalita");
+                        Number scoreEdizioneNum = (Number) valutazioneMap.get("scoreEdizione");
+                        String dataValutazioneStr = (String) valutazioneMap.get("dataValutazione");
 
-                for (Map<String, Object> valutazioneMap : valutazioniList) {
-                    // Crea l'oggetto Valutazione
-                    Valutazione valutazione = new Valutazione(
-                            ((Number) valutazioneMap.get("valutazioneID")).intValue(),
-                            ((Number) valutazioneMap.get("userID")).intValue(),
-                            ((Number) valutazioneMap.get("libroID")).intValue(),
-                            ((Number) valutazioneMap.get("scoreStile")).shortValue(),
-                            (String) valutazioneMap.get("noteStile"),
-                            ((Number) valutazioneMap.get("scoreContenuto")).shortValue(),
-                            (String) valutazioneMap.get("noteContenuto"),
-                            ((Number) valutazioneMap.get("scoreGradevolezza")).shortValue(),
-                            (String) valutazioneMap.get("noteGradevolezza"),
-                            ((Number) valutazioneMap.get("scoreOriginalita")).shortValue(),
-                            (String) valutazioneMap.get("noteOriginalita"),
-                            ((Number) valutazioneMap.get("scoreEdizione")).shortValue(),
-                            (String) valutazioneMap.get("noteEdizione"),
-                            ZonedDateTime.parse((String) valutazioneMap.get("dataValutazione"))
-                    );
+                        // Verifica che tutti i campi obbligatori siano presenti
+                        if (valutazioneIDNum == null || userIDNum == null || libroIDNum == null ||
+                            scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
+                            scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
+                            System.err.println("Valutazione con dati incompleti saltata: " + valutazioneMap);
+                            continue;
+                        }
 
-                    valutazioni.add(valutazione);
+                        // Crea l'oggetto Valutazione
+                        Valutazione valutazione = new Valutazione(
+                                valutazioneIDNum.intValue(),
+                                userIDNum.intValue(),
+                                libroIDNum.intValue(),
+                                scoreStileNum.shortValue(),
+                                (String) valutazioneMap.get("noteStile"),
+                                scoreContenutoNum.shortValue(),
+                                (String) valutazioneMap.get("noteContenuto"),
+                                scoreGradevolezzaNum.shortValue(),
+                                (String) valutazioneMap.get("noteGradevolezza"),
+                                scoreOriginalitaNum.shortValue(),
+                                (String) valutazioneMap.get("noteOriginalita"),
+                                scoreEdizioneNum.shortValue(),
+                                (String) valutazioneMap.get("noteEdizione"),
+                                ZonedDateTime.parse(dataValutazioneStr)
+                        );
+
+                        valutazioni.add(valutazione);
+                    } catch (Exception e) {
+                        System.err.println("Errore nel parsing della valutazione: " + e.getMessage() + " - Dati: " + valutazioneMap);
+                        // Continua con la prossima valutazione invece di fermarsi
+                    }
                 }
             }
         }
 
         return valutazioni;
-    }
-
-    /**
+    }    /**
      * Visualizza le valutazioni dell'utente autenticato.
      *
      * @return Lista delle valutazioni dell'utente, o una lista vuota se nessuna valutazione è stata trovata
@@ -650,25 +670,49 @@ public class ClientOperazioni {
                 List<Map<String, Object>> valutazioniList = (List<Map<String, Object>>) dati.get("valutazioni");
 
                 for (Map<String, Object> valutazioneMap : valutazioniList) {
-                    // Crea l'oggetto Valutazione
-                    Valutazione valutazione = new Valutazione(
-                            ((Number) valutazioneMap.get("valutazioneID")).intValue(),
-                            ((Number) valutazioneMap.get("userID")).intValue(),
-                            ((Number) valutazioneMap.get("libroID")).intValue(),
-                            ((Number) valutazioneMap.get("scoreStile")).shortValue(),
-                            (String) valutazioneMap.get("noteStile"),
-                            ((Number) valutazioneMap.get("scoreContenuto")).shortValue(),
-                            (String) valutazioneMap.get("noteContenuto"),
-                            ((Number) valutazioneMap.get("scoreGradevolezza")).shortValue(),
-                            (String) valutazioneMap.get("noteGradevolezza"),
-                            ((Number) valutazioneMap.get("scoreOriginalita")).shortValue(),
-                            (String) valutazioneMap.get("noteOriginalita"),
-                            ((Number) valutazioneMap.get("scoreEdizione")).shortValue(),
-                            (String) valutazioneMap.get("noteEdizione"),
-                            ZonedDateTime.parse((String) valutazioneMap.get("dataValutazione"))
-                    );
+                    try {
+                        // Parse con controlli null-safe
+                        Number valutazioneIDNum = (Number) valutazioneMap.get("valutazioneID");
+                        Number userIDNum = (Number) valutazioneMap.get("userID");
+                        Number libroIDNum = (Number) valutazioneMap.get("libroID");
+                        Number scoreStileNum = (Number) valutazioneMap.get("scoreStile");
+                        Number scoreContenutoNum = (Number) valutazioneMap.get("scoreContenuto");
+                        Number scoreGradevolezzaNum = (Number) valutazioneMap.get("scoreGradevolezza");
+                        Number scoreOriginalitaNum = (Number) valutazioneMap.get("scoreOriginalita");
+                        Number scoreEdizioneNum = (Number) valutazioneMap.get("scoreEdizione");
+                        String dataValutazioneStr = (String) valutazioneMap.get("dataValutazione");
 
-                    valutazioni.add(valutazione);
+                        // Verifica che tutti i campi obbligatori siano presenti
+                        if (valutazioneIDNum == null || userIDNum == null || libroIDNum == null ||
+                            scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
+                            scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
+                            System.err.println("Valutazione con dati incompleti saltata: " + valutazioneMap);
+                            continue;
+                        }
+
+                        // Crea l'oggetto Valutazione
+                        Valutazione valutazione = new Valutazione(
+                                valutazioneIDNum.intValue(),
+                                userIDNum.intValue(),
+                                libroIDNum.intValue(),
+                                scoreStileNum.shortValue(),
+                                (String) valutazioneMap.get("noteStile"),
+                                scoreContenutoNum.shortValue(),
+                                (String) valutazioneMap.get("noteContenuto"),
+                                scoreGradevolezzaNum.shortValue(),
+                                (String) valutazioneMap.get("noteGradevolezza"),
+                                scoreOriginalitaNum.shortValue(),
+                                (String) valutazioneMap.get("noteOriginalita"),
+                                scoreEdizioneNum.shortValue(),
+                                (String) valutazioneMap.get("noteEdizione"),
+                                ZonedDateTime.parse(dataValutazioneStr)
+                        );
+
+                        valutazioni.add(valutazione);
+                    } catch (Exception e) {
+                        System.err.println("Errore nel parsing della valutazione: " + e.getMessage() + " - Dati: " + valutazioneMap);
+                        // Continua con la prossima valutazione invece di fermarsi
+                    }
                 }
             }
         }

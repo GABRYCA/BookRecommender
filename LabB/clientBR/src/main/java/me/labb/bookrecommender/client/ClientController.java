@@ -265,25 +265,77 @@ public class ClientController implements Initializable {
         HBox pulsantiContainer = new HBox(10);
         pulsantiContainer.setAlignment(Pos.CENTER);
 
+        // Pulsante Valuta/Aggiorna valutazione
+        Button valutaBtn = new Button("Valuta");
+        valutaBtn.getStyleClass().addAll("primary-button", "small-button");
+
+        // Logica per abilitazione/disabilitazione e testo pulsante
+        boolean libroInLibreria = false;
+        boolean valutazionePresente = false;
+        Valutazione valutazioneUtente = null;
+        try {
+            if (client != null && client.isAutenticato()) {
+                // Se siamo in una libreria, il libro è sicuramente presente
+                if (libreriaID != -1) {
+                    libroInLibreria = true;
+                } else {
+                    // Controlla se il libro è in almeno una libreria dell'utente
+                    List<Libreria> mieLibrerie = client.elencaLibrerie();
+                    for (Libreria lib : mieLibrerie) {
+                        List<Libro> libri = client.visualizzaLibreria(lib.libreriaID());
+                        for (Libro l : libri) {
+                            if (l.libroId() == libro.libroId()) {
+                                libroInLibreria = true;
+                                break;
+                            }
+                        }
+                        if (libroInLibreria) break;
+                    }
+                }
+                // Controlla se esiste già una valutazione dell'utente per questo libro
+                List<Valutazione> mieValutazioni = client.visualizzaMieValutazioni();
+                for (Valutazione v : mieValutazioni) {
+                    if (v.libroID() == libro.libroId()) {
+                        valutazionePresente = true;
+                        valutazioneUtente = v;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // In caso di errore, lascia il pulsante disabilitato
+            libroInLibreria = false;
+        }
+
+        valutaBtn.setDisable(!libroInLibreria);
+        if (valutazionePresente) {
+            valutaBtn.setText("Aggiorna valutazione");
+        } else {
+            valutaBtn.setText("Valuta");
+        }
+
+        // Azione pulsante: mostra il form di valutazione, precompilato se già presente
+        Valutazione valutazioneDaPassare = valutazioneUtente;
+        valutaBtn.setOnAction(_ -> mostraFormValutazioneLibro(libro, (Stage) bookCard.getScene().getWindow(), valutazioneDaPassare));
+
         // Pulsante rimuovi e sposta (solo se siamo in una libreria)
         if (libreriaID != -1) {
             Button rimuoviBtn = new Button("Rimuovi");
             rimuoviBtn.getStyleClass().addAll("danger-button", "small-button");
             rimuoviBtn.setOnAction(_ -> rimuoviLibroDaLibreriaConConferma(libro, libreriaID));
-            
+
             Button spostaBtn = new Button("Sposta");
             spostaBtn.getStyleClass().addAll("primary-button", "small-button");
             spostaBtn.setOnAction(_ -> spostaLibroConDialogo(libro, libreriaID));
-            
-            pulsantiContainer.getChildren().addAll(spostaBtn, rimuoviBtn);
+
+            pulsantiContainer.getChildren().addAll(spostaBtn, rimuoviBtn, valutaBtn);
+        } else {
+            pulsantiContainer.getChildren().add(valutaBtn);
         }
 
         // Aggiunge tutti gli elementi alla card
-        if (libreriaID != -1) {
-            bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo, pulsantiContainer);
-        } else {
-            bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo);
-        }        // Aggiungi effetto hover
+        bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo, pulsantiContainer);
+        // Aggiungi effetto hover
         bookCard.setOnMouseEntered(_ -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(100), bookCard);
             st.setToX(1.03);
@@ -2834,7 +2886,8 @@ public class ClientController implements Initializable {
     }    /**
      * Mostra il form di valutazione per il libro specifico.
      */
-    private void mostraFormValutazioneLibro(Libro libro, Stage ownerStage) {
+    // Overload: con valutazione preesistente
+    private void mostraFormValutazioneLibro(Libro libro, Stage ownerStage, Valutazione valutazionePreesistente) {
         if (!client.isAutenticato()) {
             stampaConAnimazione("Devi effettuare il login per valutare un libro.");
             return;
@@ -2850,7 +2903,7 @@ public class ClientController implements Initializable {
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
         // Configura i pulsanti
-        ButtonType valutaButtonType = new ButtonType("Valuta", ButtonBar.ButtonData.OK_DONE);
+        ButtonType valutaButtonType = new ButtonType(valutazionePreesistente != null ? "Aggiorna" : "Valuta", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(valutaButtonType, ButtonType.CANCEL);
 
         // Crea la griglia per i campi
@@ -2860,29 +2913,30 @@ public class ClientController implements Initializable {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         // Campi per i punteggi e le note
-        Spinner<Integer> scoreStileSpinner = new Spinner<>(1, 5, 3);
+
+        Spinner<Integer> scoreStileSpinner = new Spinner<>(1, 5, valutazionePreesistente != null ? valutazionePreesistente.scoreStile() : 3);
         scoreStileSpinner.setEditable(true);
-        TextField noteStileField = new TextField();
+        TextField noteStileField = new TextField(valutazionePreesistente != null ? valutazionePreesistente.noteStile() : "");
         noteStileField.setPromptText("Note sullo stile");
 
-        Spinner<Integer> scoreContenutoSpinner = new Spinner<>(1, 5, 3);
+        Spinner<Integer> scoreContenutoSpinner = new Spinner<>(1, 5, valutazionePreesistente != null ? valutazionePreesistente.scoreContenuto() : 3);
         scoreContenutoSpinner.setEditable(true);
-        TextField noteContenutoField = new TextField();
+        TextField noteContenutoField = new TextField(valutazionePreesistente != null ? valutazionePreesistente.noteContenuto() : "");
         noteContenutoField.setPromptText("Note sul contenuto");
 
-        Spinner<Integer> scoreGradevolezzaSpinner = new Spinner<>(1, 5, 3);
+        Spinner<Integer> scoreGradevolezzaSpinner = new Spinner<>(1, 5, valutazionePreesistente != null ? valutazionePreesistente.scoreGradevolezza() : 3);
         scoreGradevolezzaSpinner.setEditable(true);
-        TextField noteGradevolezzaField = new TextField();
+        TextField noteGradevolezzaField = new TextField(valutazionePreesistente != null ? valutazionePreesistente.noteGradevolezza() : "");
         noteGradevolezzaField.setPromptText("Note sulla gradevolezza");
 
-        Spinner<Integer> scoreOriginalitaSpinner = new Spinner<>(1, 5, 3);
+        Spinner<Integer> scoreOriginalitaSpinner = new Spinner<>(1, 5, valutazionePreesistente != null ? valutazionePreesistente.scoreOriginalita() : 3);
         scoreOriginalitaSpinner.setEditable(true);
-        TextField noteOriginalitaField = new TextField();
+        TextField noteOriginalitaField = new TextField(valutazionePreesistente != null ? valutazionePreesistente.noteOriginalita() : "");
         noteOriginalitaField.setPromptText("Note sull'originalità");
 
-        Spinner<Integer> scoreEdizioneSpinner = new Spinner<>(1, 5, 3);
+        Spinner<Integer> scoreEdizioneSpinner = new Spinner<>(1, 5, valutazionePreesistente != null ? valutazionePreesistente.scoreEdizione() : 3);
         scoreEdizioneSpinner.setEditable(true);
-        TextField noteEdizioneField = new TextField();
+        TextField noteEdizioneField = new TextField(valutazionePreesistente != null ? valutazionePreesistente.noteEdizione() : "");
         noteEdizioneField.setPromptText("Note sull'edizione");
 
         // Aggiungi i campi alla griglia (senza campo ID libro)
@@ -2930,11 +2984,11 @@ public class ClientController implements Initializable {
                 short scoreEdizione = scoreEdizioneSpinner.getValue().shortValue();
                 String noteEdizione = noteEdizioneField.getText();
 
-                // Crea un oggetto Valutazione temporaneo (senza ID e data)
+                // Crea un oggetto Valutazione temporaneo (con ID se aggiornamento)
                 return new Valutazione(
-                    0,
+                    valutazionePreesistente != null ? valutazionePreesistente.valutazioneID() : 0,
                     client.getUtenteAutenticato().userID(),
-                    libro.libroId(), // Usa l'ID del libro passato come parametro
+                    libro.libroId(),
                     scoreStile,
                     noteStile,
                     scoreContenuto,
@@ -2971,7 +3025,7 @@ public class ClientController implements Initializable {
                 );
 
                 if (valutazioneID > 0) {
-                    stampaConAnimazione("Valutazione salvata con successo (ID: " + valutazioneID + ").");
+                    stampaConAnimazione(valutazionePreesistente != null ? "Valutazione aggiornata con successo (ID: " + valutazioneID + ")." : "Valutazione salvata con successo (ID: " + valutazioneID + ").");
                 } else {
                     stampaConAnimazione("Errore nel salvataggio della valutazione.");
                 }
@@ -2981,6 +3035,11 @@ public class ClientController implements Initializable {
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         });
+    }
+
+    // Overload per compatibilità con chiamate esistenti
+    private void mostraFormValutazioneLibro(Libro libro, Stage ownerStage) {
+        mostraFormValutazioneLibro(libro, ownerStage, null);
     }
 
     /**
