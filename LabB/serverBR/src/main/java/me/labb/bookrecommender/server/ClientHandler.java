@@ -771,6 +771,7 @@ public class ClientHandler implements Runnable {
                 Map<String, Object> valMap = new HashMap<>();
                 valMap.put("valutazioneID", val.valutazioneID());
                 valMap.put("userID", val.userID());
+                valMap.put("libroID", val.libroID()); // AGGIUNTO per compatibilità client
                 valMap.put("scoreStile", val.scoreStile());
                 valMap.put("noteStile", val.noteStile());
                 valMap.put("scoreContenuto", val.scoreContenuto());
