@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      alignment="CENTER" spacing="20" style="
+             -fx-background-color: white;
+             -fx-background-radius: 20;
+             -fx-padding: 40;">
+
+    <!-- Logo -->
+    <ImageView fx:id="logoImage" fitWidth="200" preserveRatio="true" />
+
+    <!-- Titolo -->
+    <Label text="Book Recommender" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <!-- Barra di caricamento -->
+    <ProgressBar fx:id="progressBar" prefWidth="300" progress="0" />
+
+    <!-- Stato del caricamento -->
+    <Label fx:id="statusLabel" text="Caricamento..." />
+</VBox>

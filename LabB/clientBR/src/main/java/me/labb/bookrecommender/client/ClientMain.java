@@ -1,6 +1,8 @@
 package me.labb.bookrecommender.client;
 
+import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Application;
+import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,7 +15,17 @@ import java.io.IOException;
 
 public class ClientMain extends Application {
     public static void main(String[] args) {
-        launch(args);
+        LauncherImpl.launchApplication(ClientMain.class, AppPreloader.class, args);
+    }
+
+    @Override
+    public void init() throws Exception {
+
+        for (int i = 1; i <= 10; i++) {
+            double progress = i / 10.0;
+            notifyPreloader(new Preloader.ProgressNotification(progress));
+            Thread.sleep(200);
+        }
     }
 
     @Override
@@ -33,8 +45,8 @@ public class ClientMain extends Application {
             stage.setMinWidth(1300);
             stage.setMinHeight(800);
 
-            // Aggiungi l'icona dell'applicazione (opzionale)
-            // stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+            // Aggiungi l'icona dell'applicazione
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/SplashLogo.png")));
 
             // Aggiungi animazione di apertura
             root.setOpacity(0);
