@@ -1,6 +1,5 @@
 package me.labb.bookrecommender.client;
 
-import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Application;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
@@ -14,8 +13,10 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 public class ClientMain extends Application {
+    
     public static void main(String[] args) {
-        LauncherImpl.launchApplication(ClientMain.class, AppPreloader.class, args);
+        System.setProperty("javafx.preloader", AppPreloader.class.getCanonicalName());
+        Application.launch(ClientMain.class, args);
     }
 
     @Override
