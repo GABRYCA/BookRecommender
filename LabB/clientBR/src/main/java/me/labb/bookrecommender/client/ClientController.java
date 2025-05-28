@@ -20,12 +20,8 @@ import me.labb.bookrecommender.client.oggetti.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ClientController implements Initializable {
     // Cache locale dei libri per mostrare titolo/autore nelle valutazioni
@@ -376,24 +372,39 @@ public class ClientController implements Initializable {
     @FXML
     private void creaLibreria() {
         if (!client.isAutenticato()) {
+            Alert alertLogin = new Alert(Alert.AlertType.WARNING);
+            alertLogin.setTitle("Login Richiesto");
+            alertLogin.setHeaderText("Accesso Negato");
+            alertLogin.setContentText("Devi effettuare il login per creare una libreria.");
+            alertLogin.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertLogin.getDialogPane().getStyleClass().add("warning-dialog");
+            alertLogin.showAndWait();
             stampaConAnimazione("Devi effettuare il login per creare una libreria.");
             return;
         }
 
-        // Crea un dialogo per inserire il nome della libreria
+        // Dialog per inserire il nome della libreria
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Crea Libreria");
         dialog.setHeaderText("Crea una nuova libreria personale");
         dialog.setContentText("Nome della libreria:");
-
-        // Aggiungi stile al dialogo
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-        // Mostra il dialogo e attendi il risultato
+        // Personalizza i pulsanti
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setText("Crea");
+
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(nomeLibreria -> {
             if (nomeLibreria.trim().isEmpty()) {
+                Alert alertNomeVuoto = new Alert(Alert.AlertType.WARNING);
+                alertNomeVuoto.setTitle("Nome non valido");
+                alertNomeVuoto.setHeaderText("Nome libreria mancante");
+                alertNomeVuoto.setContentText("Il nome della libreria non può essere vuoto.\nInserisci un nome valido.");
+                alertNomeVuoto.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alertNomeVuoto.getDialogPane().getStyleClass().add("warning-dialog");
+                alertNomeVuoto.showAndWait();
                 stampaConAnimazione("Il nome della libreria non può essere vuoto.");
                 return;
             }
@@ -401,16 +412,47 @@ public class ClientController implements Initializable {
             try {
                 int libreriaID = client.creaLibreria(nomeLibreria);
                 if (libreriaID > 0) {
+                    // Alert di successo
+                    Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION);
+                    alertSuccess.setTitle("Operazione Completata");
+                    alertSuccess.setHeaderText("Libreria Creata!");
+                    alertSuccess.setContentText("La libreria '" + nomeLibreria + "' è stata creata con successo.\n" +
+                            "ID Libreria: " + libreriaID);
+                    alertSuccess.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertSuccess.getDialogPane().getStyleClass().add("success-dialog");
+                    alertSuccess.showAndWait();
+
                     stampaConAnimazione("Libreria '" + nomeLibreria + "' creata con successo (ID: " + libreriaID + ").");
                     aggiornaLibrerie();
                 } else {
+                    // Alert di errore
+                    Alert alertError = new Alert(Alert.AlertType.ERROR);
+                    alertError.setTitle("Errore");
+                    alertError.setHeaderText("Creazione Fallita");
+                    alertError.setContentText("Non è stato possibile creare la libreria '" + nomeLibreria + "'.\n" +
+                            "Verifica che non esista già una libreria con lo stesso nome.");
+                    alertError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertError.showAndWait();
+
                     stampaConAnimazione("Errore nella creazione della libreria.");
                 }
             } catch (IOException e) {
+                // Alert per errore di comunicazione
+                Alert alertIOError = new Alert(Alert.AlertType.ERROR);
+                alertIOError.setTitle("Errore di Comunicazione");
+                alertIOError.setHeaderText("Errore di Connessione");
+                alertIOError.setContentText("Si è verificato un errore durante la comunicazione con il server:\n" +
+                        e.getMessage());
+                alertIOError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alertIOError.getDialogPane().getStyleClass().add("error-dialog");
+                alertIOError.showAndWait();
+
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         });
     }
+
 
     /**
      * Gestisce l'eliminazione della libreria.
@@ -418,40 +460,92 @@ public class ClientController implements Initializable {
     @FXML
     private void EliminaLibreria() {
         if (!client.isAutenticato()) {
+            Alert alertLogin = new Alert(Alert.AlertType.WARNING);
+            alertLogin.setTitle("Login Richiesto");
+            alertLogin.setHeaderText("Accesso Negato");
+            alertLogin.setContentText("Devi effettuare il login per eliminare una libreria.");
+            alertLogin.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertLogin.getDialogPane().getStyleClass().add("warning-dialog");
+            alertLogin.showAndWait();
             stampaConAnimazione("Devi effettuare il login per eliminare una libreria.");
             return;
         }
 
         Libreria libreriaSelezionata = librerieListView.getSelectionModel().getSelectedItem();
         if (libreriaSelezionata == null) {
+            Alert alertSelezione = new Alert(Alert.AlertType.WARNING);
+            alertSelezione.setTitle("Selezione Richiesta");
+            alertSelezione.setHeaderText("Nessuna Libreria Selezionata");
+            alertSelezione.setContentText("Per favore, seleziona prima una libreria da eliminare.");
+            alertSelezione.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertSelezione.getDialogPane().getStyleClass().add("warning-dialog");
+            alertSelezione.showAndWait();
             stampaConAnimazione("Seleziona prima una libreria da eliminare.");
             return;
         }
 
-        // Chiedi conferma prima di eliminare
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Conferma eliminazione");
-        alert.setHeaderText("Elimina libreria");
-        alert.setContentText("Sei sicuro di voler eliminare la libreria '" + libreriaSelezionata.nomeLibreria() + "'?");
+        // Dialog di conferma eliminazione
+        Alert alertConferma = new Alert(Alert.AlertType.CONFIRMATION);
+        alertConferma.setTitle("Conferma Eliminazione");
+        alertConferma.setHeaderText("Elimina Libreria");
+        alertConferma.setContentText("Sei sicuro di voler eliminare la libreria '" +
+                libreriaSelezionata.nomeLibreria() + "'?\n" +
+                "Questa operazione non può essere annullata.");
+        alertConferma.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        alertConferma.getDialogPane().getStyleClass().add("confirmation-dialog");
 
-        // Aggiungi stile all'alert
-        alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        // Personalizza i pulsanti
+        ButtonType buttonTypeYes = new ButtonType("Sì, elimina");
+        ButtonType buttonTypeNo = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alertConferma.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        Optional<ButtonType> result = alertConferma.showAndWait();
+        if (result.isPresent() && result.get() == buttonTypeYes) {
             try {
                 boolean success = client.eliminaLibreria(libreriaSelezionata.libreriaID());
                 if (success) {
+                    // Alert di successo
+                    Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION);
+                    alertSuccess.setTitle("Operazione Completata");
+                    alertSuccess.setHeaderText("Libreria Eliminata!");
+                    alertSuccess.setContentText("La libreria '" + libreriaSelezionata.nomeLibreria() +
+                            "' è stata eliminata con successo.");
+                    alertSuccess.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertSuccess.getDialogPane().getStyleClass().add("success-dialog");
+                    alertSuccess.showAndWait();
+
                     stampaConAnimazione("Libreria '" + libreriaSelezionata.nomeLibreria() + "' eliminata con successo.");
                     aggiornaLibrerie();
                 } else {
+                    // Alert di errore
+                    Alert alertError = new Alert(Alert.AlertType.ERROR);
+                    alertError.setTitle("Errore");
+                    alertError.setHeaderText("Eliminazione Fallita");
+                    alertError.setContentText("Non è stato possibile eliminare la libreria '" +
+                            libreriaSelezionata.nomeLibreria() + "'. " +
+                            "Verifica che la libreria esista ancora e riprova.");
+                    alertError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertError.showAndWait();
+
                     stampaConAnimazione("Errore nell'eliminazione della libreria.");
                 }
             } catch (IOException e) {
+                // Alert per errore di comunicazione
+                Alert alertIOError = new Alert(Alert.AlertType.ERROR);
+                alertIOError.setTitle("Errore di Comunicazione");
+                alertIOError.setHeaderText("Errore di Connessione");
+                alertIOError.setContentText("Si è verificato un errore durante la comunicazione con il server: " +
+                        e.getMessage());
+                alertIOError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alertIOError.getDialogPane().getStyleClass().add("error-dialog");
+                alertIOError.showAndWait();
+
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         }
     }
+
 
     /**
      * Aggiorna la lista delle librerie dell'utente.
@@ -505,12 +599,24 @@ public class ClientController implements Initializable {
     @FXML
     private void aggiungiLibroALibreria() {
         if (!client.isAutenticato()) {
+            Alert alertLogin = new Alert(Alert.AlertType.WARNING);
+            alertLogin.setTitle("Login Richiesto");
+            alertLogin.setHeaderText("Accesso Negato");
+            alertLogin.setContentText("Devi effettuare il login per aggiungere libri alle librerie.");
+            alertLogin.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertLogin.showAndWait();
             stampaConAnimazione("Devi effettuare il login per aggiungere libri alle librerie.");
             return;
         }
 
         Libreria libreriaSelezionata = librerieListView.getSelectionModel().getSelectedItem();
         if (libreriaSelezionata == null) {
+            Alert alertSelezione = new Alert(Alert.AlertType.WARNING);
+            alertSelezione.setTitle("Selezione Richiesta");
+            alertSelezione.setHeaderText("Nessuna Libreria Selezionata");
+            alertSelezione.setContentText("Per favore, seleziona prima una libreria.");
+            alertSelezione.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertSelezione.showAndWait();
             stampaConAnimazione("Seleziona prima una libreria.");
             return;
         }
@@ -520,11 +626,8 @@ public class ClientController implements Initializable {
         dialog.setTitle("Aggiungi Libro");
         dialog.setHeaderText("Aggiungi un libro alla libreria '" + libreriaSelezionata.nomeLibreria() + "'");
         dialog.setContentText("ID del libro:");
-
-        // Aggiungi stile al dialogo
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-        // Mostra il dialogo e attendi il risultato
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(libroIDStr -> {
@@ -533,19 +636,59 @@ public class ClientController implements Initializable {
 
                 boolean success = client.aggiungiLibroALibreria(libreriaSelezionata.libreriaID(), libroID);
                 if (success) {
+                    // Alert di successo
+                    Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION);
+                    alertSuccess.setTitle("Operazione Completata");
+                    alertSuccess.setHeaderText("Libro Aggiunto!");
+                    alertSuccess.setContentText("Il libro è stato aggiunto con successo alla libreria '" +
+                            libreriaSelezionata.nomeLibreria() + "'.");
+                    alertSuccess.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertSuccess.getDialogPane().getStyleClass().add("success-dialog");
+                    alertSuccess.showAndWait();
+
                     stampaConAnimazione("Libro aggiunto alla libreria con successo.");
-                    // Aggiorna la visualizzazione della libreria
                     caricaLibriInLibreria(libreriaSelezionata.libreriaID());
                 } else {
+                    // Alert di errore generico
+                    Alert alertError = new Alert(Alert.AlertType.ERROR);
+                    alertError.setTitle("Errore");
+                    alertError.setHeaderText("Operazione Fallita");
+                    alertError.setContentText("Non è stato possibile aggiungere il libro alla libreria. " +
+                            "Verifica che l'ID del libro sia corretto e che il libro non sia già presente.");
+                    alertError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertError.showAndWait();
+
                     stampaConAnimazione("Errore nell'aggiunta del libro alla libreria.");
                 }
             } catch (NumberFormatException e) {
+                // Alert per errore di formato
+                Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+                alertFormatError.setTitle("Errore di Formato");
+                alertFormatError.setHeaderText("ID Non Valido");
+                alertFormatError.setContentText("L'ID inserito non è un numero valido. " +
+                        "Per favore, inserisci un numero intero positivo.");
+                alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+                alertFormatError.showAndWait();
+
                 stampaConAnimazione("ID libro non valido. Inserisci un numero intero.");
             } catch (IOException e) {
+                // Alert per errore di comunicazione
+                Alert alertIOError = new Alert(Alert.AlertType.ERROR);
+                alertIOError.setTitle("Errore di Comunicazione");
+                alertIOError.setHeaderText("Errore di Connessione");
+                alertIOError.setContentText("Si è verificato un errore durante la comunicazione con il server: " +
+                        e.getMessage());
+                alertIOError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alertIOError.getDialogPane().getStyleClass().add("error-dialog");
+                alertIOError.showAndWait();
+
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         });
     }
+
 
     /**
      * Gestisce la rimozione di un libro da una libreria.
@@ -883,74 +1026,232 @@ public class ClientController implements Initializable {
      * @return Un nodo VBox che rappresenta la card della valutazione
      */
     private VBox creaCardValutazione(Valutazione valutazione) {
-        VBox card = new VBox(5);
-        card.getStyleClass().add("valutazione-card");
-        card.setPadding(new Insets(10));
+        VBox card = new VBox();
+        card.getStyleClass().addAll("valutazione-card", "card-container");
+
+        // ===== HEADER SECTION =====
+        VBox headerSection = new VBox(8);
+        headerSection.getStyleClass().add("header-section");
 
         // Recupera titolo e autore dalla cache se disponibili
         Libro libro = libriCache.get(valutazione.libroID());
-        String headerText;
-        if (libro != null) {
-            headerText = "Valutazione: " + libro.titolo() + " (" + libro.autori() + ")";
-        } else {
-            headerText = "Valutazione Libro ID: " + valutazione.libroID();
-        }
-        Label header = new Label(headerText);
-        header.getStyleClass().add("valutazione-header");
 
-        // Punteggi
-        HBox punteggiBox = new HBox(15);
-        punteggiBox.getChildren().addAll(
-            creaPunteggioBox("Stile", valutazione.scoreStile()),
-            creaPunteggioBox("Contenuto", valutazione.scoreContenuto()),
-            creaPunteggioBox("Gradevolezza", valutazione.scoreGradevolezza()),
-            creaPunteggioBox("Originalità", valutazione.scoreOriginalita()),
-            creaPunteggioBox("Edizione", valutazione.scoreEdizione())
+        if (libro != null) {
+            Label titoloLabel = new Label(libro.titolo());
+            titoloLabel.getStyleClass().add("libro-titolo");
+
+            Label autoreLabel = new Label("di " + libro.autori());
+            autoreLabel.getStyleClass().add("libro-autore");
+
+            headerSection.getChildren().addAll(titoloLabel, autoreLabel);
+        } else {
+            Label titoloLabel = new Label("Libro ID: " + valutazione.libroID());
+            titoloLabel.getStyleClass().add("libro-titolo-fallback");
+            headerSection.getChildren().add(titoloLabel);
+        }
+
+        // ===== RATING OVERVIEW =====
+        VBox ratingOverview = new VBox(8);
+        ratingOverview.getStyleClass().add("rating-overview");
+
+        // Voto finale prominente
+        double media = (valutazione.scoreStile() + valutazione.scoreContenuto() +
+                valutazione.scoreGradevolezza() + valutazione.scoreOriginalita() +
+                valutazione.scoreEdizione()) / 5.0;
+
+        HBox mediaContainer = new HBox(10);
+        mediaContainer.setAlignment(Pos.CENTER_LEFT);
+
+        Label mediaValue = new Label(String.format("%.1f", media));
+        mediaValue.getStyleClass().add("rating-value");
+
+        // Crea stelle per il voto medio
+        HBox starsBox = new HBox(2);
+        starsBox.setAlignment(Pos.CENTER_LEFT);
+        int stellePiene = (int) media;
+        boolean mezzaStella = (media - stellePiene) >= 0.5;
+
+        for (int i = 0; i < 5; i++) {
+            Label stella = new Label();
+            if (i < stellePiene) {
+                stella.setText("★");
+                stella.getStyleClass().add("stella-piena");
+            } else if (i == stellePiene && mezzaStella) {
+                stella.setText("☆");
+                stella.getStyleClass().add("stella-mezza");
+            } else {
+                stella.setText("☆");
+                stella.getStyleClass().add("stella-vuota");
+            }
+            starsBox.getChildren().add(stella);
+        }
+
+        Label mediaText = new Label("/ 5.0");
+        mediaText.getStyleClass().add("rating-max");
+
+        mediaContainer.getChildren().addAll(mediaValue, starsBox, mediaText);
+        ratingOverview.getChildren().add(mediaContainer);
+
+        // ===== DETAILED SCORES =====
+        VBox scoresSection = new VBox(10);
+        scoresSection.getStyleClass().add("scores-section");
+
+
+        // Usa FlowPane per layout più flessibile dei punteggi
+        FlowPane punteggiContainer = new FlowPane();
+        punteggiContainer.setHgap(15);
+        punteggiContainer.setVgap(10);
+        punteggiContainer.setAlignment(Pos.CENTER);
+
+        // Utilizza il metodo esistente creaPunteggioBox
+        punteggiContainer.getChildren().addAll(
+                creaPunteggioBox("Stile", (short)valutazione.scoreStile()),
+                creaPunteggioBox("Contenuto", (short)valutazione.scoreContenuto()),
+                creaPunteggioBox("Gradevolezza", (short)valutazione.scoreGradevolezza()),
+                creaPunteggioBox("Originalità", (short)valutazione.scoreOriginalita()),
+                creaPunteggioBox("Edizione", (short)valutazione.scoreEdizione())
         );
 
-        // Note
-        VBox noteBox = new VBox(5);
-        if (!valutazione.noteStile().isEmpty()) {
-            noteBox.getChildren().add(new Label("Note Stile: " + valutazione.noteStile()));
-        }
-        if (!valutazione.noteContenuto().isEmpty()) {
-            noteBox.getChildren().add(new Label("Note Contenuto: " + valutazione.noteContenuto()));
-        }
-        if (!valutazione.noteGradevolezza().isEmpty()) {
-            noteBox.getChildren().add(new Label("Note Gradevolezza: " + valutazione.noteGradevolezza()));
-        }
-        if (!valutazione.noteOriginalita().isEmpty()) {
-            noteBox.getChildren().add(new Label("Note Originalità: " + valutazione.noteOriginalita()));
-        }
-        if (!valutazione.noteEdizione().isEmpty()) {
-            noteBox.getChildren().add(new Label("Note Edizione: " + valutazione.noteEdizione()));
+        scoresSection.getChildren().add(punteggiContainer);
+
+        // ===== NOTES SECTION =====
+        VBox noteSection = new VBox(8);
+        noteSection.getStyleClass().add("notes-section");
+
+        boolean hasNotes = !valutazione.noteStile().isEmpty() || !valutazione.noteContenuto().isEmpty() ||
+                !valutazione.noteGradevolezza().isEmpty() || !valutazione.noteOriginalita().isEmpty() ||
+                !valutazione.noteEdizione().isEmpty();
+
+        if (hasNotes) {
+            Label noteTitle = new Label("Note");
+            noteTitle.getStyleClass().add("note-title");
+            noteSection.getChildren().add(noteTitle);
+
+            VBox noteContainer = new VBox(6);
+            noteContainer.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 6px; -fx-padding: 12px;");
+
+            // Aggiungi note per ogni categoria se non vuote
+            if (!valutazione.noteStile().isEmpty()) {
+                VBox notaBox = new VBox(4);
+                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+
+                Label categoriaLabel = new Label("Stile:");
+                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+
+                Label noteText = new Label(valutazione.noteStile());
+                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.setWrapText(true);
+
+                notaBox.getChildren().addAll(categoriaLabel, noteText);
+                noteContainer.getChildren().add(notaBox);
+            }
+
+            if (!valutazione.noteContenuto().isEmpty()) {
+                VBox notaBox = new VBox(4);
+                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+
+                Label categoriaLabel = new Label("Contenuto:");
+                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+
+                Label noteText = new Label(valutazione.noteContenuto());
+                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.setWrapText(true);
+
+                notaBox.getChildren().addAll(categoriaLabel, noteText);
+                noteContainer.getChildren().add(notaBox);
+            }
+
+            if (!valutazione.noteGradevolezza().isEmpty()) {
+                VBox notaBox = new VBox(4);
+                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+
+                Label categoriaLabel = new Label("Gradevolezza:");
+                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+
+                Label noteText = new Label(valutazione.noteGradevolezza());
+                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.setWrapText(true);
+
+                notaBox.getChildren().addAll(categoriaLabel, noteText);
+                noteContainer.getChildren().add(notaBox);
+            }
+
+            if (!valutazione.noteOriginalita().isEmpty()) {
+                VBox notaBox = new VBox(4);
+                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+
+                Label categoriaLabel = new Label("Originalità:");
+                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+
+                Label noteText = new Label(valutazione.noteOriginalita());
+                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.setWrapText(true);
+
+                notaBox.getChildren().addAll(categoriaLabel, noteText);
+                noteContainer.getChildren().add(notaBox);
+            }
+
+            if (!valutazione.noteEdizione().isEmpty()) {
+                VBox notaBox = new VBox(4);
+                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+
+                Label categoriaLabel = new Label("Edizione:");
+                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+
+                Label noteText = new Label(valutazione.noteEdizione());
+                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.setWrapText(true);
+
+                notaBox.getChildren().addAll(categoriaLabel, noteText);
+                noteContainer.getChildren().add(notaBox);
+            }
+
+            noteSection.getChildren().add(noteContainer);
         }
 
-        // Data
-        Label dataLabel = new Label("Data: " + (valutazione.dataValutazione() != null ? valutazione.dataValutazione().toLocalDate().toString() : "N/A"));
-        dataLabel.getStyleClass().add("valutazione-data");
+        // ===== FOOTER =====
+        HBox footer = new HBox();
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.getStyleClass().add("card-footer");
 
-        // Voto finale (media)
-        double media = (valutazione.scoreStile() + valutazione.scoreContenuto() + valutazione.scoreGradevolezza() + valutazione.scoreOriginalita() + valutazione.scoreEdizione()) / 5.0;
-        Label mediaLabel = new Label(String.format("Voto medio: %.2f", media));
-        mediaLabel.getStyleClass().add("valutazione-media");
+        // ===== ASSEMBLY =====
+        card.getChildren().addAll(headerSection, ratingOverview, scoresSection, noteSection, footer);
 
-        card.getChildren().addAll(header, punteggiBox, mediaLabel, noteBox, dataLabel);
-
-        // Aggiungi effetto hover
+        // ===== ANIMATIONS =====
+        // Hover effect con scala e ombra
         card.setOnMouseEntered(e -> {
-            ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
-            st.setToX(1.02);
-            st.setToY(1.02);
-            st.play();
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(150), card);
+            scaleTransition.setToX(1.03);
+            scaleTransition.setToY(1.03);
+            scaleTransition.setInterpolator(Interpolator.EASE_OUT);
+
+            scaleTransition.play();
         });
 
         card.setOnMouseExited(e -> {
-            ScaleTransition st = new ScaleTransition(Duration.millis(100), card);
-            st.setToX(1.0);
-            st.setToY(1.0);
-            st.play();
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(150), card);
+            scaleTransition.setToX(1.0);
+            scaleTransition.setToY(1.0);
+            scaleTransition.setInterpolator(Interpolator.EASE_OUT);
+
+            scaleTransition.play();
         });
+
+        // Animazione di entrata
+        card.setOpacity(0);
+        card.setTranslateY(20);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), card);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), card);
+        slideIn.setFromY(20);
+        slideIn.setToY(0);
+
+        ParallelTransition entrance = new ParallelTransition(fadeIn, slideIn);
+        entrance.setDelay(Duration.millis(50)); // Leggero delay per effetto staggered
+        entrance.play();
 
         return card;
     }
@@ -976,13 +1277,31 @@ public class ClientController implements Initializable {
         // Stelle
         HBox stelleBox = new HBox(2);
         stelleBox.setAlignment(Pos.CENTER);
+
+        // Calcola stelle piene e mezze stelle
+        int stellePiene = (int) Math.floor(punteggio);
+        boolean mezzaStella = (punteggio - stellePiene) >= 0.5;
+
         for (int i = 0; i < 5; i++) {
-            Label stella = new Label(i < punteggio ? "★" : "☆");
-            stella.getStyleClass().add(i < punteggio ? "stella-piena" : "stella-vuota");
+            Label stella = new Label();
+            if (i < stellePiene) {
+                // Stelle piene
+                stella.setText("★");
+                stella.getStyleClass().add("stella-piena");
+            } else if (i == stellePiene && mezzaStella) {
+                // Mezza stella
+                stella.setText("☆");
+                stella.getStyleClass().add("stella-mezza");
+            } else {
+                // Stelle vuote
+                stella.setText("☆");
+                stella.getStyleClass().add("stella-vuota");
+            }
+
             stelleBox.getChildren().add(stella);
         }
 
-        box.getChildren().addAll(categoriaLabel, stelleBox);
+        box.getChildren().addAll(categoriaLabel, stelleBox, punteggioLabel);
         return box;
     }
 

@@ -692,6 +692,7 @@ public class ClientOperazioni {
 
                         // Crea l'oggetto Valutazione
                         Valutazione valutazione = new Valutazione(
+
                                 valutazioneIDNum.intValue(),
                                 userIDNum.intValue(),
                                 libroIDNum.intValue(),

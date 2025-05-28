@@ -18,6 +18,7 @@
     -fx-text-fill: #cdd9f5;
 }
 
+
 .status-label {
     -fx-padding: 5px 10px;
     -fx-background-radius: 15px;
@@ -163,6 +164,140 @@
 }
 
 /* LOGIN & REGISTRAZIONE DIALOG STYLES */
+.success-dialog {
+    -fx-background-color: #f0fff0;
+}
+
+.success-dialog > *.header-panel {
+    -fx-background-color: #d0ffd0;
+}
+
+.success-dialog*.header-panel *.label {
+    -fx-text-fill: #008000;
+    -fx-font-size: 1.2em;
+}
+
+.success-dialog > *.content.label {
+    -fx-text-fill: #006000;
+    -fx-font-size: 1.1em;
+}
+
+.error-dialog {
+    -fx-background-color: #fff0f0;
+}
+
+.error-dialog > *.header-panel {
+    -fx-background-color: #ffd0d0;
+}
+
+.error-dialog *.header-panel *.label {
+    -fx-text-fill: #800000;
+    -fx-font-size: 1.2em;
+}
+
+.error-dialog > *.content.label {
+    -fx-text-fill: #600000;
+    -fx-font-size: 1.1em;
+}
+
+.warning-dialog {
+    -fx-background-color: #fffff0;
+}
+
+.warning-dialog > *.header-panel {
+    -fx-background-color: #fff8dc;
+}
+
+.warning-dialog*.header-panel *.label {
+    -fx-text-fill: #856404;
+    -fx-font-size: 1.2em;
+}
+
+.warning-dialog > *.content.label {
+    -fx-text-fill: #6b5103;
+    -fx-font-size: 1.1em;
+}
+
+.confirmation-dialog {
+    -fx-background-color: #f0f8ff;
+}
+
+.confirmation-dialog > *.header-panel {
+    -fx-background-color: #e6f3ff;
+}
+
+.confirmation-dialog*.header-panel *.label {
+    -fx-font-size: 1.2em;
+}
+
+.confirmation-dialog > *.content.label {
+    -fx-font-size: 1.1em;
+}
+
+.confirmation-dialog .button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+.confirmation-dialog .button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.confirmation-dialog .button.cancel {
+    -fx-background-color: #6c757d;
+}
+
+.confirmation-dialog .button.cancel:hover {
+    -fx-background-color: #545b62;
+}
+
+.input-dialog {
+    -fx-background-color: #f8f9fa;
+}
+
+.input-dialog > *.header-panel {
+    -fx-background-color: #e9ecef;
+}
+
+.input-dialog*.header-panel *.label {
+    -fx-font-size: 1.2em;
+}
+
+.input-dialog > *.content.label {
+    -fx-font-size: 1.1em;
+}
+
+.input-dialog .text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+}
+
+.input-dialog .text-field:focused {
+    -fx-border-color: #80bdff;
+    -fx-box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    -fx-text-fill: black;
+}
+
+.input-dialog .button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-padding: 6px 12px;
+}
+
+.input-dialog .button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.input-dialog .button.cancel {
+    -fx-background-color: #6c757d;
+}
+
+.input-dialog .button.cancel:hover {
+    -fx-background-color: #545b62;
+}
+
 
 .custom-dialog {
     -fx-background-color: #0d1b2a;
@@ -269,7 +404,48 @@ Label{
         opacity: 1;
     }
 }
+/* Contenitore principale del punteggio */
+.punteggio-box {
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.1), 4, 0.0, 2, 2);
+}
 
+/* Etichetta della categoria */
+.punteggio-categoria {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Valore numerico del punteggio (se visualizzato separatamente) */
+.punteggio-valore {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}
+
+/* Stella piena */
+.stella-piena {
+    -fx-text-fill: #f39c12;
+    -fx-font-size: 18px;
+}
+
+/* Mezza stella simulata */
+.stella-mezza {
+    -fx-text-fill: #f39c12;
+    -fx-font-size: 18px;
+}
+
+/* Stella vuota */
+.stella-vuota {
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 18px;
+}
 
 /* Stile del pulsante "Chiudi" */
 .profile-dialog .button {
@@ -686,7 +862,7 @@ Label{
 
 /* Card del consiglio principale */
 .consiglio-card {
-    -fx-background-color: #1e3a8a;
+    -fx-background-color: white;
     -fx-background-radius: 12px;
     -fx-border-radius: 12px;
     -fx-border-color: #3b82f6;
@@ -710,14 +886,14 @@ Label{
 .consiglio-header {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: #e5e7eb;
+    -fx-text-fill: black;
 }
 
 /* Etichette delle sezioni */
 .consiglio-section-label {
     -fx-font-size: 13px;
     -fx-font-weight: 600;
-    -fx-text-fill: #9ca3af;
+    -fx-text-fill: black;
     -fx-padding: 0 0 5 0;
 }
 
@@ -725,14 +901,14 @@ Label{
 .libro-titolo {
     -fx-font-size: 14px;
     -fx-font-weight: 600;
-    -fx-text-fill: #f3f4f6;
+    -fx-text-fill: black;
     -fx-wrap-text: true;
 }
 
 /* ID dei libri */
 .libro-id {
     -fx-font-size: 11px;
-    -fx-text-fill: #6b7280;
+    -fx-text-fill: black;
     -fx-font-style: italic;
 }
 
@@ -748,12 +924,13 @@ Label{
 .consiglio-separator {
     -fx-background-color: #374151;
     -fx-opacity: 0.6;
+    -fx-text-fill: black;
 }
 
 /* Data del consiglio */
 .consiglio-data {
     -fx-font-size: 12px;
-    -fx-text-fill: #9ca3af;
+    -fx-text-fill: black;
     -fx-font-style: italic;
 }
 
@@ -762,12 +939,14 @@ Label{
     -fx-background-color: rgba(59, 130, 246, 0.1);
     -fx-background-radius: 8px;
     -fx-padding: 10px;
+    -fx-text-fill: black;
 }
 
 .libro-suggerito-section {
     -fx-background-color: rgba(52, 211, 153, 0.1);
     -fx-background-radius: 8px;
     -fx-padding: 10px;
+    -fx-text-fill: black;
 }
 
 /* Pulsanti per i consigli */
@@ -874,4 +1053,99 @@ Label{
 .consiglio-card .button .glyph-icon {
     -fx-fill: currentColor;
     -fx-font-size: 12px;
+}
+
+/*Card Valutazione*/
+.valutazione-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+.header-section {
+    -fx-spacing: 5px;
+    -fx-alignment: center;
+}
+
+.libro-titolo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.libro-autore {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-style: italic;
+}
+
+.rating-overview {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-spacing: 8px;
+    -fx-alignment: center;
+}
+
+.rating-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e74c3c;
+}
+
+.rating-max {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.scores-section {
+    -fx-spacing: 10px;
+}
+
+.section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 5 0;
+}
+
+.notes-section {
+    -fx-spacing: 8px;
+}
+
+.note-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: Black;
+    -fx-padding: 0 0 5 0;
+}
+
+.note-box {
+    -fx-padding: 12px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-spacing: 6px;
+}
+
+.note-category {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.note-text {
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+}
+
+.card-footer {
+    -fx-padding: 10 0 0 0;
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1 0 0 0;
+    -fx-alignment: center-right;
 }
