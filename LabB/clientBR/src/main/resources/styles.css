@@ -7,11 +7,12 @@
 
 
 .app-title {
-    -fx-font-size: 34px;
+    -fx-font-family: 'Courier New';
+    -fx-font-size: 40px;
     -fx-font-weight: bold;
     -fx-text-fill: #cdd9f5;
-    -fx-padding: 0 0 20 0;
-
+    -fx-padding: 10 0 20 0;
+    -fx-translate-x: 50;
 }
 
 
@@ -832,6 +833,30 @@ Label{
     -fx-border-width: 0;
     -fx-padding: 2px 0px;
     -fx-cursor: text;
+}
+
+.terminal-textarea {
+    -fx-control-inner-background: linear-gradient(to bottom, #2a3f5f, #3b5d7a);
+    -fx-text-fill: #c5c8c6; /* colore testo chiaro */
+    -fx-highlight-fill: #214283; /* colore evidenziazione (blu intenso) */
+    -fx-highlight-text-fill: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #2e3440; /* bordo scuro */
+    -fx-border-width: 1.5px;
+    -fx-focus-color: #5294e2; /* colore focus */
+    -fx-faint-focus-color: transparent;
+}
+
+.terminal-textarea .content {
+    -fx-padding: 30 8 20 8; /* top right bottom left */
+    -fx-font-family: "Fira Mono", monospace;
+    -fx-font-size: 14px;
+}
+
+.terminal-textarea .text {
+    -fx-text-alignment: center;
 }
 
 .console-output {

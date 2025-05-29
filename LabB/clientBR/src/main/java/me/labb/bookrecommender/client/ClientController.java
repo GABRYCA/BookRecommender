@@ -56,8 +56,6 @@ public class ClientController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
-    private ComboBox<String> categoriaComboBox;
-    @FXML
     private VBox resultContainer;
     @FXML
     private Label resultLabel;
@@ -156,6 +154,8 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         client = new ClientOperazioni("localhost", 8080);
+
+
         HBox.setMargin(creaLibreriaBtn, new Insets(20,0,20,0));
         HBox.setMargin(rinominaLibreriaBtn, new Insets(20,0,20,0));
         HBox.setMargin(EliminaLibreriaBtn, new Insets(20,0,20,0));
@@ -167,15 +167,15 @@ public class ClientController implements Initializable {
         HBox.setMargin(generaConsigliBtn, new Insets(20,0,20,0));
         HBox.setMargin(mieiConsigliBtn, new Insets(20,0,20,0));
         HBox.setMargin(salvaConsiglioBtn, new Insets(20,0,20,0));
+
+
+        output.getStyleClass().add("terminal-textarea");
+        output.setEditable(false);
+
+
         // Inizializza lo stato dei pulsanti
         updateUIState();
 
-        // Configura il ComboBox con funzionalità di ricerca e filtro
-        setupCategoriaComboBox();
-
-        // Aggiungi un tooltip per guidare l'utente
-        Tooltip tooltip = new Tooltip("Seleziona una categoria e clicca 'Consiglia' per trovare libri simili");
-        Tooltip.install(categoriaComboBox, tooltip);
 
         // L'output iniziale con animazione
         stampaConAnimazione("Benvenuto nel Book Recommender. Connettiti al server per iniziare.");
@@ -1867,54 +1867,6 @@ public class ClientController implements Initializable {
         return card;
     }
 
-    /**
-     * Crea una card per visualizzare un consiglio.
-     *
-     * @param consiglio Il consiglio da visualizzare
-     * @return Un nodo VBox che rappresenta la card del consiglio
-     */
-    /**
-     * Configura il ComboBox per la selezione delle categorie di libri.
-     */
-    private void setupCategoriaComboBox() {
-        // Aggiungi categorie predefinite
-        List<String> categorie = List.of(
-                "Narrativa", "Saggistica", "Poesia", "Fantascienza",
-                "Fantasy", "Gialli", "Romanzi storici", "Biografie",
-                "Self-help", "Arte", "Scienze", "Tecnologia",
-                "Storia", "Filosofia", "Viaggi", "Cucina",
-                "Religione", "Economia", "Lingue", "Musica"
-        );
-
-        categoriaComboBox.getItems().addAll(categorie);
-
-        // Aggiungi un prompt text al ComboBox
-        categoriaComboBox.setPromptText("Seleziona categoria");
-
-        // Abilita l'editing per permettere la ricerca
-        categoriaComboBox.setEditable(true);
-
-        // Aggiungi un listener che filtra le opzioni in base al testo digitato
-        categoriaComboBox.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
-                categoriaComboBox.getItems().setAll(categorie);
-                return;
-            }
-
-            String lowerCaseSearch = newValue.toLowerCase();
-            categoriaComboBox.getItems().setAll(
-                    categorie.stream()
-                            .filter(categoria -> categoria.toLowerCase().contains(lowerCaseSearch))
-                            .toList()
-            );
-
-            // Mostra il dropdown se ci sono risultati di ricerca
-            if (!categoriaComboBox.getItems().isEmpty() && !categoriaComboBox.isShowing()) {
-                Platform.runLater(categoriaComboBox::show);
-            }
-        });
-
-    }
 
     /**
      * Configura le animazioni per i pulsanti dell'interfaccia.
@@ -2506,13 +2458,9 @@ public class ClientController implements Initializable {
      * @param msg Il messaggio da stampare
      */
     private void stampaConAnimazione(String msg) {
-        // Aggiungi il messaggio come al solito
         output.appendText(msg + "\n");
-
-        // Scorri alla fine del testo
         output.positionCaret(output.getText().length());
 
-        // Evidenzia brevemente il messaggio aggiunto
         int lastLineIndex = output.getText().lastIndexOf("\n", output.getText().length() - 2);
         if (lastLineIndex == -1) lastLineIndex = 0;
 
@@ -2521,12 +2469,12 @@ public class ClientController implements Initializable {
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {
-                    output.setStyle("-fx-highlight-fill: #d3e5ff;");
+                    output.setStyle("-fx-highlight-fill: #214283; -fx-highlight-text-fill: white;");
                     output.selectRange(startIndex, endIndex);
                 }),
                 new KeyFrame(Duration.millis(1000), e -> {
                     output.deselect();
-                    output.setStyle("");
+                    output.setStyle(""); // resetta lo stile (ma conserva la classe CSS)
                 })
         );
         timeline.play();
@@ -2774,7 +2722,7 @@ public class ClientController implements Initializable {
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, profiloBtn,
-                searchField, categoriaComboBox,                // Nuovi controlli per le librerie
+                searchField,               // Nuovi controlli per le librerie
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
@@ -2794,7 +2742,7 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected;
             } else if (control == loginBtn || control == registratiBtn) {
                 newDisabled = !isConnected || isLoggedIn;
-            } else if (control == logoutBtn || control == profiloBtn || control == categoriaComboBox) {
+            } else if (control == logoutBtn || control == profiloBtn ) {
                 newDisabled = !isConnected || !isLoggedIn;
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;

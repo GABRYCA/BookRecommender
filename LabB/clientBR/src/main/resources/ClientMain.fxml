@@ -12,17 +12,22 @@
             <padding>
                 <Insets bottom="15" left="20" right="20" top="20" />
             </padding>
-            <HBox alignment="CENTER_LEFT" spacing="15">
-                <Label styleClass="app-title" text="📚 Book Recommender">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font>
-                </Label>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <!-- Spazio flessibile sinistro -->
                 <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Titolo centrato dinamicamente -->
+                <Label styleClass="app-title" text="📚 Book Recommender" />
+
+                <!-- Spazio flessibile destro -->
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Elemento a destra (es. stato connessione) -->
                 <Label fx:id="statusLabel" styleClass="status-label" text="Non connesso" />
             </HBox>
 
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="button-bar">
+            <HBox alignment="CENTER" spacing="10" styleClass="button-bar">
                 <Button fx:id="connettiBtn" mnemonicParsing="false" onAction="#connetti" styleClass="action-button" text="Connetti" />
                 <Button fx:id="disconnettiBtn" mnemonicParsing="false" onAction="#disconnetti" styleClass="action-button" text="Disconnetti" />
                 <Separator orientation="VERTICAL" />
@@ -39,10 +44,16 @@
                 <Insets bottom="10" left="20" right="20" top="10" />
             </padding>
 
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-section">
-                <TextField fx:id="searchField" promptText="Cerca libri..." HBox.hgrow="ALWAYS" />
-                <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="🔍" />
-                <ComboBox fx:id="categoriaComboBox" promptText="Categoria" prefWidth="150" />
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-section" prefWidth="600">
+                <Region HBox.hgrow="ALWAYS" />
+
+                <HBox alignment="CENTER" spacing="5" style="-fx-translate-x: 50;">
+                    <TextField fx:id="searchField" promptText="Cerca libri..." prefWidth="500" />
+                    <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="🔍" />
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
                 <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo" styleClass="profile-button" text="Profilo" />
             </HBox>
 
@@ -67,8 +78,8 @@
                         </HBox>
                         <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
                             <!-- Lista delle librerie -->
-                            <VBox spacing="5">
-                                <Label text="Le mie librerie:" styleClass="section-title" />
+                            <VBox spacing="5" alignment="CENTER">
+                                <Label text="Le mie librerie" styleClass="section-title" />
                                 <ListView fx:id="librerieListView" VBox.vgrow="ALWAYS" />
                             </VBox>
                             <!-- Contenuto della libreria selezionata -->
@@ -76,7 +87,7 @@
                                 <!-- HBox con testo centrato e bottoni a destra -->
                                 <HBox spacing="10" alignment="CENTER" >
                                     <Region HBox.hgrow="ALWAYS" />
-                                    <Label fx:id="libreriaSelezionataLabel" text="Seleziona una libreria" styleClass="section-title" />
+                                    <Label fx:id="libreriaSelezionataLabel" text="" styleClass="section-title" />
                                     <Region HBox.hgrow="ALWAYS" />
                                     <HBox spacing="10" alignment="CENTER_RIGHT">
                                         <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro" onAction="#aggiungiLibroALibreria" styleClass="action-button" />
