@@ -45,11 +45,13 @@
 
 /* Pulsanti con effetti hover */
 .action-button, .search-button, .recommend-button, .profile-button {
-    -fx-background-radius: 4px;
-    -fx-padding: 8px 12px;
     -fx-cursor: hand;
     -fx-transition: all 0.3s ease;
     -fx-text-fill: #f0f4ff;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 24px;
 }
 
 .action-button {

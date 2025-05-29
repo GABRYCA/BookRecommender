@@ -1138,10 +1138,50 @@ public class ClientController implements Initializable {
         VBox headerSection = new VBox(8);
         headerSection.getStyleClass().add("header-section");
 
-        // Recupera titolo e autore dalla cache se disponibili
-        Libro libro = libriCache.get(valutazione.libroID());
+        // Se il libro non è in cache, caricalo
+        if (!libriCache.containsKey(valutazione.libroID())) {
+            try {
+                Task<Libro> task = new Task<>() {
+                    @Override
+                    protected Libro call() throws Exception {
+                        return client.ottieniDettagliLibro(valutazione.libroID());
+                    }
+                };
 
-        if (libro != null) {
+                task.setOnSucceeded(e -> {
+                    Libro libro = task.getValue();
+                    if (libro != null) {
+                        libriCache.put(libro.libroId(), libro);
+                        // Aggiorna l'UI con il titolo del libro
+                        Platform.runLater(() -> {
+                            Label titoloLabel = new Label(libro.titolo());
+                            titoloLabel.getStyleClass().add("libro-titolo");
+
+                            Label autoreLabel = new Label("di " + libro.autori());
+                            autoreLabel.getStyleClass().add("libro-autore");
+
+                            headerSection.getChildren().clear();
+                            headerSection.getChildren().addAll(titoloLabel, autoreLabel);
+                        });
+                    }
+                });
+
+                // Mostra temporaneamente l'ID mentre carica
+                Label loadingLabel = new Label("Caricamento dettagli libro...");
+                loadingLabel.getStyleClass().add("libro-titolo-fallback");
+                headerSection.getChildren().add(loadingLabel);
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+            } catch (Exception e) {
+                Label errorLabel = new Label("Libro ID: " + valutazione.libroID());
+                errorLabel.getStyleClass().add("libro-titolo-fallback");
+                headerSection.getChildren().add(errorLabel);
+            }
+        } else {
+            // Usa il libro dalla cache
+            Libro libro = libriCache.get(valutazione.libroID());
             Label titoloLabel = new Label(libro.titolo());
             titoloLabel.getStyleClass().add("libro-titolo");
 
@@ -1149,11 +1189,8 @@ public class ClientController implements Initializable {
             autoreLabel.getStyleClass().add("libro-autore");
 
             headerSection.getChildren().addAll(titoloLabel, autoreLabel);
-        } else {
-            Label titoloLabel = new Label("Libro ID: " + valutazione.libroID());
-            titoloLabel.getStyleClass().add("libro-titolo-fallback");
-            headerSection.getChildren().add(titoloLabel);
         }
+
 
         // ===== RATING OVERVIEW =====
         VBox ratingOverview = new VBox(8);
