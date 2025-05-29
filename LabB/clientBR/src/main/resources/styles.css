@@ -88,15 +88,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 2);
 }
 
-.profile-button {
-    -fx-background-color: #1a2946;
-}
-
-.profile-button:hover {
-    -fx-background-color: #223358;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 2);
-}
-
 .button:disabled {
     -fx-opacity: 0.6;
 }
@@ -358,41 +349,178 @@ Label{
 }
 
 /* Stile per il Dialogo del Profilo */
-.profile-dialog {
-    -fx-background-color: #FFFFFF;
+/* Profile Button - Professional Look */
+.profile-button {
+    -fx-background-color: linear-gradient(to bottom, #2a3f5f, #3b5d7a);
+    -fx-text-fill: #f4f6fa;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
     -fx-border-radius: 10px;
-    -fx-effect: dropshadow(gaussian, #000000, 10, 0, 0, 5);
-    -fx-padding: 20px;
-    -fx-text-fill: #ffffff;
+    -fx-padding: 12px 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0, 0, 3);
+    -fx-cursor: hand;
 }
 
-/* Stile per la griglia dentro il dialogo */
+.profile-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #34506e, #4b6f94);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.profile-button:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+}
+
+/* Profile Dialog Main Container */
+.profile-dialog {
+    -fx-background-color: linear-gradient(to bottom, #1e3c5a, #2d4a69, #1a2946);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0, 0, 5);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1px;
+    -fx-background-radius: 0px; /* bordi dritti */
+    -fx-border-radius: 0px;
+}
+
+/* Dialog Header Styling */
+.profile-dialog .dialog-pane .header-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-background-radius: 14px 14px 0 0;
+    -fx-padding: 24px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+}
+
+.profile-dialog .dialog-pane .header-panel .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 2, 0, 0, 1);
+}
+
+/* Close Button */
+.profile-dialog .button {
+    -fx-background-color: linear-gradient(to bottom, #1e90ff, #4682b4);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+.profile-dialog .button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3c9ce8, #5daee8);
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+.profile-dialog .button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #2c84c6, #417aa1);
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}
+
+/* Profile Grid */
 .profile-grid {
-    -fx-hgap: 10;
-    -fx-vgap: 10;
-    -fx-padding: 20;
+    -fx-hgap: 18;
+    -fx-vgap: 14;
+    -fx-padding: 30px 25px;
     -fx-alignment: center-left;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 0 0 14px 14px;
 }
 
-/* Etichette per ogni campo di profilo */
+/* Profile Labels */
 .profile-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #e8eaf0;
+    -fx-min-width: 140px;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-padding: 8px 15px;
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-width: 1px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
 }
 
-/* Campi di testo per il profilo */
+.profile-label:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* Profile Values */
+.profile-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(30, 144, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-min-width: 200px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.profile-value:hover {
+    -fx-background-color: rgba(0, 128, 255, 0.1);
+    -fx-border-color: rgba(0, 128, 255, 0.5);
+}
+
+/* Profile Field */
 .profile-field {
     -fx-font-size: 14px;
     -fx-pref-width: 300px;
-    -fx-background-color: #f2f2f2;
-    -fx-border-color: #dcdcdc;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
-    -fx-text-fill: #ffffff;
-    -fx-focus-color: #5b9bd5;
-    -fx-animation: fadeIn 0.3s ease-in-out;
+    -fx-background-color: rgba(250, 250, 250, 0.9);
+    -fx-border-color: rgba(200, 200, 200, 0.8);
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-text-fill: #2c3e50;
+    -fx-focus-color: #1e90ff;
+}
+
+.profile-field:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color: rgba(30, 144, 255, 0.6);
+}
+
+.profile-field:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #1e90ff;
+    -fx-border-width: 2px;
+}
+
+/* Animation */
+.profile-fade-in {
+    -fx-opacity: 0;
+}
+
+.profile-fade-in-active {
+    -fx-opacity: 1;
+    -fx-transition: opacity 300ms ease-out;
+}
+
+/* Special fields */
+.profile-value.user-id {
+    -fx-background-color: rgba(231, 76, 60, 0.1);
+    -fx-border-color: rgba(231, 76, 60, 0.4);
+    -fx-font-weight: bold;
+}
+
+.profile-value.email {
+    -fx-background-color: rgba(155, 89, 182, 0.1);
+    -fx-border-color: rgba(155, 89, 182, 0.4);
 }
 
 /* Animazione per l'input dei campi */
@@ -447,31 +575,6 @@ Label{
     -fx-font-size: 18px;
 }
 
-/* Stile del pulsante "Chiudi" */
-.profile-dialog .button {
-    -fx-background-color: #1e90ff;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-border-radius: 5px;
-    -fx-padding: 10px 20px;
-}
-
-.profile-dialog .button:hover {
-    -fx-background-color: #4e8db6;
-}
-
-.profile-dialog .button:pressed {
-    -fx-background-color: #3975a0;
-}
-
-
-.profile-value {
-    -fx-font-size: 14px;
-    -fx-text-fill: #ffffff;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
-    -fx-opacity: 1;
-}
 
 
 /* Classe per l'alert di registrazione */
@@ -550,10 +653,12 @@ Label{
 }
 
 .section-title {
-    -fx-font-size: 16px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #cdd9f5;
-    -fx-padding: 0 0 5px 0;
+    -fx-text-fill: #ffffff;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-padding: 5px 0 10px 0;
 }
 
 /* Card per i libri */

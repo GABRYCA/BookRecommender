@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -2222,73 +2223,107 @@ public class ClientController implements Initializable {
     }
 
     /**
-     * Mostra il profilo dell'utente in un dialogo elegante con animazioni.
+     * Mostra il profilo dell'utente in un dialogo elegante con animazioni e layout ottimizzato.
      *
      * @param utente L'utente di cui mostrare il profilo
      */
     private void mostraprofilo(Utente utente) {
-        // Crea un dialogo per visualizzare il profilo in modo elegante
         Dialog<Void> dialog = new Dialog<>();
-
         dialog.setTitle("Profilo Utente");
-        dialog.setHeaderText("Informazioni Profilo");
+
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
 
         ButtonType closeButton = new ButtonType("Chiudi", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(closeButton);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
+        BorderPane rootPane = new BorderPane();
+        rootPane.setPadding(new Insets(30));
+        rootPane.setPrefWidth(500);
 
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        dialog.getDialogPane().getStyleClass().add("profile-dialog");
+        VBox contentBox = new VBox(25);
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setStyle("-fx-background-color: transparent;");
+
+        // Titolo centrato
+        Label titolo = new Label("👤 Profilo Utente");
+        titolo.getStyleClass().add("section-title");
+
+        // Griglia centrata
+        GridPane grid = new GridPane();
+        grid.setHgap(20);
+        grid.setVgap(18);
+        grid.setAlignment(Pos.CENTER);
+        grid.setStyle("-fx-background-color: transparent;");
         grid.getStyleClass().add("profile-grid");
 
-        // Campo per ogni informazione con animazioni
-        addAnimatedProfileField(grid, "User ID:", String.valueOf(utente.userID()), 0);
-        addAnimatedProfileField(grid, "Nome Completo:", utente.nomeCompleto(), 1);
-        addAnimatedProfileField(grid, "Email:", utente.email(), 2);
-        addAnimatedProfileField(grid, "Username:", utente.username(), 3);
-        addAnimatedProfileField(grid, "Codice Fiscale:", utente.codiceFiscale() != null ? utente.codiceFiscale() : "Non specificato", 4);
-        addAnimatedProfileField(grid, "Data Registrazione:", utente.dataRegistrazione().toString(), 5);
+        // Colonne centrali (nessun bordo smussato)
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setHalignment(HPos.RIGHT);
+        col1.setPercentWidth(40);
 
-        dialog.getDialogPane().setContent(grid);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setHalignment(HPos.LEFT);
+        col2.setPercentWidth(60);
+
+        grid.getColumnConstraints().addAll(col1, col2);
+
+        // Campi profilo
+        int row = 0;
+        row = addAnimatedProfileField(grid, "User ID:", String.valueOf(utente.userID()), row);
+        row = addAnimatedProfileField(grid, "Nome Completo:", utente.nomeCompleto(), row);
+        row = addAnimatedProfileField(grid, "Email:", utente.email(), row);
+        row = addAnimatedProfileField(grid, "Username:", utente.username(), row);
+        row = addAnimatedProfileField(grid, "Codice Fiscale:", utente.codiceFiscale() != null ? utente.codiceFiscale() : "Non specificato", row);
+        row = addAnimatedProfileField(grid, "Iscrizione:", utente.dataRegistrazione().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), row);
+
+        contentBox.getChildren().addAll(titolo, grid);
+        rootPane.setCenter(contentBox);
+
+        dialog.getDialogPane().setContent(rootPane);
         animaDialogo(dialog);
         dialog.showAndWait();
     }
 
     /**
-     * Aggiunge un campo al profilo con animazione di apparizione.
+     * Aggiunge un campo al profilo con animazione di apparizione e ritorna la riga successiva.
      *
      * @param grid Il GridPane in cui aggiungere il campo
      * @param labelText Il testo dell'etichetta del campo
      * @param value Il valore del campo da visualizzare
-     * @param row La riga in cui posizionare il campo nel GridPane
+     * @param row La riga corrente nel GridPane
+     * @return La riga successiva disponibile
      */
-    private void addAnimatedProfileField(GridPane grid, String labelText, String value, int row) {
+    private int addAnimatedProfileField(GridPane grid, String labelText, String value, int row) {
         Label label = new Label(labelText);
         label.getStyleClass().add("profile-label");
+        label.setAlignment(Pos.CENTER);
+        label.setMaxWidth(Double.MAX_VALUE);
 
-        Label valueLabel = new Label(value);
-        valueLabel.setOpacity(0);
-        valueLabel.getStyleClass().add("profile-value");
+        Label value1 = new Label(value);
+        value1.getStyleClass().add("profile-value");
+        value1.setAlignment(Pos.CENTER);
+        value1.setMaxWidth(Double.MAX_VALUE);
+
+        GridPane.setHalignment(label, HPos.CENTER);
+        GridPane.setHalignment(value1, HPos.CENTER);
 
         grid.add(label, 0, row);
-        grid.add(valueLabel, 1, row);
+        grid.add(value1, 1, row);
 
-        // Animazione di apparizione ritardata
-        PauseTransition delay = new PauseTransition(Duration.millis(100 * row));
+        // Delay e fade
+        PauseTransition delay = new PauseTransition(Duration.millis(80 * row));
         delay.setOnFinished(e -> {
-            FadeTransition ft = new FadeTransition(Duration.millis(500), valueLabel);
+            FadeTransition ft = new FadeTransition(Duration.millis(400), value1);
             ft.setFromValue(0);
             ft.setToValue(1);
-            ft.setCycleCount(1);
-            ft.setInterpolator(Interpolator.LINEAR);
+            ft.setInterpolator(Interpolator.EASE_OUT);
             ft.play();
         });
         delay.play();
+        return row + 1;
     }
+
 
     /**
      * Stampa un messaggio con un'animazione di evidenziazione.

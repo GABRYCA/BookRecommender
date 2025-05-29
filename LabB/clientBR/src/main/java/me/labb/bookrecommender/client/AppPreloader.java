@@ -60,7 +60,7 @@ public class AppPreloader extends Preloader {
         stage.setScene(scene);
         stage.show();
 
-        // Simulazione fluida con Timeline        simulateProgress();
+        simulateProgress();
     }
 
     /**
