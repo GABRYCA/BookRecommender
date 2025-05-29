@@ -12,15 +12,15 @@ import java.util.Optional;
 /**
  * Classe DAO per operazioni CRUD sulle valutazioni dei libri.
  * Gestisce tutte le operazioni di accesso ai dati relative alle valutazioni degli utenti.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
  */
-public class ValutazioneDAO {    private final DatabaseManager dbManager;
+public class ValutazioneDAO {
+    private final DatabaseManager dbManager;
 
     /**
-     * Costruttore della classe ValutazioneDAO.
      * Inizializza la connessione al database manager.
      */
     public ValutazioneDAO() {
@@ -28,23 +28,22 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
     }
 
     /**
-     * Salva una nuova valutazione di un libro.
-     *
-     * @param userID ID dell'utente che valuta
-     * @param libroID ID del libro valutato
-     * @param scoreStile Punteggio per lo stile (1-5)
-     * @param noteStile Note sullo stile
-     * @param scoreContenuto Punteggio per il contenuto (1-5)
-     * @param noteContenuto Note sul contenuto
+     * @param userID            ID dell'utente che valuta
+     * @param libroID           ID del libro valutato
+     * @param scoreStile        Punteggio per lo stile (1-5)
+     * @param noteStile         Note sullo stile
+     * @param scoreContenuto    Punteggio per il contenuto (1-5)
+     * @param noteContenuto     Note sul contenuto
      * @param scoreGradevolezza Punteggio per la gradevolezza (1-5)
-     * @param noteGradevolezza Note sulla gradevolezza
-     * @param scoreOriginalita Punteggio per l'originalità (1-5)
-     * @param noteOriginalita Note sull'originalità
-     * @param scoreEdizione Punteggio per l'edizione (1-5)
-     * @param noteEdizione Note sull'edizione
+     * @param noteGradevolezza  Note sulla gradevolezza
+     * @param scoreOriginalita  Punteggio per l'originalità (1-5)
+     * @param noteOriginalita   Note sull'originalità
+     * @param scoreEdizione     Punteggio per l'edizione (1-5)
+     * @param noteEdizione      Note sull'edizione
      * @return ID della valutazione appena creata
      * @throws SQLException In caso di errori SQL
-     */    public int salvaValutazione(int userID, int libroID,
+     */
+    public int salvaValutazione(int userID, int libroID,
                                 short scoreStile, String noteStile,
                                 short scoreContenuto, String noteContenuto,
                                 short scoreGradevolezza, String noteGradevolezza,
@@ -56,28 +55,28 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
 
         try {
             conn = dbManager.getConnection();
-            
+
             // Disabilita autocommit per gestire la transazione manualmente
             conn.setAutoCommit(false);
-            
+
             System.out.println("INFO: Salvando valutazione per userID=" + userID + ", libroID=" + libroID);
-            
+
             // Verifica se esiste già una valutazione per questo utente e libro
             String checkSql = """
                     SELECT "ValutazioneID" FROM "ValutazioniLibri"
                     WHERE "UserID" = ? AND "LibroID" = ?
                     """;
-            
+
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setInt(1, userID);
                 checkStmt.setInt(2, libroID);
-                
+
                 try (ResultSet checkRs = checkStmt.executeQuery()) {
                     if (checkRs.next()) {
                         // Aggiorna la valutazione esistente
                         int valutazioneID = checkRs.getInt("ValutazioneID");
                         System.out.println("INFO: Aggiornando valutazione esistente ID=" + valutazioneID);
-                        
+
                         String updateSql = """
                                 UPDATE "ValutazioniLibri" SET
                                 "ScoreStile" = ?, "NoteStile" = ?,
@@ -88,7 +87,7 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
                                 "DataValutazione" = CURRENT_TIMESTAMP
                                 WHERE "ValutazioneID" = ?
                                 """;
-                        
+
                         try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                             updateStmt.setShort(1, scoreStile);
                             updateStmt.setString(2, noteStile);
@@ -101,20 +100,20 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
                             updateStmt.setShort(9, scoreEdizione);
                             updateStmt.setString(10, noteEdizione);
                             updateStmt.setInt(11, valutazioneID);
-                            
+
                             int rowsAffected = updateStmt.executeUpdate();
                             System.out.println("INFO: Update eseguito, righe modificate: " + rowsAffected);
-                            
+
                             // Commit della transazione
                             conn.commit();
                             System.out.println("INFO: Transazione di aggiornamento committata con successo");
-                            
+
                             return valutazioneID;
                         }
                     }
                 }
             }
-            
+
             // Inserisci una nuova valutazione
             System.out.println("INFO: Inserendo nuova valutazione");
             String insertSql = """
@@ -129,7 +128,7 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                     RETURNING "ValutazioneID"
                     """;
-            
+
             stmt = conn.prepareStatement(insertSql);
             stmt.setInt(1, userID);
             stmt.setInt(2, libroID);
@@ -143,17 +142,17 @@ public class ValutazioneDAO {    private final DatabaseManager dbManager;
             stmt.setString(10, noteOriginalita);
             stmt.setShort(11, scoreEdizione);
             stmt.setString(12, noteEdizione);
-            
+
             rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 int newValutazioneID = rs.getInt(1);
                 System.out.println("INFO: Nuova valutazione inserita con ID=" + newValutazioneID);
-                
+
                 // Commit della transazione
                 conn.commit();
                 System.out.println("INFO: Transazione di inserimento committata con successo");
-                
+
                 return newValutazioneID;
             } else {
                 conn.rollback();

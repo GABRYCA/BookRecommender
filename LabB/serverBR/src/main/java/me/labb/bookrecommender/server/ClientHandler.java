@@ -63,18 +63,15 @@ public class ClientHandler implements Runnable {
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            // Messaggio di benvenuto iniziale
             out.println("Benvenuto al server di BookRecommender - LabB!");
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 if ("EXIT".equalsIgnoreCase(inputLine.trim())) {
-                    out.println("Arrivederci!"); // Messaggio di chiusura (testo semplice)
+                    out.println("Arrivederci!");
                     break;
                 }
 
-                // Elabora il comando
                 String risposta = elaboraComando(inputLine);
                 out.println(risposta);
             }
@@ -102,7 +99,8 @@ public class ClientHandler implements Runnable {
             System.out.println("Ricevuta richiesta JSON: comando=" + azione + ", parametri=" + parametri);
         }
         System.out.println("Ricevuta richiesta: comando=" + azione + ", parametri=" + parametri);
-        switch (azione) {            case "CERCA":
+        switch (azione) {
+            case "CERCA":
                 return cercaLibri(parametri);
             case "CONSIGLIA":
                 return consigliaLibri(parametri);
@@ -129,7 +127,8 @@ public class ClientHandler implements Runnable {
                 case "LIBRERIE":
                     return elencaLibrerie();
                 case "AGGIUNGI_LIBRO":
-                    return aggiungiLibro(parametri);                case "RIMUOVI_LIBRO":
+                    return aggiungiLibro(parametri);
+                case "RIMUOVI_LIBRO":
                     return rimuoviLibro(parametri);
                 case "SPOSTA_LIBRO":
                     return spostaLibro(parametri);
@@ -231,7 +230,8 @@ public class ClientHandler implements Runnable {
         } catch (SQLException e) {
             System.err.println("Errore durante la ricerca dei libri: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
-        }    }
+        }
+    }
 
     /**
      * Ottiene i dettagli di un libro specifico dal suo ID.
@@ -246,12 +246,13 @@ public class ClientHandler implements Runnable {
         try {
             int libroID = Integer.parseInt(libroIDStr);
             Optional<Libro> libroOpt = libroDAO.getLibroById(libroID);
-            
+
             if (libroOpt.isEmpty()) {
                 return ResponseFormatter.erroreJson("Libro con ID " + libroID + " non trovato.");
             }
-            
-            Libro libro = libroOpt.get();            Map<String, Object> libroMap = new HashMap<>();
+
+            Libro libro = libroOpt.get();
+            Map<String, Object> libroMap = new HashMap<>();
             libroMap.put("libroID", libro.libroId());
             libroMap.put("titolo", libro.titolo());
             libroMap.put("autori", libro.autori());
@@ -261,7 +262,7 @@ public class ClientHandler implements Runnable {
             libroMap.put("annoPubblicazione", libro.annoPubblicazione());
             libroMap.put("editore", libro.editore());
             libroMap.put("mesePubblicazione", libro.mesePubblicazione());
-            
+
             return ResponseFormatter.successoJson("Dettagli libro ID: " + libroID, ResponseFormatter.singletonMap("libro", libroMap));
         } catch (NumberFormatException e) {
             return ResponseFormatter.erroreJson("ID libro non valido. Assicurati di inserire un numero intero.");
@@ -385,7 +386,8 @@ public class ClientHandler implements Runnable {
         List<Map<String, Object>> comandiAccount = new ArrayList<>();
         List<Map<String, Object>> comandiLibrerie = new ArrayList<>();
         List<Map<String, Object>> comandiValutazioni = new ArrayList<>();
-        List<Map<String, Object>> comandiConsigli = new ArrayList<>();        comandiGenerali.add(createCommandInfo("CERCA", "Cerca libri con il termine indicato nel titolo o nella descrizione", "<termine>"));
+        List<Map<String, Object>> comandiConsigli = new ArrayList<>();
+        comandiGenerali.add(createCommandInfo("CERCA", "Cerca libri con il termine indicato nel titolo o nella descrizione", "<termine>"));
         comandiGenerali.add(createCommandInfo("CONSIGLIA", "Ottieni consigli di libri in una determinata categoria", "<categoria>"));
         comandiGenerali.add(createCommandInfo("DETTAGLI_LIBRO", "Ottieni i dettagli completi di un libro specifico", "<libroID>"));
         comandiGenerali.add(createCommandInfo("FORMAT", "Imposta il formato di risposta (TEXT o JSON)", "<formato>"));
@@ -399,7 +401,8 @@ public class ClientHandler implements Runnable {
             comandiAccount.add(createCommandInfo("LOGOUT", "Esci dal tuo account", ""));
             comandiAccount.add(createCommandInfo("PROFILO", "Visualizza i dettagli del tuo profilo", ""));
             comandiLibrerie.add(createCommandInfo("CREA_LIBRERIA", "Crea una nuova libreria personale", "<nomeLibreria>"));
-            comandiLibrerie.add(createCommandInfo("LIBRERIE", "Visualizza tutte le tue librerie", ""));            comandiLibrerie.add(createCommandInfo("AGGIUNGI_LIBRO", "Aggiungi un libro a una libreria", "<libreriaID> <libroID>"));
+            comandiLibrerie.add(createCommandInfo("LIBRERIE", "Visualizza tutte le tue librerie", ""));
+            comandiLibrerie.add(createCommandInfo("AGGIUNGI_LIBRO", "Aggiungi un libro a una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("RIMUOVI_LIBRO", "Rimuovi un libro da una libreria", "<libreriaID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("SPOSTA_LIBRO", "Sposta un libro da una libreria a un'altra", "<libreriaOrigineID> <libreriaDestinazioneID> <libroID>"));
             comandiLibrerie.add(createCommandInfo("VISUALIZZA_LIBRERIA", "Visualizza i libri in una libreria", "<libreriaID>"));
@@ -585,7 +588,8 @@ public class ClientHandler implements Runnable {
             return ResponseFormatter.erroreJson("ID non validi. Assicurati di inserire numeri interi.");
         } catch (SQLException e) {
             System.err.println("Errore durante la rimozione del libro dalla libreria: " + e.getMessage());
-            return ResponseFormatter.erroreJson("Errore durante la rimozione del libro. Il libro potrebbe non essere presente nella libreria.");        }
+            return ResponseFormatter.erroreJson("Errore durante la rimozione del libro. Il libro potrebbe non essere presente nella libreria.");
+        }
     }
 
     /**
@@ -622,12 +626,12 @@ public class ClientHandler implements Runnable {
 
             // Rimuovi il libro dalla libreria di origine
             libreriaDAO.rimuoviLibroDaLibreria(libreriaOrigineID, libroID);
-            
+
             // Aggiungi il libro alla libreria di destinazione
             libreriaDAO.aggiungiLibroALibreria(libreriaDestinazioneID, libroID);
 
-            return ResponseFormatter.successoJson("Libro spostato con successo dalla libreria '" + 
-                    libreriaOrigineOpt.get().nomeLibreria() + "' alla libreria '" + 
+            return ResponseFormatter.successoJson("Libro spostato con successo dalla libreria '" +
+                    libreriaOrigineOpt.get().nomeLibreria() + "' alla libreria '" +
                     libreriaDestinazioneOpt.get().nomeLibreria() + "'.");
         } catch (NumberFormatException e) {
             return ResponseFormatter.erroreJson("ID non validi. Assicurati di inserire numeri interi.");
@@ -847,7 +851,8 @@ public class ClientHandler implements Runnable {
             List<Map<String, Object>> valutazioniData = new ArrayList<>();
             if (valutazioniObj.isEmpty()) {
                 return ResponseFormatter.successoJson("Non hai ancora valutato nessun libro.", ResponseFormatter.singletonMap("valutazioni", valutazioniData));
-            }            for (Valutazione val : valutazioniObj) {
+            }
+            for (Valutazione val : valutazioniObj) {
                 Map<String, Object> valMap = new HashMap<>();
                 valMap.put("valutazioneID", val.valutazioneID());
                 valMap.put("userID", val.userID());

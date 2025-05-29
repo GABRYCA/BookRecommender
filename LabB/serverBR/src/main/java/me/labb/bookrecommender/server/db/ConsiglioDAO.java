@@ -22,19 +22,17 @@ public class ConsiglioDAO {
     private final LibroDAO libroDAO;
 
     /**
-     * Costruttore consigli.
-     * */
+     *
+     */
     public ConsiglioDAO() {
         this.dbManager = DatabaseManager.getInstance();
         this.libroDAO = new LibroDAO();
     }
 
     /**
-     * Salva un nuovo consiglio.
-     *
-     * @param userID ID dell'utente che ha ricevuto il consiglio
+     * @param userID             ID dell'utente che ha ricevuto il consiglio
      * @param libroRiferimentoID ID del libro di riferimento
-     * @param libroSuggeritoID ID del libro suggerito
+     * @param libroSuggeritoID   ID del libro suggerito
      * @return ID del consiglio appena creato
      * @throws SQLException In caso di errori SQL
      */
@@ -45,29 +43,29 @@ public class ConsiglioDAO {
 
         try {
             conn = dbManager.getConnection();
-            
+
             // Verifica se esiste già un consiglio simile
             String checkSql = """
                     SELECT "ConsiglioID" FROM "ConsigliLibri"
                     WHERE "UserID" = ? AND "LibroRiferimentoID" = ? AND "LibroSuggeritoID" = ?
                     """;
-            
+
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setInt(1, userID);
                 checkStmt.setInt(2, libroRiferimentoID);
                 checkStmt.setInt(3, libroSuggeritoID);
-                
+
                 try (ResultSet checkRs = checkStmt.executeQuery()) {
                     if (checkRs.next()) {
                         // Aggiorna la data del consiglio esistente
                         int consiglioID = checkRs.getInt("ConsiglioID");
-                        
+
                         String updateSql = """
                                 UPDATE "ConsigliLibri" SET
                                 "DataSuggerimento" = CURRENT_TIMESTAMP
                                 WHERE "ConsiglioID" = ?
                                 """;
-                        
+
                         try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                             updateStmt.setInt(1, consiglioID);
                             updateStmt.executeUpdate();
@@ -76,7 +74,7 @@ public class ConsiglioDAO {
                     }
                 }
             }
-            
+
             // Inserisci un nuovo consiglio
             String insertSql = """
                     INSERT INTO "ConsigliLibri" (
@@ -84,14 +82,14 @@ public class ConsiglioDAO {
                     ) VALUES (?, ?, ?, CURRENT_TIMESTAMP)
                     RETURNING "ConsiglioID"
                     """;
-            
+
             stmt = conn.prepareStatement(insertSql);
             stmt.setInt(1, userID);
             stmt.setInt(2, libroRiferimentoID);
             stmt.setInt(3, libroSuggeritoID);
-            
+
             rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1);
             } else {
@@ -201,7 +199,7 @@ public class ConsiglioDAO {
      * Questo metodo cerca libri nella stessa categoria del libro di riferimento.
      *
      * @param libroRiferimentoID ID del libro di riferimento
-     * @param limit Numero massimo di consigli da generare
+     * @param limit              Numero massimo di consigli da generare
      * @return Lista di libri consigliati
      * @throws SQLException In caso di errori SQL
      */
@@ -220,7 +218,7 @@ public class ConsiglioDAO {
                     SELECT "Categoria" FROM "Libri"
                     WHERE "LibroID" = ?
                     """;
-            
+
             String categoria = null;
             try (PreparedStatement catStmt = conn.prepareStatement(categoriaQuery)) {
                 catStmt.setInt(1, libroRiferimentoID);
@@ -232,7 +230,7 @@ public class ConsiglioDAO {
                     }
                 }
             }
-            
+
             // Trovo i libri della stessa categoria
             String sql = """
                     SELECT * FROM "Libri"

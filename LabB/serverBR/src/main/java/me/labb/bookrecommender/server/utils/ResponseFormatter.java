@@ -2,6 +2,7 @@ package me.labb.bookrecommender.server.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +29,8 @@ public class ResponseFormatter {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Crea messaggio di successo con eventuali dati.
-     * Supporta sia TEXT che JSON.
-     * 
      * @param message Messaggio di successo
-     * @param data Dati opzionali inclusi nella risposta
+     * @param data    Dati opzionali inclusi nella risposta
      * @return String formattata di successo
      */
     public static String successo(String message, Map<String, Object> data) {
@@ -44,9 +42,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea messaggio di successo (senza dati).
-     * Supporta sia TEXT che JSON.
-     * 
      * @param message Messaggio di successo
      * @return String formattata di successo
      */
@@ -55,9 +50,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea messaggio d'errore (senza dati).
-     * Supporta sia TEXT che JSON.
-     * 
      * @param message Messaggio d'errore
      * @return String formattata di errore
      */
@@ -70,10 +62,8 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea messaggio TEXT di successo con eventuali dati.
-     * 
      * @param message Messaggio di successo
-     * @param data Dati opzionali inclusi nella risposta
+     * @param data    Dati opzionali inclusi nella risposta
      * @return String formattato TEXT
      */
     public static String successoText(String message, Map<String, Object> data) {
@@ -93,8 +83,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea messaggio TEXT d'errore
-     * 
      * @param message Messaggio d'errore
      * @return String formattato TEXT
      */
@@ -106,11 +94,9 @@ public class ResponseFormatter {
     }
 
     /**
-     * Formatta un dato per la risposta
-     * 
      * @param response StringBuilder
-     * @param key Chiave Data
-     * @param value Valore Data
+     * @param key      Chiave Data
+     * @param value    Valore Data
      */
     private static void formattaDataEntry(StringBuilder response, String key, Object value) {
         if (value instanceof List<?>) {
@@ -123,11 +109,9 @@ public class ResponseFormatter {
     }
 
     /**
-     * Formatta una lista per la risposta
-     * 
      * @param response StringBuilder
-     * @param key Chiave Data
-     * @param list Valore List
+     * @param key      Chiave Data
+     * @param list     Valore List
      */
     private static void formattaListEntry(StringBuilder response, String key, List<?> list) {
         response.append(key).append("_COUNT: ").append(list.size()).append("\n");
@@ -152,11 +136,9 @@ public class ResponseFormatter {
     }
 
     /**
-     * Formatta una map per la risposta
-     * 
      * @param response StringBuilder
-     * @param key Chiave Data
-     * @param map Valore Map
+     * @param key      Chiave Data
+     * @param map      Valore Map
      */
     private static void formattaMapEntry(StringBuilder response, String key, Map<?, ?> map) {
         response.append(key).append("_BEGIN\n");
@@ -169,9 +151,7 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea map con singolo valore (oggetto)
-     * 
-     * @param key Chiave Entry
+     * @param key   Chiave Entry
      * @param value Valore Entry
      * @return Map con il singolo valore
      */
@@ -182,8 +162,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Importa il formato di risposta di default
-     * 
      * @param format Formato (FORMAT_TEXT o FORMAT_JSON)
      */
     public static void setDefaultFormat(String format) {
@@ -195,8 +173,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Formato di default attuale
-     * 
      * @return Formato attuale di default
      */
     public static String getDefaultFormat() {
@@ -204,10 +180,8 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea risposta JSON di successo con eventuali dati
-     * 
      * @param message Messaggio di successo
-     * @param data Dati opzionali
+     * @param data    Dati opzionali
      * @return String in formato JSON
      */
     public static String successoJson(String message, Map<String, Object> data) {
@@ -228,8 +202,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea risposta JSON di successo senza dati
-     * 
      * @param message Messaggio di successo
      * @return String in formato JSON
      */
@@ -238,8 +210,6 @@ public class ResponseFormatter {
     }
 
     /**
-     * Crea risposta JSON di errore
-     * 
      * @param message Messaggio
      * @return String in formato JSON
      */

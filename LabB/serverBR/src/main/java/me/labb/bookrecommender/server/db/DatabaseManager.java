@@ -25,8 +25,7 @@ public class DatabaseManager {
     private final String dbPassword;
 
     /**
-     * Costruttore privato, usare getInstance() per inizializzare.
-     * NB: Singleton
+     * Costruttore privato (Singleton).
      */
     private DatabaseManager() {
         dbProperties = new Properties();
@@ -56,8 +55,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Restituisce l'unica istanza di DatabaseManager (creandola se non esiste ancora).
-     * NB: Singleton
+     * Restituisce l'unica istanza di DatabaseManager (Singleton).
      *
      * @return L'istanza Singleton di DatabaseManager.
      */

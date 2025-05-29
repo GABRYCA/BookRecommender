@@ -10,16 +10,16 @@ import java.util.Optional;
 /**
  * Classe DAO per operazioni CRUD sui libri nel database.
  * Gestisce tutte le operazioni di accesso ai dati relative ai libri.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
  */
-public class LibroDAO {    private final DatabaseManager dbManager;
+public class LibroDAO {
+    private final DatabaseManager dbManager;
 
     /**
      * Costruttore della classe LibroDAO.
-     * Inizializza la connessione al database manager.
      */
     public LibroDAO() {
         this.dbManager = DatabaseManager.getInstance();
@@ -40,8 +40,8 @@ public class LibroDAO {    private final DatabaseManager dbManager;
         try {
             conn = dbManager.getConnection();
             String sql = """
-                     SELECT * FROM "Libri" WHERE "LibroID" = ?
-                     """;
+                    SELECT * FROM "Libri" WHERE "LibroID" = ?
+                    """;
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, libroID);
             rs = stmt.executeQuery();
@@ -86,11 +86,11 @@ public class LibroDAO {    private final DatabaseManager dbManager;
         try {
             conn = dbManager.getConnection();
             String sql = """
-                     SELECT * FROM "Libri" 
-                     WHERE "Titolo" ILIKE ? OR "Autori" ILIKE ?
-                     ORDER BY "Titolo" ASC
-                     LIMIT ?
-                     """;
+                    SELECT * FROM "Libri" 
+                    WHERE "Titolo" ILIKE ? OR "Autori" ILIKE ?
+                    ORDER BY "Titolo" ASC
+                    LIMIT ?
+                    """;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, "%" + query + "%");
             stmt.setString(2, "%" + query + "%");
@@ -124,7 +124,7 @@ public class LibroDAO {    private final DatabaseManager dbManager;
      * Filtra libri per categoria.
      *
      * @param categoria Categoria da filtrare
-     * @param limit Numero massimo di risultati
+     * @param limit     Numero massimo di risultati
      * @return Lista di libri nella categoria specificata
      * @throws SQLException In caso di errori SQL
      */
@@ -137,11 +137,11 @@ public class LibroDAO {    private final DatabaseManager dbManager;
         try {
             conn = dbManager.getConnection();
             String sql = """
-                     SELECT * FROM "Libri" 
-                     WHERE "Categoria" = ?
-                     ORDER BY "Titolo" ASC
-                     LIMIT ?
-                     """;
+                    SELECT * FROM "Libri" 
+                    WHERE "Categoria" = ?
+                    ORDER BY "Titolo" ASC
+                    LIMIT ?
+                    """;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, categoria);
             stmt.setInt(2, limit);
@@ -185,9 +185,9 @@ public class LibroDAO {    private final DatabaseManager dbManager;
         try {
             conn = dbManager.getConnection();
             String sql = """
-                     SELECT DISTINCT "Categoria" FROM "Libri" 
-                     ORDER BY "Categoria" ASC
-                     """;
+                    SELECT DISTINCT "Categoria" FROM "Libri" 
+                    ORDER BY "Categoria" ASC
+                    """;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 

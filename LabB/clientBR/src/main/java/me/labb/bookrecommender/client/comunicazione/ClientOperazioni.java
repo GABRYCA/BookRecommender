@@ -19,7 +19,7 @@ import java.util.Map;
  * <p>
  * Questa classe è stata estesa per supportare tutte le operazioni offerte dal server,
  * incluse la gestione delle librerie, valutazioni e consigli.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
@@ -454,7 +454,8 @@ public class ClientOperazioni {
 
         Map<String, Object> parametri = new HashMap<>();
         parametri.put("libreriaID", libreriaID);
-        parametri.put("libroID", libroID);        String risposta = client.inviaComando("RIMUOVI_LIBRO", parametri);
+        parametri.put("libroID", libroID);
+        String risposta = client.inviaComando("RIMUOVI_LIBRO", parametri);
 
         return client.isSuccesso(risposta);
     }
@@ -462,11 +463,11 @@ public class ClientOperazioni {
     /**
      * Sposta un libro da una libreria all'altra.
      *
-     * @param libreriaOrigineID ID della libreria di origine
+     * @param libreriaOrigineID      ID della libreria di origine
      * @param libreriaDestinazioneID ID della libreria di destinazione
-     * @param libroID ID del libro da spostare
+     * @param libroID                ID del libro da spostare
      * @return true se il libro è stato spostato con successo, false altrimenti
-     * @throws IOException se si verifica un errore durante la comunicazione
+     * @throws IOException           se si verifica un errore durante la comunicazione
      * @throws IllegalStateException se l'utente non è autenticato
      */
     public boolean spostaLibro(int libreriaOrigineID, int libreriaDestinazioneID, int libroID) throws IOException {
@@ -603,7 +604,8 @@ public class ClientOperazioni {
         if (client.isSuccesso(risposta)) {
             Map<String, Object> dati = client.estraiDati(risposta);
             if (dati != null && dati.containsKey("valutazioni")) {
-                List<Map<String, Object>> valutazioniList = (List<Map<String, Object>>) dati.get("valutazioni");                for (Map<String, Object> valutazioneMap : valutazioniList) {
+                List<Map<String, Object>> valutazioniList = (List<Map<String, Object>>) dati.get("valutazioni");
+                for (Map<String, Object> valutazioneMap : valutazioniList) {
                     try {
                         // Parse con controlli null-safe
                         Number valutazioneIDNum = (Number) valutazioneMap.get("valutazioneID");
@@ -618,8 +620,8 @@ public class ClientOperazioni {
 
                         // Verifica che tutti i campi obbligatori siano presenti
                         if (valutazioneIDNum == null || userIDNum == null || libroIDNum == null ||
-                            scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
-                            scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
+                                scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
+                                scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
                             System.err.println("Valutazione con dati incompleti saltata: " + valutazioneMap);
                             continue;
                         }
@@ -652,7 +654,9 @@ public class ClientOperazioni {
         }
 
         return valutazioni;
-    }    /**
+    }
+
+    /**
      * Visualizza le valutazioni dell'utente autenticato.
      *
      * @return Lista delle valutazioni dell'utente, o una lista vuota se nessuna valutazione è stata trovata
@@ -688,8 +692,8 @@ public class ClientOperazioni {
 
                         // Verifica che tutti i campi obbligatori siano presenti
                         if (valutazioneIDNum == null || userIDNum == null || libroIDNum == null ||
-                            scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
-                            scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
+                                scoreStileNum == null || scoreContenutoNum == null || scoreGradevolezzaNum == null ||
+                                scoreOriginalitaNum == null || scoreEdizioneNum == null || dataValutazioneStr == null) {
                             System.err.println("Valutazione con dati incompleti saltata: " + valutazioneMap);
                             continue;
                         }
@@ -818,7 +822,8 @@ public class ClientOperazioni {
         if (client.isSuccesso(risposta)) {
             Map<String, Object> dati = client.estraiDati(risposta);
             if (dati != null && dati.containsKey("consigli")) {
-                List<Map<String, Object>> consigliList = (List<Map<String, Object>>) dati.get("consigli");                for (Map<String, Object> consiglioMap : consigliList) {
+                List<Map<String, Object>> consigliList = (List<Map<String, Object>>) dati.get("consigli");
+                for (Map<String, Object> consiglioMap : consigliList) {
                     // Verifica che tutti i campi necessari siano presenti
                     Object consiglioIdObj = consiglioMap.get("consiglioID");
                     Object userIdObj = consiglioMap.get("userID");
@@ -857,7 +862,7 @@ public class ClientOperazioni {
      * Rinomina una libreria esistente.
      *
      * @param libreriaID ID della libreria da rinominare
-     * @param nuovoNome Nuovo nome per la libreria
+     * @param nuovoNome  Nuovo nome per la libreria
      * @return true se la rinomina è andata a buon fine, false altrimenti
      * @throws IOException           se si verifica un errore durante la comunicazione
      * @throws IllegalStateException se l'utente non è autenticato
@@ -880,7 +885,8 @@ public class ClientOperazioni {
             String parametriJson = objectMapper.writeValueAsString(parametri);
             String risposta = client.inviaComando("RINOMINA_LIBRERIA", parametriJson);
             System.out.println(risposta);
-            return client.isSuccesso(risposta);        } catch (JsonProcessingException e) {
+            return client.isSuccesso(risposta);
+        } catch (JsonProcessingException e) {
             System.err.println("Errore nella serializzazione dei parametri: " + e.getMessage());
             return false;
         }
@@ -900,20 +906,20 @@ public class ClientOperazioni {
             Map<String, Object> dati = client.estraiDati(risposta);
             if (dati != null && dati.containsKey("libro")) {
                 Map<String, Object> libroMap = (Map<String, Object>) dati.get("libro");
-                  return new Libro(
-                    (Integer) libroMap.get("libroID"),
-                    (String) libroMap.get("titolo"),
-                    (String) libroMap.get("autori"),
-                    (String) libroMap.get("descrizione"),
-                    (String) libroMap.get("categoria"),
-                    (String) libroMap.get("editore"),
-                    ((Number) libroMap.get("prezzo")).floatValue(),
-                    (String) libroMap.get("mesePubblicazione"),
-                    (Integer) libroMap.get("annoPubblicazione")
+                return new Libro(
+                        (Integer) libroMap.get("libroID"),
+                        (String) libroMap.get("titolo"),
+                        (String) libroMap.get("autori"),
+                        (String) libroMap.get("descrizione"),
+                        (String) libroMap.get("categoria"),
+                        (String) libroMap.get("editore"),
+                        ((Number) libroMap.get("prezzo")).floatValue(),
+                        (String) libroMap.get("mesePubblicazione"),
+                        (Integer) libroMap.get("annoPubblicazione")
                 );
             }
         }
-        
+
         return null;
     }
 }

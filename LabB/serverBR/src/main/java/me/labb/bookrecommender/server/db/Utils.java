@@ -9,27 +9,25 @@ import java.util.List;
 
 /**
  * Classe di utilità per operazioni comuni nel sistema BookRecommender.
- * Fornisce metodi di supporto per la gestione del database e altre operazioni comuni.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
  */
 public class Utils {
-      private final DatabaseManager dbManager;
+    private final DatabaseManager dbManager;
 
     /**
-     * Costruttore della classe Utils.
      * Inizializza la connessione al database manager.
      */
     public Utils() {
         this.dbManager = DatabaseManager.getInstance();
     }
-    
+
     /**
      * Salva la lista di libri nella tabella Libri del database.
      * NON RIESEGUIRE! L'azione non è necessaria (crea duplicati), i libri sono stati già aggiunti.
-     * 
+     *
      * @param libri Lista dei libri da salvare
      * @return Il numero di libri inseriti con successo
      * @throws SQLException Se si verifica un errore durante l'operazione sul database
@@ -39,22 +37,22 @@ public class Utils {
             System.out.println("Nessun libro da salvare nel database.");
             return 0;
         }
-        
+
         int contatoreSalvati = 0;
         Connection connection = null;
         PreparedStatement statement = null;
-        
+
         try {
             connection = dbManager.getConnection();
             connection.setAutoCommit(false);
-            
+
             String sql = """
-                        INSERT INTO "Libri" ("Titolo", "Autori", "Descrizione", "Categoria", "Editore", "Prezzo", "MesePubblicazione", "AnnoPubblicazione")
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """;
-            
+                    INSERT INTO "Libri" ("Titolo", "Autori", "Descrizione", "Categoria", "Editore", "Prezzo", "MesePubblicazione", "AnnoPubblicazione")
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """;
+
             statement = connection.prepareStatement(sql);
-            
+
             for (Libro libro : libri) {
                 statement.setString(1, libro.titolo());
                 statement.setString(2, libro.autori());
@@ -66,19 +64,19 @@ public class Utils {
                 statement.setInt(8, libro.annoPubblicazione());
                 statement.addBatch();
             }
-            
+
             int[] risultati = statement.executeBatch();
             connection.commit();
-            
+
             for (int risultato : risultati) {
                 if (risultato > 0) {
                     contatoreSalvati++;
                 }
             }
-            
+
             System.out.println("Inseriti " + contatoreSalvati + " libri nel database su " + libri.size() + " totali.");
             return contatoreSalvati;
-            
+
         } catch (SQLException e) {
             if (connection != null) {
                 try {

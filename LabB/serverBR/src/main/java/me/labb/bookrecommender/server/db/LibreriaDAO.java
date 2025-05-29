@@ -13,15 +13,15 @@ import java.util.Optional;
 /**
  * Classe DAO per operazioni CRUD sulle librerie personali degli utenti.
  * Gestisce tutte le operazioni di accesso ai dati relative alle librerie utente.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
  */
-public class LibreriaDAO {    private final DatabaseManager dbManager;
+public class LibreriaDAO {
+    private final DatabaseManager dbManager;
 
     /**
-     * Costruttore della classe LibreriaDAO.
      * Inizializza la connessione al database manager.
      */
     public LibreriaDAO() {
@@ -29,9 +29,7 @@ public class LibreriaDAO {    private final DatabaseManager dbManager;
     }
 
     /**
-     * Crea una nuova libreria per un utente.
-     *
-     * @param userID ID dell'utente proprietario
+     * @param userID       ID dell'utente proprietario
      * @param nomeLibreria Nome della libreria
      * @return ID della libreria appena creata
      * @throws SQLException In caso di errori SQL
@@ -223,7 +221,7 @@ public class LibreriaDAO {    private final DatabaseManager dbManager;
      * Aggiunge un libro a una libreria.
      *
      * @param libreriaID ID della libreria
-     * @param libroID ID del libro da aggiungere
+     * @param libroID    ID del libro da aggiungere
      * @throws SQLException In caso di errori SQL
      */
     public void aggiungiLibroALibreria(int libreriaID, int libroID) throws SQLException {
@@ -253,7 +251,7 @@ public class LibreriaDAO {    private final DatabaseManager dbManager;
      * Rimuove un libro da una libreria.
      *
      * @param libreriaID ID della libreria
-     * @param libroID ID del libro da rimuovere
+     * @param libroID    ID del libro da rimuovere
      * @throws SQLException In caso di errori SQL
      */
     public void rimuoviLibroDaLibreria(int libreriaID, int libroID) throws SQLException {
@@ -332,7 +330,7 @@ public class LibreriaDAO {    private final DatabaseManager dbManager;
      * Rinomina una libreria esistente.
      *
      * @param libreriaID ID della libreria da rinominare
-     * @param nuovoNome Nuovo nome da assegnare alla libreria
+     * @param nuovoNome  Nuovo nome da assegnare alla libreria
      * @return true se la libreria è stata rinominata con successo, false altrimenti
      * @throws SQLException In caso di errori SQL
      */
@@ -353,7 +351,8 @@ public class LibreriaDAO {    private final DatabaseManager dbManager;
             stmt.setInt(2, libreriaID);
 
             int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;        } finally {
+            return rowsUpdated > 0;
+        } finally {
             if (stmt != null) stmt.close();
             if (conn != null) conn.close();
         }

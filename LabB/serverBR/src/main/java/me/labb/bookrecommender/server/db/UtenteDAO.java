@@ -26,11 +26,11 @@ public class UtenteDAO {
     /**
      * Registra un nuovo utente nel sistema.
      *
-     * @param nomeCompleto Nome completo dell'utente
+     * @param nomeCompleto  Nome completo dell'utente
      * @param codiceFiscale Codice fiscale dell'utente (può essere null)
-     * @param email Email dell'utente
-     * @param username Username scelto dall'utente
-     * @param password Password in chiaro (verrà hashata prima del salvataggio)
+     * @param email         Email dell'utente
+     * @param username      Username scelto dall'utente
+     * @param password      Password in chiaro
      * @return ID dell'utente appena creato
      * @throws SQLException In caso di errori SQL
      */
@@ -75,8 +75,8 @@ public class UtenteDAO {
      * Verifica le credenziali di accesso di un utente.
      *
      * @param usernameOrEmail Username o email dell'utente
-     * @param password Password in chiaro
-     * @return Optional contenente l'utente se l'autenticazione è riuscita, altrimenti vuoto
+     * @param password        Password in chiaro
+     * @return Optional contenente l'utente se l'autenticazione è riuscita
      * @throws SQLException In caso di errori SQL
      */
     public Optional<Utente> login(String usernameOrEmail, String password) throws SQLException {

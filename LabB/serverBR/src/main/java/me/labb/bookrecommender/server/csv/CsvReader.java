@@ -29,7 +29,6 @@ public class CsvReader {
     };
 
     /**
-     * Legge il file CSV BooksDatasetClean.cvs.
      * Usiamo Apache Commons CSV.
      * Le righe che causano errori durante il parsing vengono saltate e loggate.
      *

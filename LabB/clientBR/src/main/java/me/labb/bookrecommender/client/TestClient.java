@@ -12,36 +12,35 @@ import java.util.List;
 
 /**
  * Client di test per dimostrare la funzionalità della comunicazione client-server.
- * Usiamo un'interfaccia a riga di comando per interagire con il server.
  *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
  */
 public class TestClient {
-    
+
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 8080;
-    
+
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static ClientOperazioni client;
-    
+
     public static void main(String[] args) {
         client = new ClientOperazioni(SERVER_ADDRESS, SERVER_PORT);
-        
+
         System.out.println("=== Client BookRecommender ===");
-        
+
         try {
             boolean esci = false;
-            
+
             while (!esci) {
                 if (!client.isConnesso()) {
                     System.out.println("\nNon sei connesso al server.");
                     System.out.println("1. Connetti al server");
                     System.out.println("0. Esci");
-                    
+
                     int scelta = leggiIntero("Scelta: ");
-                    
+
                     switch (scelta) {
                         case 1:
                             connetti();
@@ -60,9 +59,9 @@ public class TestClient {
                     System.out.println("4. Consiglia libri per categoria");
                     System.out.println("5. Disconnetti");
                     System.out.println("0. Esci");
-                    
+
                     int scelta = leggiIntero("Scelta: ");
-                    
+
                     switch (scelta) {
                         case 1:
                             login();
@@ -93,9 +92,9 @@ public class TestClient {
                     System.out.println("4. Logout");
                     System.out.println("5. Disconnetti");
                     System.out.println("0. Esci");
-                    
+
                     int scelta = leggiIntero("Scelta: ");
-                    
+
                     switch (scelta) {
                         case 1:
                             visualizzaProfilo();
@@ -120,9 +119,9 @@ public class TestClient {
                     }
                 }
             }
-            
+
             System.out.println("Arrivederci!");
-            
+
         } catch (Exception e) {
             System.err.println("Errore: " + e.getMessage());
             e.printStackTrace();
@@ -130,13 +129,13 @@ public class TestClient {
             client.chiudi();
         }
     }
-    
+
     /**
      * Connette il client al server.
      */
     private static void connetti() {
         System.out.println("Connessione al server...");
-        
+
         try {
             if (client.connetti()) {
                 System.out.println("Connessione stabilita con successo.");
@@ -147,7 +146,7 @@ public class TestClient {
             System.err.println("Errore durante la connessione: " + e.getMessage());
         }
     }
-    
+
     /**
      * Disconnette il client dal server.
      */
@@ -156,7 +155,7 @@ public class TestClient {
         client.chiudi();
         System.out.println("Disconnessione completata.");
     }
-    
+
     /**
      * Effettua il login di un utente.
      */
@@ -165,7 +164,7 @@ public class TestClient {
             System.out.println("\n=== Login ===");
             String username = leggiStringa("Username: ");
             String password = leggiStringa("Password: ");
-            
+
             if (client.login(username, password)) {
                 System.out.println("Login effettuato con successo.");
             } else {
@@ -175,7 +174,7 @@ public class TestClient {
             System.err.println("Errore durante il login: " + e.getMessage());
         }
     }
-    
+
     /**
      * Effettua il logout dell'utente corrente.
      */
@@ -190,7 +189,7 @@ public class TestClient {
             System.err.println("Errore durante il logout: " + e.getMessage());
         }
     }
-    
+
     /**
      * Registra un nuovo utente.
      */
@@ -202,14 +201,14 @@ public class TestClient {
             String username = leggiStringa("Username: ");
             String password = leggiStringa("Password: ");
             String codiceFiscale = leggiStringa("Codice fiscale (opzionale, premi invio per saltare): ");
-            
+
             int userID;
             if (codiceFiscale.isEmpty()) {
                 userID = client.registra(nomeCompleto, email, username, password);
             } else {
                 userID = client.registra(nomeCompleto, email, username, password, codiceFiscale);
             }
-            
+
             if (userID > 0) {
                 System.out.println("Registrazione completata con successo. UserID: " + userID);
             } else {
@@ -219,25 +218,25 @@ public class TestClient {
             System.err.println("Errore durante la registrazione: " + e.getMessage());
         }
     }
-    
+
     /**
      * Visualizza le informazioni del profilo dell'utente autenticato.
      */
     private static void visualizzaProfilo() {
         try {
             Utente utente = client.visualizzaProfilo();
-            
+
             if (utente != null) {
                 System.out.println("\n=== Profilo ===");
                 System.out.println("UserID: " + utente.userID());
                 System.out.println("Nome: " + utente.nomeCompleto());
                 System.out.println("Username: " + utente.username());
                 System.out.println("Email: " + utente.email());
-                
+
                 if (utente.codiceFiscale() != null && !utente.codiceFiscale().isEmpty()) {
                     System.out.println("Codice fiscale: " + utente.codiceFiscale());
                 }
-                
+
                 System.out.println("Data registrazione: " + utente.dataRegistrazione());
             } else {
                 System.out.println("Impossibile recuperare le informazioni del profilo.");
@@ -246,7 +245,7 @@ public class TestClient {
             System.err.println("Errore durante il recupero del profilo: " + e.getMessage());
         }
     }
-    
+
     /**
      * Cerca libri nel database in base a un termine di ricerca.
      */
@@ -254,14 +253,14 @@ public class TestClient {
         try {
             System.out.println("\n=== Cerca libri ===");
             String termine = leggiStringa("Termine di ricerca: ");
-            
+
             List<Libro> libri = client.cercaLibri(termine);
-            
+
             if (libri.isEmpty()) {
                 System.out.println("Nessun libro trovato per il termine: " + termine);
             } else {
                 System.out.println("Trovati " + libri.size() + " libri:");
-                
+
                 for (Libro libro : libri) {
                     System.out.println("\nTitolo: " + libro.titolo());
                     System.out.println("Autori: " + libro.autori());
@@ -273,7 +272,7 @@ public class TestClient {
             System.err.println("Errore durante la ricerca dei libri: " + e.getMessage());
         }
     }
-    
+
     /**
      * Ottiene consigli di libri in base a una categoria.
      */
@@ -281,14 +280,14 @@ public class TestClient {
         try {
             System.out.println("\n=== Consiglia libri ===");
             String categoria = leggiStringa("Categoria: ");
-            
+
             List<Libro> libri = client.consigliaLibri(categoria);
-            
+
             if (libri.isEmpty()) {
                 System.out.println("Nessun libro consigliato per la categoria: " + categoria);
             } else {
                 System.out.println("Libri consigliati per la categoria '" + categoria + "':");
-                
+
                 for (Libro libro : libri) {
                     System.out.println("\nTitolo: " + libro.titolo());
                     System.out.println("Autori: " + libro.autori());
@@ -300,10 +299,10 @@ public class TestClient {
             System.err.println("Errore durante la ricerca dei consigli: " + e.getMessage());
         }
     }
-    
+
     /**
      * Legge una stringa dall'input dell'utente.
-     * 
+     *
      * @param prompt Il messaggio da mostrare all'utente
      * @return La stringa letta
      */
@@ -316,10 +315,10 @@ public class TestClient {
             return "";
         }
     }
-    
+
     /**
      * Legge un intero dall'input dell'utente.
-     * 
+     *
      * @param prompt Il messaggio da mostrare all'utente
      * @return L'intero letto, o 0 se l'input non è valido
      */

@@ -26,8 +26,7 @@ import java.util.*;
 
 /**
  * Controller principale per l'interfaccia grafica del client BookRecommender.
- * Gestisce tutte le interazioni utente e la comunicazione con il server.
- * 
+ *
  * @author Caretti Gabriele 756564 VA
  * @author Como Riccardo 758697 VA
  * @author Manicone Giorgia 758716 VA
@@ -36,43 +35,78 @@ public class ClientController implements Initializable {
     // Cache locale dei libri per mostrare titolo/autore nelle valutazioni
     private final Map<Integer, Libro> libriCache = new HashMap<>();
 
-    @FXML private Label statusLabel;
-    @FXML private Button connettiBtn;
-    @FXML private Button disconnettiBtn;
-    @FXML private Button loginBtn;
-    @FXML private Button registratiBtn;
-    @FXML private Button logoutBtn;
-    @FXML private Button cercaBtn;
-    @FXML private Button consigliaBtn;
-    @FXML private Button profiloBtn;
-    @FXML private TextArea output;
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> categoriaComboBox;    @FXML private VBox resultContainer;
-    @FXML private Label resultLabel;
-    @FXML private TabPane mainTabPane;    // Componenti per la gestione delle librerie
-    @FXML private Button creaLibreriaBtn;
-    @FXML private Button rinominaLibreriaBtn;
-    @FXML private Button EliminaLibreriaBtn;
-    @FXML private Button aggiornaLibrerieBtn;
-    @FXML private ListView<Libreria> librerieListView;
-    @FXML private Label libreriaSelezionataLabel;
-    @FXML private Button aggiungiLibroBtn;
-    @FXML private Button rimuoviLibroBtn;
-    @FXML private VBox libreriaContentContainer;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Button connettiBtn;
+    @FXML
+    private Button disconnettiBtn;
+    @FXML
+    private Button loginBtn;
+    @FXML
+    private Button registratiBtn;
+    @FXML
+    private Button logoutBtn;
+    @FXML
+    private Button cercaBtn;
+    @FXML
+    private Button consigliaBtn;
+    @FXML
+    private Button profiloBtn;
+    @FXML
+    private TextArea output;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> categoriaComboBox;
+    @FXML
+    private VBox resultContainer;
+    @FXML
+    private Label resultLabel;
+    @FXML
+    private TabPane mainTabPane;    // Componenti per la gestione delle librerie
+    @FXML
+    private Button creaLibreriaBtn;
+    @FXML
+    private Button rinominaLibreriaBtn;
+    @FXML
+    private Button EliminaLibreriaBtn;
+    @FXML
+    private Button aggiornaLibrerieBtn;
+    @FXML
+    private ListView<Libreria> librerieListView;
+    @FXML
+    private Label libreriaSelezionataLabel;
+    @FXML
+    private Button aggiungiLibroBtn;
+    @FXML
+    private Button rimuoviLibroBtn;
+    @FXML
+    private VBox libreriaContentContainer;
 
     // Componenti per la gestione delle valutazioni
-    @FXML private Button valutaLibroBtn;
-    @FXML private Button mieValutazioniBtn;
-    @FXML private TextField libroIDValutazioniField;
-    @FXML private Button cercaValutazioniBtn;
-    @FXML private VBox valutazioniContainer;
+    @FXML
+    private Button valutaLibroBtn;
+    @FXML
+    private Button mieValutazioniBtn;
+    @FXML
+    private TextField libroIDValutazioniField;
+    @FXML
+    private Button cercaValutazioniBtn;
+    @FXML
+    private VBox valutazioniContainer;
 
     // Componenti per la gestione dei consigli
-    @FXML private TextField libroIDConsigliField;
-    @FXML private Button generaConsigliBtn;
-    @FXML private Button mieiConsigliBtn;
-    @FXML private Button salvaConsiglioBtn;
-    @FXML private VBox consigliContainer;
+    @FXML
+    private TextField libroIDConsigliField;
+    @FXML
+    private Button generaConsigliBtn;
+    @FXML
+    private Button mieiConsigliBtn;
+    @FXML
+    private Button salvaConsiglioBtn;
+    @FXML
+    private VBox consigliContainer;
 
     private ClientOperazioni client;
     private boolean isConnected = false;
@@ -80,7 +114,7 @@ public class ClientController implements Initializable {
     private Utente utente;
 
     /**
-     * Classe wrapper per Libreria per fornire una migliore visualizzazione toString() nei dialoghi di scelta.
+     * Wrapper per Libreria per migliore visualizzazione nei dialoghi.
      */
     private static class LibreriaDisplay {
         private final Libreria libreria;
@@ -140,7 +174,7 @@ public class ClientController implements Initializable {
         // Aggiungi animazione all'hover dei pulsanti
         configuraAnimazioniPulsanti();        // Configura la ListView delle librerie
         setupLibrerieListView();
-        
+
         // Configura il listener per il caricamento automatico delle librerie
         setupTabListener();
     }
@@ -174,7 +208,7 @@ public class ClientController implements Initializable {
 
     /**
      * Carica i libri presenti in una libreria e li mostra nell'interfaccia.
-     * 
+     *
      * @param libreriaID ID della libreria da visualizzare
      */
     private void caricaLibriInLibreria(int libreriaID) {
@@ -223,9 +257,11 @@ public class ClientController implements Initializable {
         };
 
         new Thread(task).start();
-    }    /**
+    }
+
+    /**
      * Crea una card per visualizzare un libro.
-     * 
+     *
      * @param libro Il libro da visualizzare
      * @return Un nodo VBox che rappresenta la card del libro
      */
@@ -235,8 +271,8 @@ public class ClientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un libro con possibilità di rimozione.
-     * 
-     * @param libro Il libro da visualizzare
+     *
+     * @param libro      Il libro da visualizzare
      * @param libreriaID ID della libreria (se -1, non mostra il pulsante rimuovi)
      * @return Un nodo VBox che rappresenta la card del libro
      */
@@ -251,7 +287,7 @@ public class ClientController implements Initializable {
         titolo.setWrapText(true);
 
         // ID del libro
-        Label IDLibro = new Label("ID del libro: "+ libro.libroId());
+        Label IDLibro = new Label("ID del libro: " + libro.libroId());
         IDLibro.getStyleClass().add("book-category");
         IDLibro.setWrapText(true);
 
@@ -354,7 +390,7 @@ public class ClientController implements Initializable {
             st.setToY(1.0);
             st.play();
         });
-        
+
         return bookCard;
     }
 
@@ -857,20 +893,20 @@ public class ClientController implements Initializable {
 
                     // Crea un oggetto Valutazione temporaneo (senza ID e data)
                     return new Valutazione(
-                        0,
-                        client.getUtenteAutenticato().userID(),
-                        libroID,
-                        scoreStile,
-                        noteStile,
-                        scoreContenuto,
-                        noteContenuto,
-                        scoreGradevolezza,
-                        noteGradevolezza,
-                        scoreOriginalita,
-                        noteOriginalita,
-                        scoreEdizione,
-                        noteEdizione,
-                        null
+                            0,
+                            client.getUtenteAutenticato().userID(),
+                            libroID,
+                            scoreStile,
+                            noteStile,
+                            scoreContenuto,
+                            noteContenuto,
+                            scoreGradevolezza,
+                            noteGradevolezza,
+                            scoreOriginalita,
+                            noteOriginalita,
+                            scoreEdizione,
+                            noteEdizione,
+                            null
                     );
                 } catch (NumberFormatException e) {
                     stampaConAnimazione("ID libro non valido. Inserisci un numero intero.");
@@ -886,17 +922,17 @@ public class ClientController implements Initializable {
         result.ifPresent(valutazione -> {
             try {
                 int valutazioneID = client.valutaLibro(
-                    valutazione.libroID(),
-                    valutazione.scoreStile(),
-                    valutazione.noteStile(),
-                    valutazione.scoreContenuto(),
-                    valutazione.noteContenuto(),
-                    valutazione.scoreGradevolezza(),
-                    valutazione.noteGradevolezza(),
-                    valutazione.scoreOriginalita(),
-                    valutazione.noteOriginalita(),
-                    valutazione.scoreEdizione(),
-                    valutazione.noteEdizione()
+                        valutazione.libroID(),
+                        valutazione.scoreStile(),
+                        valutazione.noteStile(),
+                        valutazione.scoreContenuto(),
+                        valutazione.noteContenuto(),
+                        valutazione.scoreGradevolezza(),
+                        valutazione.noteGradevolezza(),
+                        valutazione.scoreOriginalita(),
+                        valutazione.noteOriginalita(),
+                        valutazione.scoreEdizione(),
+                        valutazione.noteEdizione()
                 );
 
                 if (valutazioneID > 0) {
@@ -1030,7 +1066,7 @@ public class ClientController implements Initializable {
 
     /**
      * Crea una card per visualizzare una valutazione.
-     * 
+     *
      * @param valutazione La valutazione da visualizzare
      * @return Un nodo VBox che rappresenta la card della valutazione
      */
@@ -1114,11 +1150,11 @@ public class ClientController implements Initializable {
 
         // Utilizza il metodo esistente creaPunteggioBox
         punteggiContainer.getChildren().addAll(
-                creaPunteggioBox("Stile", (short)valutazione.scoreStile()),
-                creaPunteggioBox("Contenuto", (short)valutazione.scoreContenuto()),
-                creaPunteggioBox("Gradevolezza", (short)valutazione.scoreGradevolezza()),
-                creaPunteggioBox("Originalità", (short)valutazione.scoreOriginalita()),
-                creaPunteggioBox("Edizione", (short)valutazione.scoreEdizione())
+                creaPunteggioBox("Stile", (short) valutazione.scoreStile()),
+                creaPunteggioBox("Contenuto", (short) valutazione.scoreContenuto()),
+                creaPunteggioBox("Gradevolezza", (short) valutazione.scoreGradevolezza()),
+                creaPunteggioBox("Originalità", (short) valutazione.scoreOriginalita()),
+                creaPunteggioBox("Edizione", (short) valutazione.scoreEdizione())
         );
 
         scoresSection.getChildren().add(punteggiContainer);
@@ -1267,7 +1303,7 @@ public class ClientController implements Initializable {
 
     /**
      * Crea un box per visualizzare un punteggio.
-     * 
+     *
      * @param categoria La categoria del punteggio
      * @param punteggio Il punteggio (1-5)
      * @return Un nodo VBox che rappresenta il box del punteggio
@@ -1524,8 +1560,8 @@ public class ClientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un libro consigliato con un pulsante per salvare il consiglio.
-     * 
-     * @param libro Il libro consigliato
+     *
+     * @param libro              Il libro consigliato
      * @param libroRiferimentoID L'ID del libro di riferimento
      * @return Un nodo VBox che rappresenta la card del libro consigliato
      */
@@ -1553,9 +1589,11 @@ public class ClientController implements Initializable {
         bookCard.getChildren().add(salvaConsiglioBtn);
 
         return bookCard;
-    }    /**
+    }
+
+    /**
      * Crea una card migliorata per visualizzare un consiglio con informazioni dettagliate sui libri.
-     * 
+     *
      * @param consiglio Il consiglio da visualizzare
      * @return Un nodo VBox che rappresenta la card del consiglio
      */
@@ -1567,36 +1605,36 @@ public class ClientController implements Initializable {
         // Intestazione della card
         HBox headerBox = new HBox(10);
         headerBox.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label headerIcon = new Label("💡");
         headerIcon.getStyleClass().add("consiglio-icon");
-        
+
         Label header = new Label("Consiglio #" + consiglio.consiglioID());
         header.getStyleClass().add("consiglio-header");
-        
+
         headerBox.getChildren().addAll(headerIcon, header);
 
         // Sezione "Se ti è piaciuto"
         VBox libroRiferimentoSection = new VBox(5);
         Label labelRiferimento = new Label("Se ti è piaciuto:");
         labelRiferimento.getStyleClass().add("consiglio-section-label");
-        
+
         HBox libroRiferimentoBox = new HBox(10);
         libroRiferimentoBox.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label iconRiferimento = new Label("📖");
-        
+
         VBox infoRiferimento = new VBox(2);
-        String titoloRiferimento = consiglio.titoloLibroRiferimento() != null ? 
-            consiglio.titoloLibroRiferimento() : 
-            "Libro ID: " + consiglio.libroRiferimentoID();
+        String titoloRiferimento = consiglio.titoloLibroRiferimento() != null ?
+                consiglio.titoloLibroRiferimento() :
+                "Libro ID: " + consiglio.libroRiferimentoID();
         Label titoloRifLabel = new Label(titoloRiferimento);
         titoloRifLabel.getStyleClass().add("libro-titolo");
         titoloRifLabel.setWrapText(true);
-        
+
         Label idRifLabel = new Label("ID: " + consiglio.libroRiferimentoID());
         idRifLabel.getStyleClass().add("libro-id");
-        
+
         infoRiferimento.getChildren().addAll(titoloRifLabel, idRifLabel);
         libroRiferimentoBox.getChildren().addAll(iconRiferimento, infoRiferimento);
         libroRiferimentoSection.getChildren().addAll(labelRiferimento, libroRiferimentoBox);
@@ -1610,23 +1648,23 @@ public class ClientController implements Initializable {
         VBox libroSuggeritoSection = new VBox(5);
         Label labelSuggerito = new Label("Ti potrebbe piacere:");
         labelSuggerito.getStyleClass().add("consiglio-section-label");
-        
+
         HBox libroSuggeritoBox = new HBox(10);
         libroSuggeritoBox.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label iconSuggerito = new Label("⭐");
-        
+
         VBox infoSuggerito = new VBox(2);
-        String titoloSuggerito = consiglio.titoloLibroSuggerito() != null ? 
-            consiglio.titoloLibroSuggerito() : 
-            "Libro ID: " + consiglio.libroSuggeritoID();
+        String titoloSuggerito = consiglio.titoloLibroSuggerito() != null ?
+                consiglio.titoloLibroSuggerito() :
+                "Libro ID: " + consiglio.libroSuggeritoID();
         Label titoloSugLabel = new Label(titoloSuggerito);
         titoloSugLabel.getStyleClass().add("libro-titolo");
         titoloSugLabel.setWrapText(true);
-        
+
         Label idSugLabel = new Label("ID: " + consiglio.libroSuggeritoID());
         idSugLabel.getStyleClass().add("libro-id");
-        
+
         infoSuggerito.getChildren().addAll(titoloSugLabel, idSugLabel);
         libroSuggeritoBox.getChildren().addAll(iconSuggerito, infoSuggerito);
         libroSuggeritoSection.getChildren().addAll(labelSuggerito, libroSuggeritoBox);
@@ -1638,23 +1676,24 @@ public class ClientController implements Initializable {
         // Footer con data
         HBox footerBox = new HBox(10);
         footerBox.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label calendarIcon = new Label("📅");
         Label dataLabel = new Label("Salvato il: " + consiglio.dataSuggerimento().toLocalDate().toString());
         dataLabel.getStyleClass().add("consiglio-data");
-        
+
         footerBox.getChildren().addAll(calendarIcon, dataLabel);        // Pulsanti di azione con miglior layout
-        HBox pulsantiBox = new HBox(15);        pulsantiBox.setAlignment(Pos.CENTER);
+        HBox pulsantiBox = new HBox(15);
+        pulsantiBox.setAlignment(Pos.CENTER);
         pulsantiBox.setPadding(new Insets(10, 0, 0, 0));
-          Button dettagliRifBtn = new Button("Dettagli libro di riferimento");
+        Button dettagliRifBtn = new Button("Dettagli libro di riferimento");
         dettagliRifBtn.getStyleClass().addAll("secondary-button", "small-button");
         dettagliRifBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroRiferimentoID()));
-        
+
         // Tooltip informativo per il pulsante di riferimento
         Tooltip tooltipRif = new Tooltip("Visualizza i dettagli del libro che ti è piaciuto");
         tooltipRif.setShowDelay(Duration.millis(500));
         dettagliRifBtn.setTooltip(tooltipRif);
-        
+
         // Animazioni per il pulsante secondario
         dettagliRifBtn.setOnMouseEntered(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliRifBtn);
@@ -1662,30 +1701,30 @@ public class ClientController implements Initializable {
             st.setToY(1.05);
             st.play();
         });
-        
+
         dettagliRifBtn.setOnMouseExited(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliRifBtn);
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
         });
-        
+
         Button dettagliSugBtn = new Button("Dettagli libro suggerito");
         dettagliSugBtn.getStyleClass().addAll("primary-button", "small-button");
         dettagliSugBtn.setOnAction(e -> mostraDettagliLibro(consiglio.libroSuggeritoID()));
-        
+
         // Tooltip informativo per il pulsante suggerito
         Tooltip tooltipSug = new Tooltip("Visualizza i dettagli del libro che ti viene consigliato");
         tooltipSug.setShowDelay(Duration.millis(500));
         dettagliSugBtn.setTooltip(tooltipSug);
-        
+
         // Animazioni per il pulsante primario
         dettagliSugBtn.setOnMouseEntered(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliSugBtn);
             st.setToX(1.05);
             st.setToY(1.05);
             st.play();
-            
+
             // Effetto pulsazione per il pulsante principale
             FadeTransition ft = new FadeTransition(Duration.millis(300), dettagliSugBtn);
             ft.setFromValue(1.0);
@@ -1694,25 +1733,25 @@ public class ClientController implements Initializable {
             ft.setAutoReverse(true);
             ft.play();
         });
-        
+
         dettagliSugBtn.setOnMouseExited(e -> {
             ScaleTransition st = new ScaleTransition(Duration.millis(150), dettagliSugBtn);
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
         });
-        
+
         pulsantiBox.getChildren().addAll(dettagliRifBtn, dettagliSugBtn);
 
         // Aggiungi tutti gli elementi alla card
         card.getChildren().addAll(
-            headerBox,
-            libroRiferimentoSection,
-            freccia,
-            libroSuggeritoSection,
-            separator,
-            footerBox,
-            pulsantiBox
+                headerBox,
+                libroRiferimentoSection,
+                freccia,
+                libroSuggeritoSection,
+                separator,
+                footerBox,
+                pulsantiBox
         );
 
         // Aggiungi effetti di animazione
@@ -1735,10 +1774,11 @@ public class ClientController implements Initializable {
 
     /**
      * Crea una card per visualizzare un consiglio.
-     * 
+     *
      * @param consiglio Il consiglio da visualizzare
      * @return Un nodo VBox che rappresenta la card del consiglio
-     */    /**
+     */
+    /**
      * Configura il ComboBox per la selezione delle categorie di libri.
      */
     private void setupCategoriaComboBox() {
@@ -1917,6 +1957,7 @@ public class ClientController implements Initializable {
             });
         });
     }
+
     @FXML
     private void disconnetti() {
         client.chiudi();
@@ -1935,6 +1976,7 @@ public class ClientController implements Initializable {
 
         updateUIState();
     }
+
     /**
      * Effettua il login dell'utente autenticato.
      */
@@ -2275,7 +2317,7 @@ public class ClientController implements Initializable {
             titolo.setWrapText(true);
 
             // ID del libro
-            Label IDLibro = new Label("ID del libro: "+ libro.libroId());
+            Label IDLibro = new Label("ID del libro: " + libro.libroId());
             IDLibro.getStyleClass().add("book-category");
             IDLibro.setWrapText(true);
 
@@ -2295,7 +2337,7 @@ public class ClientController implements Initializable {
             prezzo.getStyleClass().add("book-price");
 
             // Aggiunge tutti gli elementi alla card
-            bookCard.getChildren().addAll(titolo,IDLibro, autori, categoria, prezzo);
+            bookCard.getChildren().addAll(titolo, IDLibro, autori, categoria, prezzo);
             resultContainer.getChildren().add(bookCard);            // Aggiungi evento click sulla card
             bookCard.setOnMouseClicked(event -> {
                 // Crea effetto pulsazione quando cliccato
@@ -2305,7 +2347,7 @@ public class ClientController implements Initializable {
                 st.setCycleCount(2);
                 st.setAutoReverse(true);
                 st.play();
-                
+
                 // Apri il dialogo di dettagli del libro
                 st.setOnFinished(e -> mostraDettagliLibro(libro));
             });
@@ -2393,10 +2435,10 @@ public class ClientController implements Initializable {
     /**
      * Aggiunge un campo al profilo con animazione di apparizione e ritorna la riga successiva.
      *
-     * @param grid Il GridPane in cui aggiungere il campo
+     * @param grid      Il GridPane in cui aggiungere il campo
      * @param labelText Il testo dell'etichetta del campo
-     * @param value Il valore del campo da visualizzare
-     * @param row La riga corrente nel GridPane
+     * @param value     Il valore del campo da visualizzare
+     * @param row       La riga corrente nel GridPane
      * @return La riga successiva disponibile
      */
     private int addAnimatedProfileField(GridPane grid, String labelText, String value, int row) {
@@ -2656,9 +2698,9 @@ public class ClientController implements Initializable {
     /**
      * Esegue un'animazione di cambio stato su un'etichetta.
      *
-     * @param label L'etichetta su cui eseguire l'animazione
-     * @param nuovoTesto Il nuovo testo da impostare sull'etichetta
-     * @param classeRimuovere La classe da rimuovere dallo stile dell'etichetta
+     * @param label            L'etichetta su cui eseguire l'animazione
+     * @param nuovoTesto       Il nuovo testo da impostare sull'etichetta
+     * @param classeRimuovere  La classe da rimuovere dallo stile dell'etichetta
      * @param classeAggiungere La classe da aggiungere allo stile dell'etichetta
      */
     private void animaCambioStato(Label label, String nuovoTesto, String classeRimuovere, String classeAggiungere) {
@@ -2705,7 +2747,7 @@ public class ClientController implements Initializable {
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, consigliaBtn, profiloBtn,
                 searchField, categoriaComboBox,                // Nuovi controlli per le librerie
-                creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn,EliminaLibreriaBtn,
+                creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 // Nuovi controlli per i consigli
@@ -2729,18 +2771,18 @@ public class ClientController implements Initializable {
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;
             }            // Controlli per le librerie
-            else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn || 
-                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
+            else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
+                    control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
             // Controlli per le valutazioni
-            else if (control == valutaLibroBtn || control == mieValutazioniBtn || 
-                     control == cercaValutazioniBtn || control == libroIDValutazioniField) {
+            else if (control == valutaLibroBtn || control == mieValutazioniBtn ||
+                    control == cercaValutazioniBtn || control == libroIDValutazioniField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
             // Controlli per i consigli
-            else if (control == generaConsigliBtn || control == mieiConsigliBtn || 
-                     control == salvaConsiglioBtn || control == libroIDConsigliField) {
+            else if (control == generaConsigliBtn || control == mieiConsigliBtn ||
+                    control == salvaConsiglioBtn || control == libroIDConsigliField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
 
@@ -2759,8 +2801,8 @@ public class ClientController implements Initializable {
 
     /**
      * Rimuove un libro da una libreria con richiesta di conferma e messaggio di successo.
-     * 
-     * @param libro Il libro da rimuovere
+     *
+     * @param libro      Il libro da rimuovere
      * @param libreriaID ID della libreria da cui rimuovere il libro
      */
     private void rimuoviLibroDaLibreriaConConferma(Libro libro, int libreriaID) {
@@ -2780,7 +2822,7 @@ public class ClientController implements Initializable {
                 if (success) {
                     // Messaggio di successo
                     mostraMessaggioSuccesso("Libro '" + libro.titolo() + "' rimosso con successo dalla libreria!");
-                    
+
                     // Aggiorna la visualizzazione della libreria
                     caricaLibriInLibreria(libreriaID);
                 } else {
@@ -2788,7 +2830,8 @@ public class ClientController implements Initializable {
                 }
             } catch (IOException e) {
                 stampaConAnimazione("Errore di comunicazione: " + e.getMessage());
-            }        }
+            }
+        }
     }
 
     /**
@@ -2805,7 +2848,7 @@ public class ClientController implements Initializable {
             @Override
             protected void succeeded() {
                 List<Libreria> librerie = getValue();
-                
+
                 // Filtra escludendo la libreria corrente
                 List<Libreria> librerieDestinazione = librerie.stream()
                         .filter(lib -> lib.libreriaID() != libreriaCorrenteID)
@@ -2835,7 +2878,7 @@ public class ClientController implements Initializable {
                 Optional<LibreriaDisplay> result = dialog.showAndWait();
                 result.ifPresent(libreriaDisplay -> {
                     Libreria libreriaDestinazione = libreriaDisplay.getLibreria();
-                    
+
                     // Task per spostare il libro
                     Task<Boolean> moveBookTask = new Task<>() {
                         @Override
@@ -2875,7 +2918,7 @@ public class ClientController implements Initializable {
 
     /**
      * Mostra un messaggio di successo con animazione.
-     * 
+     *
      * @param messaggio Il messaggio da mostrare
      */
     private void mostraMessaggioSuccesso(String messaggio) {
@@ -2890,16 +2933,17 @@ public class ClientController implements Initializable {
 
         // Mostra il messaggio senza bloccare e con auto-close dopo 3 secondi
         successAlert.show();
-          // Auto-close dopo 3 secondi
+        // Auto-close dopo 3 secondi
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), _ -> successAlert.close()));
         timeline.play();
-        
+
         // Stampa anche nella console per coerenza
         stampaConAnimazione(messaggio);
     }
 
     /**
      * Mostra un messaggio di errore con un popup Alert che si chiude automaticamente dopo 3 secondi
+     *
      * @param messaggio Il messaggio di errore da mostrare
      */
     private void mostraMessaggioErrore(String messaggio) {
@@ -2917,7 +2961,7 @@ public class ClientController implements Initializable {
         // Auto-close dopo 3 secondi
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), _ -> errorAlert.close()));
         timeline.play();
-        
+
         // Stampa anche nella console per coerenza
         stampaConAnimazione("ERRORE: " + messaggio);
     }
@@ -2965,17 +3009,18 @@ public class ClientController implements Initializable {
                 boolean success = client.rinominaLibreria(libreriaSelezionata.libreriaID(), nuovoNome.trim());
                 if (success) {
                     stampaConAnimazione("Libreria rinominata da '" + libreriaSelezionata.nomeLibreria() + "' a '" + nuovoNome.trim() + "' con successo.");
-                    
+
                     // Aggiorna la lista delle librerie per riflettere le modifiche
                     aggiornaLibrerie();
-                    
+
                     // Aggiorna anche l'etichetta della libreria selezionata se necessario
                     if (libreriaSelezionataLabel.getText().contains(libreriaSelezionata.nomeLibreria())) {
                         libreriaSelezionataLabel.setText("Libreria: " + nuovoNome.trim());
                     }
                 } else {
                     stampaConAnimazione("Errore durante la rinomina della libreria.");
-                }            } catch (IOException e) {
+                }
+            } catch (IOException e) {
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         });
@@ -3085,7 +3130,9 @@ public class ClientController implements Initializable {
 
         // Prezzo
         Label priceLabel = new Label("💰 Prezzo: €" + String.format("%.2f", libro.prezzo()));
-        priceLabel.getStyleClass().add("book-price");        // Data di pubblicazione (solo se l'anno è valido)
+        priceLabel.getStyleClass().add("book-price");
+
+        // Data di pubblicazione (solo se l'anno è valido)
         if (libro.annoPubblicazione() > 0) {
             String dataString = (libro.mesePubblicazione() == null || libro.mesePubblicazione().isEmpty()) ?
                     String.valueOf(libro.annoPubblicazione()) :
@@ -3414,7 +3461,6 @@ public class ClientController implements Initializable {
         Button detailsButton = new Button("Dettagli");
         detailsButton.getStyleClass().add("action-button");
         detailsButton.setOnAction(event -> {
-            // Chiudi il dialogo corrente e apri quello del libro consigliato
             Stage currentStage = (Stage) card.getScene().getWindow();
             currentStage.close();
             mostraDettagliLibro(libro);
@@ -3505,7 +3551,9 @@ public class ClientController implements Initializable {
                         @Override
                         protected Boolean call() throws Exception {
                             return client.aggiungiLibroALibreria(libreria.libreriaID(), libro.libroId());
-                        }                        @Override
+                        }
+
+                        @Override
                         protected void succeeded() {
                             boolean success = getValue();
                             if (success) {
@@ -3532,7 +3580,9 @@ public class ClientController implements Initializable {
         };
 
         new Thread(loadLibrariesTask).start();
-    }    /**
+    }
+
+    /**
      * Mostra il form di valutazione per il libro specifico.
      */
     // Overload: con valutazione preesistente
@@ -3540,7 +3590,8 @@ public class ClientController implements Initializable {
         if (!client.isAutenticato()) {
             stampaConAnimazione("Devi effettuare il login per valutare un libro.");
             return;
-        }        // Crea un dialogo per inserire i punteggi (ID libro già impostato)
+        }
+        // Crea un dialogo per inserire i punteggi (ID libro già impostato)
         Dialog<Valutazione> dialog = new Dialog<>();
         dialog.setTitle("Valuta Libro");
         dialog.setHeaderText("Valuta: " + libro.titolo() + " (ID: " + libro.libroId() + ")");
@@ -3635,20 +3686,20 @@ public class ClientController implements Initializable {
 
                 // Crea un oggetto Valutazione temporaneo (con ID se aggiornamento)
                 return new Valutazione(
-                    valutazionePreesistente != null ? valutazionePreesistente.valutazioneID() : 0,
-                    client.getUtenteAutenticato().userID(),
-                    libro.libroId(),
-                    scoreStile,
-                    noteStile,
-                    scoreContenuto,
-                    noteContenuto,
-                    scoreGradevolezza,
-                    noteGradevolezza,
-                    scoreOriginalita,
-                    noteOriginalita,
-                    scoreEdizione,
-                    noteEdizione,
-                    null
+                        valutazionePreesistente != null ? valutazionePreesistente.valutazioneID() : 0,
+                        client.getUtenteAutenticato().userID(),
+                        libro.libroId(),
+                        scoreStile,
+                        noteStile,
+                        scoreContenuto,
+                        noteContenuto,
+                        scoreGradevolezza,
+                        noteGradevolezza,
+                        scoreOriginalita,
+                        noteOriginalita,
+                        scoreEdizione,
+                        noteEdizione,
+                        null
                 );
             }
             return null;
@@ -3660,17 +3711,17 @@ public class ClientController implements Initializable {
         result.ifPresent(valutazione -> {
             try {
                 int valutazioneID = client.valutaLibro(
-                    valutazione.libroID(),
-                    valutazione.scoreStile(),
-                    valutazione.noteStile(),
-                    valutazione.scoreContenuto(),
-                    valutazione.noteContenuto(),
-                    valutazione.scoreGradevolezza(),
-                    valutazione.noteGradevolezza(),
-                    valutazione.scoreOriginalita(),
-                    valutazione.noteOriginalita(),
-                    valutazione.scoreEdizione(),
-                    valutazione.noteEdizione()
+                        valutazione.libroID(),
+                        valutazione.scoreStile(),
+                        valutazione.noteStile(),
+                        valutazione.scoreContenuto(),
+                        valutazione.noteContenuto(),
+                        valutazione.scoreGradevolezza(),
+                        valutazione.noteGradevolezza(),
+                        valutazione.scoreOriginalita(),
+                        valutazione.noteOriginalita(),
+                        valutazione.scoreEdizione(),
+                        valutazione.noteEdizione()
                 );
 
                 if (valutazioneID > 0) {
@@ -3824,13 +3875,15 @@ public class ClientController implements Initializable {
             };
 
             new Thread(suggestTask).start();
-        });    }
+        });
+    }
 
     /**
      * Mostra i dettagli di un libro dato il suo ID. Recupera prima il libro dalla cache o dal server.
      *
      * @param libroId L'ID del libro di cui mostrare i dettagli
-     */    private void mostraDettagliLibro(int libroId) {
+     */
+    private void mostraDettagliLibro(int libroId) {
         // Prima controlla la cache locale
         if (libriCache.containsKey(libroId)) {
             mostraDettagliLibro(libriCache.get(libroId));

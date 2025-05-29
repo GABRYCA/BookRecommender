@@ -19,8 +19,6 @@ public class PasswordManager {
     private static final String DELIMITER = ":";
 
     /**
-     * Genera l'hash di una password.
-     *
      * @param password Password in chiaro da farne hash
      * @return Stringa contenente salt e hash, separati da delimitatore
      */
@@ -45,9 +43,7 @@ public class PasswordManager {
     }
 
     /**
-     * Verifica se la password è corretta (se corrisponde a un hash).
-     *
-     * @param password Password in chiaro da verificare
+     * @param password   Password in chiaro da verificare
      * @param storedHash Hash archiviato con formato salt:hash
      * @return true se la password corrisponde, false altrimenti
      */
