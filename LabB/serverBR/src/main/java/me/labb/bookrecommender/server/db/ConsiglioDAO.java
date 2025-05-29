@@ -12,6 +12,10 @@ import java.util.Optional;
 
 /**
  * Operazioni sui consigli.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ConsiglioDAO {
     private final DatabaseManager dbManager;

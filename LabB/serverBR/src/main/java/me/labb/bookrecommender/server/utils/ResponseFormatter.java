@@ -10,6 +10,10 @@ import java.util.Map;
  * Utility per formattare i dati di risposta.
  * Per comunicazione client-server.
  * Sperimentale: supporto risposte testo e JSON.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ResponseFormatter {
 

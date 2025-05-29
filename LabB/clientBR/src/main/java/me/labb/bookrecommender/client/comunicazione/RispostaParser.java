@@ -12,6 +12,10 @@ import java.util.Map;
 /**
  * Classe di utilità per analizzare le risposte dal server.
  * Fornisce metodi per estrarre dati specifici dalle risposte.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class RispostaParser {
     

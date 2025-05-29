@@ -11,6 +11,10 @@ import java.time.ZoneId;
 
 /**
  * Classe DAO per gestire le operazioni CRUD sugli utenti.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class UtenteDAO {
     private final DatabaseManager dbManager;

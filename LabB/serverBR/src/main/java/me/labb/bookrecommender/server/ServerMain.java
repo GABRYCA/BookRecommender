@@ -5,15 +5,28 @@ import me.labb.bookrecommender.server.db.DatabaseManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Classe principale per l'avvio del server BookRecommender.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
+ */
 public class ServerMain {
 
     /**
-     * NB: è possibile chiamare da qualsiasi classe del codice:
+     * Istanza del gestore database condivisa globalmente.
+     * È possibile chiamare da qualsiasi classe del codice:
      * DatabaseManager.getInstance() e ritornerà un oggetto DatabaseManager valido.
      * Non serve passare dbm come parametro nei metodi dal main!
-     * */
-    public static DatabaseManager dbm;
+     */    public static DatabaseManager dbm;
 
+    /**
+     * Metodo principale per l'avvio del server.
+     * Inizializza la connessione al database e avvia il server in un thread separato.
+     * 
+     * @param args Argomenti da linea di comando (non utilizzati)
+     */
     public static void main(String[] args) {
         System.out.println("Avvio server...");
 

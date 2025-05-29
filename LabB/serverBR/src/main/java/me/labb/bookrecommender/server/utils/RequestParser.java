@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Utility per analizzare le richieste in arrivo dai client.
  * Supporta sia il formato TEXT che JSON.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class RequestParser {
 

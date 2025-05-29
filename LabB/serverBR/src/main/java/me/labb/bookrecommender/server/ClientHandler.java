@@ -25,6 +25,10 @@ import java.util.Optional;
 /**
  * Gestisce una connessione a un client.
  * Ogni istanza viene eseguita in un thread separato.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;

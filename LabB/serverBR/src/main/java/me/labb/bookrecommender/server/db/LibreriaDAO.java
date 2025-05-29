@@ -12,10 +12,18 @@ import java.util.Optional;
 
 /**
  * Classe DAO per operazioni CRUD sulle librerie personali degli utenti.
+ * Gestisce tutte le operazioni di accesso ai dati relative alle librerie utente.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
-public class LibreriaDAO {
-    private final DatabaseManager dbManager;
+public class LibreriaDAO {    private final DatabaseManager dbManager;
 
+    /**
+     * Costruttore della classe LibreriaDAO.
+     * Inizializza la connessione al database manager.
+     */
     public LibreriaDAO() {
         this.dbManager = DatabaseManager.getInstance();
     }

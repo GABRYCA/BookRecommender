@@ -13,6 +13,10 @@ import java.util.Optional;
 
 /**
  * Thread per gestire una connessione ad un client.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ServerThread extends Thread {
     private final Socket socket;

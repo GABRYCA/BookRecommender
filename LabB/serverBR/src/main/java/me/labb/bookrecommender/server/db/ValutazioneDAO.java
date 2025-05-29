@@ -11,10 +11,18 @@ import java.util.Optional;
 
 /**
  * Classe DAO per operazioni CRUD sulle valutazioni dei libri.
+ * Gestisce tutte le operazioni di accesso ai dati relative alle valutazioni degli utenti.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
-public class ValutazioneDAO {
-    private final DatabaseManager dbManager;
+public class ValutazioneDAO {    private final DatabaseManager dbManager;
 
+    /**
+     * Costruttore della classe ValutazioneDAO.
+     * Inizializza la connessione al database manager.
+     */
     public ValutazioneDAO() {
         this.dbManager = DatabaseManager.getInstance();
     }

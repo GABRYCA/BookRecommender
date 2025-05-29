@@ -16,6 +16,10 @@ import java.util.Map;
  * Classe che gestisce la comunicazione tra il client e il server.
  * Si occupa di stabilire la connessione, inviare richieste e ricevere risposte.
  * Supporta sia il formato testuale che JSON per le comunicazioni.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ClientComunicazione {
     

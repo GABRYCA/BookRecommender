@@ -8,12 +8,20 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Classe Utils.
+ * Classe di utilità per operazioni comuni nel sistema BookRecommender.
+ * Fornisce metodi di supporto per la gestione del database e altre operazioni comuni.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class Utils {
-    
-    private final DatabaseManager dbManager;
-    
+      private final DatabaseManager dbManager;
+
+    /**
+     * Costruttore della classe Utils.
+     * Inizializza la connessione al database manager.
+     */
     public Utils() {
         this.dbManager = DatabaseManager.getInstance();
     }

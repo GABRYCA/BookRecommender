@@ -19,6 +19,10 @@ import java.util.Map;
  * <p>
  * Questa classe è stata estesa per supportare tutte le operazioni offerte dal server,
  * incluse la gestione delle librerie, valutazioni e consigli.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class ClientOperazioni {
 

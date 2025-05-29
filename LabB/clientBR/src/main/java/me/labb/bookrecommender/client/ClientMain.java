@@ -12,13 +12,32 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
+/**
+ * Classe principale dell'applicazione client del sistema BookRecommender.
+ * Utilizza JavaFX per l'interfaccia grafica e implementa un preloader per il caricamento.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
+ */
 public class ClientMain extends Application {
     
+    /**
+     * Metodo principale per l'avvio dell'applicazione.
+     * Configura il preloader e lancia l'applicazione JavaFX.
+     * 
+     * @param args Argomenti da linea di comando
+     */
     public static void main(String[] args) {
         System.setProperty("javafx.preloader", AppPreloader.class.getCanonicalName());
-        Application.launch(ClientMain.class, args);
-    }
+        Application.launch(ClientMain.class, args);    }
 
+    /**
+     * Metodo di inizializzazione chiamato prima dell'avvio dell'interfaccia.
+     * Simula il caricamento dell'applicazione aggiornando il preloader.
+     * 
+     * @throws Exception Se si verifica un errore durante l'inizializzazione
+     */
     @Override
     public void init() throws Exception {
 
@@ -26,9 +45,14 @@ public class ClientMain extends Application {
             double progress = i / 10.0;
             notifyPreloader(new Preloader.ProgressNotification(progress));
             Thread.sleep(200);
-        }
-    }
+        }    }
 
+    /**
+     * Metodo di avvio dell'interfaccia grafica JavaFX.
+     * Carica il file FXML, configura la scena e visualizza la finestra principale.
+     * 
+     * @param stage Lo stage principale dell'applicazione
+     */
     @Override
     public void start(Stage stage) {
         try {

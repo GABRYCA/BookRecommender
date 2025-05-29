@@ -8,6 +8,10 @@ import java.util.Base64;
 /**
  * Classe per gestione delle password (hashing in particolare).
  * Usiamo SHA-256 con salt per l'hashing delle password.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class PasswordManager {
     private static final int SALT_LENGTH = 16;

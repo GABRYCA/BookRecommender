@@ -23,6 +23,14 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Controller principale per l'interfaccia grafica del client BookRecommender.
+ * Gestisce tutte le interazioni utente e la comunicazione con il server.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
+ */
 public class ClientController implements Initializable {
     // Cache locale dei libri per mostrare titolo/autore nelle valutazioni
     private final Map<Integer, Libro> libriCache = new HashMap<>();

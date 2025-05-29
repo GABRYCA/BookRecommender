@@ -15,6 +15,10 @@ import java.util.List;
 /**
  * Legge un file CSV di libri dalla cartella resources utilizzando Apache Commons CSV,
  * gestendo correttamente le virgole nei campi quotati e altre complessità del formato CSV.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class CsvReader {
 

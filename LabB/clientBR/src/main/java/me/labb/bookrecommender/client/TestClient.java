@@ -13,6 +13,10 @@ import java.util.List;
 /**
  * Client di test per dimostrare la funzionalità della comunicazione client-server.
  * Usiamo un'interfaccia a riga di comando per interagire con il server.
+ *
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class TestClient {
     

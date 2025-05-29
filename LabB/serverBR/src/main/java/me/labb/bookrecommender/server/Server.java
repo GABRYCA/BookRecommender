@@ -12,15 +12,23 @@ import java.util.concurrent.Executors;
 
 /**
  * Classe Server che gestisce le connessioni client e le richieste per il sistema di raccomandazione libri.
+ * Implementa il pattern Runnable per permettere l'esecuzione in thread separati.
+ * 
+ * @author Caretti Gabriele 756564 VA
+ * @author Como Riccardo 758697 VA
+ * @author Manicone Giorgia 758716 VA
  */
 public class Server implements Runnable {
     private static final int PORTA_DEFAULT = 8080;
     private final int porta;
     private ServerSocket serverSocket;
     private boolean attivo = false;
-    private final ExecutorService threadPool;
-    private final DatabaseManager dbManager;
+    private final ExecutorService threadPool;    private final DatabaseManager dbManager;
 
+    /**
+     * Esegue il server nel thread corrente.
+     * Chiama il metodo avvia() per iniziare l'ascolto delle connessioni.
+     */
     @Override
     public void run() {
         this.avvia();
