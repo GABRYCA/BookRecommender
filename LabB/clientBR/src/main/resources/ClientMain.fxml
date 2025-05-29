@@ -41,9 +41,8 @@
 
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-section">
                 <TextField fx:id="searchField" promptText="Cerca libri..." HBox.hgrow="ALWAYS" />
-                <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="Cerca" />
+                <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="🔍" />
                 <ComboBox fx:id="categoriaComboBox" promptText="Categoria" prefWidth="150" />
-                <Button fx:id="consigliaBtn" mnemonicParsing="false" onAction="#consigliaLibri" styleClass="recommend-button" text="Consiglia" />
                 <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo" styleClass="profile-button" text="Profilo" />
             </HBox>
 
@@ -52,18 +51,19 @@
                     <VBox spacing="10">
                         <Label fx:id="resultLabel" styleClass="section-title" text="" />
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="resultContainer" spacing="8" styleClass="result-container" />
+                            <VBox fx:id="resultContainer" spacing="20" styleClass="result-container" />
                         </ScrollPane>
                     </VBox>
                 </Tab>
 
                 <!-- Scheda per le Librerie -->
                 <Tab text="Le Mie Librerie" closable="false">
-                    <VBox spacing="10">                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria" styleClass="action-button" />
-                            <Button fx:id="rinominaLibreriaBtn" text="Rinomina Libreria" onAction="#rinominaLibreria" styleClass="action-button" />
-                            <Button fx:id="EliminaLibreriaBtn" text="Elimina Libreria" onAction="#EliminaLibreria" styleClass="action-button" />
-                            <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie" styleClass="action-button" />
+                    <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER" >
+                            <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria" styleClass="profile-button" />
+                            <Button fx:id="rinominaLibreriaBtn" text="Rinomina Libreria" onAction="#rinominaLibreria" styleClass="profile-button" />
+                            <Button fx:id="EliminaLibreriaBtn" text="Elimina Libreria" onAction="#EliminaLibreria" styleClass="profile-button" />
+                            <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie" styleClass="profile-button" />
                         </HBox>
                         <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
                             <!-- Lista delle librerie -->
@@ -94,14 +94,14 @@
                 <!-- Scheda per le Valutazioni -->
                 <Tab text="Valutazioni" closable="false">
                     <VBox spacing="10">
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Button fx:id="valutaLibroBtn" text="Valuta un Libro" onAction="#mostraFormValutazione" styleClass="action-button" />
-                            <Button fx:id="mieValutazioniBtn" text="Le Mie Valutazioni" onAction="#visualizzaMieValutazioni" styleClass="action-button" />
+                        <HBox spacing="10" alignment="CENTER">
+                            <Button fx:id="valutaLibroBtn" text="Valuta un Libro" onAction="#mostraFormValutazione" styleClass="profile-button" />
+                            <Button fx:id="mieValutazioniBtn" text="Le Mie Valutazioni" onAction="#visualizzaMieValutazioni" styleClass="profile-button" />
                             <TextField fx:id="libroIDValutazioniField" promptText="ID Libro" prefWidth="100" />
-                            <Button fx:id="cercaValutazioniBtn" text="Cerca Valutazioni" onAction="#cercaValutazioniLibro" styleClass="action-button" />
+                            <Button fx:id="cercaValutazioniBtn" text="Cerca Valutazioni" onAction="#cercaValutazioniLibro" styleClass="profile-button" />
                         </HBox>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="valutazioniContainer" spacing="8" styleClass="result-container" />
+                            <HBox fx:id="valutazioniContainer" spacing="8" styleClass="result-container" />
                         </ScrollPane>
                     </VBox>
                 </Tab>
@@ -109,13 +109,13 @@
                 <!-- Scheda per i Consigli -->
                 <Tab text="Consigli" closable="false">
                     <VBox spacing="10">
-                        <HBox spacing="10" alignment="CENTER_LEFT">
+                        <HBox spacing="10" alignment="CENTER">
                             <Label text="ID Libro:" />
                             <TextField fx:id="libroIDConsigliField" promptText="ID Libro" prefWidth="100" />
-                            <Button fx:id="generaConsigliBtn" text="Genera Consigli" onAction="#generaConsigli" styleClass="action-button" />
-                            <Button fx:id="mieiConsigliBtn" text="I Miei Consigli" onAction="#visualizzaMieiConsigli" styleClass="action-button" />
+                            <Button fx:id="generaConsigliBtn" text="Genera Consigli" onAction="#generaConsigli" styleClass="profile-button" />
+                            <Button fx:id="mieiConsigliBtn" text="I Miei Consigli" onAction="#visualizzaMieiConsigli" styleClass="profile-button" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio" styleClass="action-button" />
+                            <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio" styleClass="profile-button" />
                         </HBox>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                             <VBox fx:id="consigliContainer" spacing="8" styleClass="result-container" />

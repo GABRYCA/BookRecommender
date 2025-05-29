@@ -50,8 +50,6 @@ public class ClientController implements Initializable {
     @FXML
     private Button cercaBtn;
     @FXML
-    private Button consigliaBtn;
-    @FXML
     private Button profiloBtn;
     @FXML
     private TextArea output;
@@ -94,7 +92,8 @@ public class ClientController implements Initializable {
     @FXML
     private Button cercaValutazioniBtn;
     @FXML
-    private VBox valutazioniContainer;
+    private HBox valutazioniContainer;
+
 
     // Componenti per la gestione dei consigli
     @FXML
@@ -157,7 +156,17 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         client = new ClientOperazioni("localhost", 8080);
-
+        HBox.setMargin(creaLibreriaBtn, new Insets(20,0,20,0));
+        HBox.setMargin(rinominaLibreriaBtn, new Insets(20,0,20,0));
+        HBox.setMargin(EliminaLibreriaBtn, new Insets(20,0,20,0));
+        HBox.setMargin(aggiornaLibrerieBtn, new Insets(20,0,20,0));
+        HBox.setMargin(valutaLibroBtn, new Insets(20,0,20,0));
+        HBox.setMargin(mieValutazioniBtn, new Insets(20,0,20,0));
+        HBox.setMargin(libroIDValutazioniField, new Insets(20,0,20,0));
+        HBox.setMargin(cercaValutazioniBtn, new Insets(20,0,20,0));
+        HBox.setMargin(generaConsigliBtn, new Insets(20,0,20,0));
+        HBox.setMargin(mieiConsigliBtn, new Insets(20,0,20,0));
+        HBox.setMargin(salvaConsiglioBtn, new Insets(20,0,20,0));
         // Inizializza lo stato dei pulsanti
         updateUIState();
 
@@ -430,6 +439,7 @@ public class ClientController implements Initializable {
 
         // Dialog per inserire il nome della libreria
         TextInputDialog dialog = new TextInputDialog();
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
         dialog.setTitle("Crea Libreria");
         dialog.setHeaderText("Crea una nuova libreria personale");
         dialog.setContentText("Nome della libreria:");
@@ -668,6 +678,7 @@ public class ClientController implements Initializable {
 
         // Crea un dialogo per inserire l'ID del libro
         TextInputDialog dialog = new TextInputDialog();
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
         dialog.setTitle("Aggiungi Libro");
         dialog.setHeaderText("Aggiungi un libro alla libreria '" + libreriaSelezionata.nomeLibreria() + "'");
         dialog.setContentText("ID del libro:");
@@ -753,6 +764,7 @@ public class ClientController implements Initializable {
 
         // Crea un dialogo per inserire l'ID del libro
         TextInputDialog dialog = new TextInputDialog();
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
         dialog.setTitle("Rimuovi Libro");
         dialog.setHeaderText("Rimuovi un libro dalla libreria '" + libreriaSelezionata.nomeLibreria() + "'");
         dialog.setContentText("ID del libro:");
@@ -769,15 +781,60 @@ public class ClientController implements Initializable {
 
                 boolean success = client.rimuoviLibroDaLibreria(libreriaSelezionata.libreriaID(), libroID);
                 if (success) {
+                    // Alert di successo
+                    Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION);
+                    alertSuccess.setTitle("Operazione Completata");
+                    alertSuccess.setHeaderText("Libro Rimosso!");
+                    alertSuccess.setContentText("Il libro con ID " + libroID +
+                            " è stato rimosso con successo dalla libreria '" +
+                            libreriaSelezionata.nomeLibreria() + "'.");
+                    alertSuccess.getDialogPane().getStylesheets()
+                            .add(getClass().getResource("/styles.css").toExternalForm());
+                    alertSuccess.getDialogPane().getStyleClass().add("success-dialog");
+                    alertSuccess.showAndWait();
+
                     stampaConAnimazione("Libro rimosso dalla libreria con successo.");
                     // Aggiorna la visualizzazione della libreria
                     caricaLibriInLibreria(libreriaSelezionata.libreriaID());
                 } else {
+                    // Alert di errore generico
+                    Alert alertError = new Alert(Alert.AlertType.ERROR);
+                    alertError.setTitle("Errore");
+                    alertError.setHeaderText("Operazione Fallita");
+                    alertError.setContentText("Non è stato possibile rimuovere il libro dalla libreria. " +
+                            "Verifica che l'ID del libro sia corretto e che il libro sia presente.");
+                    alertError.getDialogPane().getStylesheets()
+                            .add(getClass().getResource("/styles.css").toExternalForm());
+                    alertError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertError.showAndWait();
+
                     stampaConAnimazione("Errore nella rimozione del libro dalla libreria.");
                 }
             } catch (NumberFormatException e) {
+                // Alert per errore di formato
+                Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+                alertFormatError.setTitle("Errore di Formato");
+                alertFormatError.setHeaderText("ID Non Valido");
+                alertFormatError.setContentText("L'ID inserito non è un numero valido. " +
+                        "Per favore, inserisci un numero intero positivo.");
+                alertFormatError.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/styles.css").toExternalForm());
+                alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+                alertFormatError.showAndWait();
+
                 stampaConAnimazione("ID libro non valido. Inserisci un numero intero.");
             } catch (IOException e) {
+                // Alert per errore di comunicazione
+                Alert alertIOError = new Alert(Alert.AlertType.ERROR);
+                alertIOError.setTitle("Errore di Comunicazione");
+                alertIOError.setHeaderText("Errore di Connessione");
+                alertIOError.setContentText("Si è verificato un errore durante la comunicazione con il server: " +
+                        e.getMessage());
+                alertIOError.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/styles.css").toExternalForm());
+                alertIOError.getDialogPane().getStyleClass().add("error-dialog");
+                alertIOError.showAndWait();
+
                 stampaConAnimazione("Errore: " + e.getMessage());
             }
         });
@@ -1072,7 +1129,10 @@ public class ClientController implements Initializable {
      */
     private VBox creaCardValutazione(Valutazione valutazione) {
         VBox card = new VBox();
-        card.getStyleClass().addAll("valutazione-card", "card-container");
+        card.setPrefWidth(390);    // Imposta la larghezza preferita
+        card.setMinWidth(390);     // Larghezza minima
+        card.setMaxWidth(390);     // Larghezza massima
+        card.getStyleClass().addAll("valutazione-card");
 
         // ===== HEADER SECTION =====
         VBox headerSection = new VBox(8);
@@ -1113,9 +1173,10 @@ public class ClientController implements Initializable {
         // Crea stelle per il voto medio
         HBox starsBox = new HBox(2);
         starsBox.setAlignment(Pos.CENTER_LEFT);
+
         int stellePiene = (int) media;
         boolean mezzaStella = (media - stellePiene) >= 0.5;
-
+        starsBox.getStyleClass().add("stars-container");
         for (int i = 0; i < 5; i++) {
             Label stella = new Label();
             if (i < stellePiene) {
@@ -1173,7 +1234,7 @@ public class ClientController implements Initializable {
             noteSection.getChildren().add(noteTitle);
 
             VBox noteContainer = new VBox(6);
-            noteContainer.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 6px; -fx-padding: 12px;");
+            noteContainer.getStyleClass().add("note-box");
 
             // Aggiungi note per ogni categoria se non vuote
             if (!valutazione.noteStile().isEmpty()) {
@@ -1181,10 +1242,10 @@ public class ClientController implements Initializable {
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
                 Label categoriaLabel = new Label("Stile:");
-                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+                categoriaLabel.getStyleClass().add("note-category");
 
                 Label noteText = new Label(valutazione.noteStile());
-                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.getStyleClass().add("note-text");
                 noteText.setWrapText(true);
 
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
@@ -1196,10 +1257,10 @@ public class ClientController implements Initializable {
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
                 Label categoriaLabel = new Label("Contenuto:");
-                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+                categoriaLabel.getStyleClass().add("note-category");
 
                 Label noteText = new Label(valutazione.noteContenuto());
-                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.getStyleClass().add("note-text");
                 noteText.setWrapText(true);
 
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
@@ -1211,10 +1272,10 @@ public class ClientController implements Initializable {
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
                 Label categoriaLabel = new Label("Gradevolezza:");
-                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+                categoriaLabel.getStyleClass().add("note-category");
 
                 Label noteText = new Label(valutazione.noteGradevolezza());
-                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.getStyleClass().add("note-text");
                 noteText.setWrapText(true);
 
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
@@ -1226,10 +1287,10 @@ public class ClientController implements Initializable {
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
                 Label categoriaLabel = new Label("Originalità:");
-                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+                categoriaLabel.getStyleClass().add("note-category");
 
                 Label noteText = new Label(valutazione.noteOriginalita());
-                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.getStyleClass().add("note-text");
                 noteText.setWrapText(true);
 
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
@@ -1241,10 +1302,10 @@ public class ClientController implements Initializable {
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
                 Label categoriaLabel = new Label("Edizione:");
-                categoriaLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
+                categoriaLabel.getStyleClass().add("note-category");
 
                 Label noteText = new Label(valutazione.noteEdizione());
-                noteText.setStyle("-fx-font-size: 12px; -fx-text-fill: #2c3e50; -fx-wrap-text: true;");
+                noteText.getStyleClass().add("note-text");
                 noteText.setWrapText(true);
 
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
@@ -1316,13 +1377,10 @@ public class ClientController implements Initializable {
         Label categoriaLabel = new Label(categoria);
         categoriaLabel.getStyleClass().add("punteggio-categoria");
 
-        Label punteggioLabel = new Label(String.valueOf(punteggio));
-        punteggioLabel.getStyleClass().add("punteggio-valore");
-
         // Stelle
         HBox stelleBox = new HBox(2);
         stelleBox.setAlignment(Pos.CENTER);
-
+        stelleBox.getStyleClass().add("stars-container");
         // Calcola stelle piene e mezze stelle
         int stellePiene = (int) Math.floor(punteggio);
         boolean mezzaStella = (punteggio - stellePiene) >= 0.5;
@@ -1346,7 +1404,7 @@ public class ClientController implements Initializable {
             stelleBox.getChildren().add(stella);
         }
 
-        box.getChildren().addAll(categoriaLabel, stelleBox, punteggioLabel);
+        box.getChildren().addAll(categoriaLabel, stelleBox);
         return box;
     }
 
@@ -1819,16 +1877,6 @@ public class ClientController implements Initializable {
             }
         });
 
-        // Aggiungi evento sulla selezione
-        categoriaComboBox.setOnAction(event -> {
-            if (categoriaComboBox.getValue() != null) {
-                // Applica animazione di fade al gruppo di consigli
-                FadeTransition fade = new FadeTransition(Duration.millis(200), consigliaBtn);
-                fade.setFromValue(0.7);
-                fade.setToValue(1.0);
-                fade.play();
-            }
-        });
     }
 
     /**
@@ -1838,7 +1886,7 @@ public class ClientController implements Initializable {
         // Aggiungi animazioni a tutti i pulsanti
         List<Button> buttons = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn, consigliaBtn, profiloBtn
+                logoutBtn, cercaBtn, profiloBtn,aggiungiLibroBtn,rimuoviLibroBtn
         );
 
         for (Button button : buttons) {
@@ -2226,63 +2274,6 @@ public class ClientController implements Initializable {
                 fade.stop();
                 resultLabel.setOpacity(1.0);
                 stampaConAnimazione("Errore durante la ricerca: " + getException().getMessage());
-                resultLabel.setText("Errore nella ricerca");
-            }
-        };
-
-        new Thread(task).start();
-    }
-
-    /**
-     * Consiglia libri in base alla categoria selezionata.
-     */
-    @FXML
-    private void consigliaLibri() {
-        String categoria = categoriaComboBox.getValue();
-
-        if (categoria == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Nessuna categoria");
-            alert.setHeaderText("Categoria non selezionata");
-            alert.setContentText("Seleziona una categoria per ricevere consigli.");
-            // Aggiungi la classe CSS all'Alert
-            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-            alert.getDialogPane().getStyleClass().add("registration-alert");
-            animaDialogo(alert);
-            alert.showAndWait();
-            return;
-        }
-
-        resultLabel.setText("Ricerca consigli in corso...");
-        resultContainer.getChildren().clear();
-
-        consigliaBtn.setDisable(true);
-
-        Task<List<Libro>> task = new Task<>() {
-            @Override
-            protected List<Libro> call() throws Exception {
-                return client.consigliaLibri(categoria);
-            }
-
-            @Override
-            protected void succeeded() {
-                consigliaBtn.setDisable(false);
-
-                List<Libro> libri = getValue();
-                if (libri.isEmpty()) {
-                    stampaConAnimazione("Nessun consiglio disponibile per la categoria: " + categoria);
-                    resultLabel.setText("Nessun consiglio disponibile");
-                } else {
-                    stampaConAnimazione("📚 Consigliati " + libri.size() + " libri per la categoria \"" + categoria + "\"");
-                    resultLabel.setText("Libri consigliati (" + libri.size() + ")");
-                    mostraRisultati(libri);
-                }
-            }
-
-            @Override
-            protected void failed() {
-                consigliaBtn.setDisable(false);
-                stampaConAnimazione("Errore durante la ricerca consigli: " + getException().getMessage());
                 resultLabel.setText("Errore nella ricerca");
             }
         };
@@ -2745,7 +2736,7 @@ public class ClientController implements Initializable {
         // Crea una lista di controlli che cambieranno stato
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn, consigliaBtn, profiloBtn,
+                logoutBtn, cercaBtn, profiloBtn,
                 searchField, categoriaComboBox,                // Nuovi controlli per le librerie
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 // Nuovi controlli per le valutazioni
@@ -2766,7 +2757,7 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected;
             } else if (control == loginBtn || control == registratiBtn) {
                 newDisabled = !isConnected || isLoggedIn;
-            } else if (control == logoutBtn || control == profiloBtn || control == consigliaBtn || control == categoriaComboBox) {
+            } else if (control == logoutBtn || control == profiloBtn || control == categoriaComboBox) {
                 newDisabled = !isConnected || !isLoggedIn;
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;
@@ -2984,6 +2975,7 @@ public class ClientController implements Initializable {
 
         // Crea un dialogo per inserire il nuovo nome della libreria
         TextInputDialog dialog = new TextInputDialog(libreriaSelezionata.nomeLibreria());
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
         dialog.setTitle("Rinomina Libreria");
         dialog.setHeaderText("Rinomina la libreria '" + libreriaSelezionata.nomeLibreria() + "'");
         dialog.setContentText("Nuovo nome:");
