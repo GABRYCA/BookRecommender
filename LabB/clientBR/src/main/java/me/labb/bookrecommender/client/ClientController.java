@@ -1837,13 +1837,25 @@ public class ClientController implements Initializable {
      */
     @FXML
     private void connetti() {
-        Task<Boolean> task = new Task<Boolean>() {
+        Task<Boolean> task = new Task<>() {
             @Override
-            protected Boolean call() throws Exception {
+            protected Boolean call() {
                 try {
                     return client.connetti();
                 } catch (IOException e) {
-                    Platform.runLater(() -> stampa("Errore connessione: " + e.getMessage()));
+                    Platform.runLater(() -> {
+
+
+                        // Errore di connessione con Alert inline
+                        stampa("Errore connessione: " + e.getMessage());
+                        Alert alertErr = new Alert(Alert.AlertType.ERROR);
+                        alertErr.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                        alertErr.setTitle("Errore di connessione");
+                        alertErr.setHeaderText(null);
+                        alertErr.setContentText("Impossibile connettersi al server.\nDettagli: " + e.getMessage());
+                        alertErr.getDialogPane().getStyleClass().add("error-dialog");
+                        alertErr.showAndWait();
+                    });
                     return false;
                 }
             }
@@ -1852,20 +1864,27 @@ public class ClientController implements Initializable {
             protected void succeeded() {
                 boolean success = getValue();
                 isConnected = success;
+
                 if (success) {
                     stampaConAnimazione("✅ Connesso al server con successo.");
                     animaCambioStato(statusLabel, "Connesso", "status-disconnected", "status-connected");
-                } else {
-                    stampaConAnimazione("❌ Connessione fallita.");
-                    statusLabel.setText("Non connesso");
-                    statusLabel.getStyleClass().remove("status-connected");
-                    statusLabel.getStyleClass().add("status-disconnected");
+
+
+                    // Alert di successo inline
+                    Alert alertOk = new Alert(Alert.AlertType.INFORMATION);
+                    alertOk.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertOk.setTitle("Connessione riuscita");
+                    alertOk.setHeaderText(null);
+                    alertOk.setContentText("Sei connesso al server.");
+                    alertOk.getDialogPane().getStyleClass().add("success-dialog");
+                    alertOk.showAndWait();
                 }
+
                 updateUIState();
             }
         };
 
-        // Animazione di caricamento durante la connessione
+        // Animazione bottone durante la connessione
         RotateTransition rt = new RotateTransition(Duration.millis(2000), connettiBtn);
         rt.setByAngle(360);
         rt.setCycleCount(Animation.INDEFINITE);
@@ -1879,19 +1898,25 @@ public class ClientController implements Initializable {
         task.setOnSucceeded(event -> {
             rt.stop();
             connettiBtn.setText("Connetti");
-            updateUIState();
+            connettiBtn.setDisable(false);
         });
 
         task.setOnFailed(event -> {
             rt.stop();
             connettiBtn.setText("Connetti");
             connettiBtn.setDisable(false);
+
+            // Alert errore generico inline
+            Platform.runLater(() -> {
+                Alert alertErr = new Alert(Alert.AlertType.ERROR);
+                alertErr.setTitle("Errore");
+                alertErr.setHeaderText(null);
+                alertErr.setContentText("Si è verificato un errore durante la connessione.");
+                alertErr.getDialogPane().getStyleClass().add("error-dialog");
+                alertErr.showAndWait();
+            });
         });
     }
-
-    /**
-     * Disconnette il client dal server e aggiorna lo stato dell'interfaccia.
-     */
     @FXML
     private void disconnetti() {
         client.chiudi();
@@ -1899,8 +1924,18 @@ public class ClientController implements Initializable {
         isLoggedIn = false;
         animaCambioStato(statusLabel, "Non connesso", "status-connected", "status-disconnected");
         stampaConAnimazione("🔌 Disconnesso dal server.");
+
+        Alert alertOk = new Alert(Alert.AlertType.INFORMATION);
+        alertOk.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        alertOk.setTitle("Disconnessione riuscita");
+        alertOk.setHeaderText(null);
+        alertOk.setContentText("Sei stato disconnesso dal server.");
+        alertOk.getDialogPane().getStyleClass().add("success-dialog");
+        alertOk.showAndWait();
+
         updateUIState();
-    }    /**
+    }
+    /**
      * Effettua il login dell'utente autenticato.
      */
     @FXML
@@ -1916,8 +1951,18 @@ public class ClientController implements Initializable {
                     stampaConAnimazione("👤 Login effettuato con successo.");
                     animaCambioStato(statusLabel, "Connesso come " + creds.getKey(), null, null);
                     updateUIState();
-                    
-                    // Se la tab "Le Mie Librerie" è attualmente selezionata, aggiorna le librerie automaticamente
+
+                    // Mostra alert di successo
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    successAlert.setTitle("Login Riuscito");
+                    successAlert.setHeaderText("Accesso effettuato con successo");
+                    successAlert.setContentText("Benvenuto, " + creds.getKey() + "!");
+                    // Applica la classe CSS personalizzata
+                    successAlert.getDialogPane().getStyleClass().add("success-dialog");
+                    successAlert.showAndWait();
+
+                    // Aggiorna librerie se necessario
                     Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
                     if (selectedTab != null && "Le Mie Librerie".equals(selectedTab.getText())) {
                         aggiornaLibrerie();
@@ -1925,9 +1970,27 @@ public class ClientController implements Initializable {
                 } else {
                     stampaConAnimazione("❌ Login fallito. Controlla username e password.");
                     animaShake(loginBtn);
+
+                    // Mostra alert di errore
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    errorAlert.setTitle("Login Fallito");
+                    errorAlert.setHeaderText("Credenziali errate");
+                    errorAlert.setContentText("Username o password non corretti. Riprova.");
+                    errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+                    errorAlert.showAndWait();
                 }
             } catch (IOException e) {
                 stampa("Errore login: " + e.getMessage());
+
+                // Mostra alert di errore per eccezione
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                errorAlert.setTitle("Errore Login");
+                errorAlert.setHeaderText("Errore durante il login");
+                errorAlert.setContentText("Si è verificato un errore: " + e.getMessage());
+                errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+                errorAlert.showAndWait();
             }
         });
     }
@@ -1951,27 +2014,44 @@ public class ClientController implements Initializable {
                 }
                 if (userID > 0) {
                     stampaConAnimazione("✅ Registrazione completata con successo. UserID: " + userID);
-                    // Mostra un dialogo di conferma con animazione
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Registrazione Completata");
-                    alert.setHeaderText("Registrazione effettuata con successo");
-                    alert.setContentText("UserID: " + userID + "\nPuoi ora accedere con le tue credenziali.");
 
-                    // Aggiungi la classe CSS all'Alert
-                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-                    alert.getDialogPane().getStyleClass().add("registration-alert");
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Registrazione Completata");
+                    successAlert.setHeaderText("Registrazione effettuata con successo");
+                    successAlert.setContentText("UserID: " + userID + "\nPuoi ora accedere con le tue credenziali.");
+                    successAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    successAlert.getDialogPane().getStyleClass().add("success-dialog");
+                    animaDialogo(successAlert);
+                    successAlert.showAndWait();
 
-                    animaDialogo(alert);
-                    alert.showAndWait();
                 } else {
                     stampaConAnimazione("❌ Registrazione fallita.");
                     animaShake(registratiBtn);
+
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Registrazione Fallita");
+                    errorAlert.setHeaderText("Errore durante la registrazione");
+                    errorAlert.setContentText("Non è stato possibile completare la registrazione. Riprova.");
+                    errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+                    animaDialogo(errorAlert);
+                    errorAlert.showAndWait();
                 }
             } catch (IOException e) {
                 stampa("Errore registrazione: " + e.getMessage());
+
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Errore Registrazione");
+                errorAlert.setHeaderText("Errore imprevisto");
+                errorAlert.setContentText("Si è verificato un errore: " + e.getMessage());
+                errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+                animaDialogo(errorAlert);
+                errorAlert.showAndWait();
             }
         });
     }
+
 
     /**
      * Effettua il logout dell'utente autenticato.
@@ -1984,12 +2064,37 @@ public class ClientController implements Initializable {
                 stampaConAnimazione("🚪 Logout riuscito.");
                 animaCambioStato(statusLabel, "Connesso", null, null);
                 updateUIState();
+
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                successAlert.setTitle("Logout Riuscito");
+                successAlert.setHeaderText("Logout completato");
+                successAlert.setContentText("Sei stato disconnesso con successo.");
+                successAlert.getDialogPane().getStyleClass().add("success-dialog");
+                successAlert.showAndWait();
+
             } else {
                 stampaConAnimazione("❌ Logout fallito.");
                 animaShake(logoutBtn);
+
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                errorAlert.setTitle("Logout Fallito");
+                errorAlert.setHeaderText("Impossibile effettuare il logout");
+                errorAlert.setContentText("Si è verificato un problema durante il logout. Riprova.");
+                errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+                errorAlert.showAndWait();
             }
         } catch (IOException e) {
             stampa("Errore logout: " + e.getMessage());
+
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            errorAlert.setTitle("Errore Logout");
+            errorAlert.setHeaderText("Errore durante il logout");
+            errorAlert.setContentText("Si è verificato un errore: " + e.getMessage());
+            errorAlert.getDialogPane().getStyleClass().add("error-dialog");
+            errorAlert.showAndWait();
         }
     }
 
@@ -2372,16 +2477,22 @@ public class ClientController implements Initializable {
         dialog.setTitle("Login");
 
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        dialog.getDialogPane().getStyleClass().add("custom-dialog");
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");
 
         ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-        grid.getStyleClass().add("custom-grid");
+        grid.setHgap(15);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(20, 25, 10, 25));
+        grid.setAlignment(Pos.CENTER_LEFT);
+
+        Label labelUsername = new Label("Username:");
+        labelUsername.getStyleClass().add("custom-label-box");
+
+        Label labelPassword = new Label("Password:");
+        labelPassword.getStyleClass().add("custom-label-box");
 
         TextField username = new TextField();
         username.setPromptText("username");
@@ -2391,18 +2502,24 @@ public class ClientController implements Initializable {
         password.setPromptText("password");
         password.getStyleClass().add("custom-field");
 
-        grid.add(new Label("Username:"), 0, 0);
+        grid.add(labelUsername, 0, 0);
         grid.add(username, 1, 0);
-        grid.add(new Label("Password:"), 0, 1);
+        grid.add(labelPassword, 0, 1);
         grid.add(password, 1, 1);
 
-        dialog.getDialogPane().setContent(grid);
+        VBox container = new VBox();
+        container.setPadding(new Insets(30, 0, 0, 0));  // margine alto 30 px
+        container.getChildren().add(grid);
+
+        dialog.getDialogPane().setContent(container);
+
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
                 return new Pair<>(username.getText(), password.getText());
             }
             return null;
         });
+
         return dialog;
     }
 
@@ -2416,49 +2533,82 @@ public class ClientController implements Initializable {
         dialog.setTitle("Registrazione");
 
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        dialog.getDialogPane().getStyleClass().add("custom-dialog");
+        dialog.getDialogPane().getStyleClass().add("profile-dialog");  // usa lo stile del profilo
 
         ButtonType registerButton = new ButtonType("Registrati", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(registerButton, ButtonType.CANCEL);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-        grid.getStyleClass().add("custom-grid");
+        BorderPane rootPane = new BorderPane();
+        rootPane.setPadding(new Insets(30));
+        rootPane.setPrefWidth(500);
 
+        VBox contentBox = new VBox(25);
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setStyle("-fx-background-color: transparent;");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(20);
+        grid.setVgap(18);
+        grid.setAlignment(Pos.CENTER);
+        grid.setStyle("-fx-background-color: transparent;");
+        grid.getStyleClass().add("profile-grid");
+
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setHalignment(HPos.CENTER);   // centra la label orizzontalmente
+        col1.setPercentWidth(40);
+
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setHalignment(HPos.LEFT);
+        col2.setPercentWidth(60);
+
+        grid.getColumnConstraints().addAll(col1, col2);
+
+        // Crea label con classe .custom-label-box (centrata in box)
+        Label nomeLabel = new Label("Nome Completo:");
+        nomeLabel.getStyleClass().add("custom-label-box");
         TextField nome = new TextField();
         nome.setPromptText("Nome completo");
         nome.getStyleClass().add("custom-field");
 
+        Label emailLabel = new Label("Email:");
+        emailLabel.getStyleClass().add("custom-label-box");
         TextField email = new TextField();
         email.setPromptText("Email");
         email.getStyleClass().add("custom-field");
 
+        Label usernameLabel = new Label("Username:");
+        usernameLabel.getStyleClass().add("custom-label-box");
         TextField username = new TextField();
         username.setPromptText("Username");
         username.getStyleClass().add("custom-field");
 
+        Label passwordLabel = new Label("Password:");
+        passwordLabel.getStyleClass().add("custom-label-box");
         PasswordField password = new PasswordField();
         password.setPromptText("Password sicura");
         password.getStyleClass().add("custom-field");
 
+        Label cfLabel = new Label("Codice Fiscale:");
+        cfLabel.getStyleClass().add("custom-label-box");
         TextField cf = new TextField();
         cf.setPromptText("Codice fiscale (opzionale)");
         cf.getStyleClass().add("custom-field");
 
-        grid.add(new Label("Nome Completo:"), 0, 0);
+        grid.add(nomeLabel, 0, 0);
         grid.add(nome, 1, 0);
-        grid.add(new Label("Email:"), 0, 1);
+        grid.add(emailLabel, 0, 1);
         grid.add(email, 1, 1);
-        grid.add(new Label("Username:"), 0, 2);
+        grid.add(usernameLabel, 0, 2);
         grid.add(username, 1, 2);
-        grid.add(new Label("Password:"), 0, 3);
+        grid.add(passwordLabel, 0, 3);
         grid.add(password, 1, 3);
-        grid.add(new Label("Codice Fiscale:"), 0, 4);
+        grid.add(cfLabel, 0, 4);
         grid.add(cf, 1, 4);
 
-        dialog.getDialogPane().setContent(grid);
+        contentBox.getChildren().addAll(grid);
+        rootPane.setCenter(contentBox);
+
+        dialog.getDialogPane().setContent(rootPane);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == registerButton) {
@@ -2472,8 +2622,10 @@ public class ClientController implements Initializable {
             }
             return null;
         });
+
         return dialog;
     }
+
 
     /**
      * Esegue un'animazione di entrata per un dialogo.

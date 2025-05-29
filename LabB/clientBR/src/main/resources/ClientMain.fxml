@@ -72,11 +72,16 @@
                                 <ListView fx:id="librerieListView" VBox.vgrow="ALWAYS" />
                             </VBox>
                             <!-- Contenuto della libreria selezionata -->
-                            <VBox spacing="5">
-                                <HBox spacing="10" alignment="CENTER_LEFT">
-                                    <Label fx:id="libreriaSelezionataLabel" text="Seleziona una libreria" styleClass="section-title" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro" onAction="#aggiungiLibroALibreria" styleClass="action-button" />
-                                    <Button fx:id="rimuoviLibroBtn" text="Rimuovi Libro" onAction="#rimuoviLibroDaLibreria" styleClass="action-button" />
+                            <VBox spacing="5" alignment="CENTER">
+                                <!-- HBox con testo centrato e bottoni a destra -->
+                                <HBox spacing="10" alignment="CENTER" >
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="libreriaSelezionataLabel" text="Seleziona una libreria" styleClass="section-title" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                                        <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro" onAction="#aggiungiLibroALibreria" styleClass="action-button" />
+                                        <Button fx:id="rimuoviLibroBtn" text="Rimuovi Libro" onAction="#rimuoviLibroDaLibreria" styleClass="action-button" />
+                                    </HBox>
                                 </HBox>
                                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                                     <VBox fx:id="libreriaContentContainer" spacing="8" styleClass="result-container" />
