@@ -172,34 +172,61 @@ public class LibroDAO {
 
     /**
      * Ottiene tutte le categorie uniche presenti nel database.
+     * Gestisce categorie separate da virgola dividendole e rimuovendo spazi eccessivi.
      *
-     * @return Lista di categorie
+     * @return Lista di categorie uniche
      * @throws SQLException In caso di errori SQL
      */
     public List<String> getAllCategorie() throws SQLException {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        List<String> categorie = new ArrayList<>();
+        List<String> categorieRaw = new ArrayList<>();
 
         try {
             conn = dbManager.getConnection();
             String sql = """
                     SELECT DISTINCT "Categoria" FROM "Libri" 
+                    WHERE "Categoria" IS NOT NULL AND "Categoria" != ''
                     ORDER BY "Categoria" ASC
                     """;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                categorie.add(rs.getString("Categoria"));
+                categorieRaw.add(rs.getString("Categoria"));
             }
 
-            return categorie;
+            return processCategorie(categorieRaw);
         } finally {
             if (rs != null) rs.close();
             if (stmt != null) stmt.close();
             if (conn != null) conn.close();
         }
+    }
+
+    /**
+     * Processa le categorie raw dividendo quelle separate da virgola e rimuovendo duplicati.
+     *
+     * @param categorieRaw Lista delle categorie raw dal database
+     * @return Lista di categorie processate e uniche
+     */
+    private List<String> processCategorie(List<String> categorieRaw) {
+        List<String> categorieProcessate = new ArrayList<>();
+
+        for (String categoria : categorieRaw) {
+            if (categoria != null && !categoria.trim().isEmpty()) {
+                String[] parti = categoria.split(",");
+                for (String parte : parti) {
+                    String categoriaProcessata = parte.trim();
+                    if (!categoriaProcessata.isEmpty() && !categorieProcessate.contains(categoriaProcessata)) {
+                        categorieProcessate.add(categoriaProcessata);
+                    }
+                }
+            }
+        }
+
+        categorieProcessate.sort(String::compareToIgnoreCase);
+        return categorieProcessate;
     }
 }

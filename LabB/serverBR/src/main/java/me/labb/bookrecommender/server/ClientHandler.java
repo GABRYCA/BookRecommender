@@ -106,6 +106,8 @@ public class ClientHandler implements Runnable {
                 return consigliaLibri(parametri);
             case "DETTAGLI_LIBRO":
                 return dettagliLibro(parametri);
+            case "CATEGORIE":
+                return getCategorie();
             case "HELP":
                 return getComandi();
             case "LOGIN":
@@ -310,6 +312,26 @@ public class ClientHandler implements Runnable {
     }
 
     /**
+     * Ottiene tutte le categorie di libri disponibili nel database.
+     * Gestisce categorie separate da virgola dividendole e rimuovendo spazi eccessivi.
+     *
+     * @return Messaggio di successo o errore in formato JSON con la lista delle categorie
+     */
+    private String getCategorie() {
+        try {
+            List<String> categorie = libroDAO.getAllCategorie();
+            if (categorie.isEmpty()) {
+                return ResponseFormatter.erroreJson("Nessuna categoria trovata nel database.");
+            }
+            return ResponseFormatter.successoJson("Lista di tutte le categorie disponibili",
+                    ResponseFormatter.singletonMap("categorie", categorie));
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero delle categorie: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante il recupero delle categorie. Riprova più tardi.");
+        }
+    }
+
+    /**
      * Effettua il login dell'utente con le credenziali fornite.
      *
      * @param parametri I parametri di login (username e password)
@@ -390,6 +412,7 @@ public class ClientHandler implements Runnable {
         comandiGenerali.add(createCommandInfo("CERCA", "Cerca libri con il termine indicato nel titolo o nella descrizione", "<termine>"));
         comandiGenerali.add(createCommandInfo("CONSIGLIA", "Ottieni consigli di libri in una determinata categoria", "<categoria>"));
         comandiGenerali.add(createCommandInfo("DETTAGLI_LIBRO", "Ottieni i dettagli completi di un libro specifico", "<libroID>"));
+        comandiGenerali.add(createCommandInfo("CATEGORIE", "Ottieni la lista completa di tutte le categorie di libri disponibili", ""));
         comandiGenerali.add(createCommandInfo("FORMAT", "Imposta il formato di risposta (TEXT o JSON)", "<formato>"));
         comandiGenerali.add(createCommandInfo("HELP", "Mostra questa lista di comandi", ""));
         comandiGenerali.add(createCommandInfo("EXIT", "Chiudi la connessione", ""));
