@@ -2143,6 +2143,7 @@ public class ClientController implements Initializable {
                 stampaConAnimazione("🚪 Logout riuscito.");
                 animaCambioStato(statusLabel, "Connesso", null, null);
                 updateUIState();
+                clearUI();
 
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                 successAlert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -2175,6 +2176,18 @@ public class ClientController implements Initializable {
             errorAlert.getDialogPane().getStyleClass().add("error-dialog");
             errorAlert.showAndWait();
         }
+    }
+
+    /**
+     * Ripulisce la GUI allo stato iniziale (prima che un qualsiasi utente si loggasse).
+     */
+    private void clearUI() {
+        resultContainer.getChildren().clear();
+        consigliContainer.getChildren().clear();
+        searchField.clear();
+        resultLabel.setText("Inserisci un termine di ricerca");
+        libreriaContentContainer.getChildren().clear();
+        librerieListView.getItems().clear();
     }
 
     /**
@@ -2722,11 +2735,9 @@ public class ClientController implements Initializable {
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, profiloBtn,
-                searchField,               // Nuovi controlli per le librerie
+                searchField,
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
-                // Nuovi controlli per le valutazioni
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
-                // Nuovi controlli per i consigli
                 generaConsigliBtn, mieiConsigliBtn, salvaConsiglioBtn, libroIDConsigliField
         );
 
@@ -2746,18 +2757,13 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected || !isLoggedIn;
             } else if (control == cercaBtn || control == searchField) {
                 newDisabled = !isConnected;
-            }            // Controlli per le librerie
-            else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
+            } else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
-            }
-            // Controlli per le valutazioni
-            else if (control == valutaLibroBtn || control == mieValutazioniBtn ||
+            } else if (control == valutaLibroBtn || control == mieValutazioniBtn ||
                     control == cercaValutazioniBtn || control == libroIDValutazioniField) {
                 newDisabled = !isConnected || !isLoggedIn;
-            }
-            // Controlli per i consigli
-            else if (control == generaConsigliBtn || control == mieiConsigliBtn ||
+            } else if (control == generaConsigliBtn || control == mieiConsigliBtn ||
                     control == salvaConsiglioBtn || control == libroIDConsigliField) {
                 newDisabled = !isConnected || !isLoggedIn;
             }
