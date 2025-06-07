@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -51,7 +52,6 @@ public class ClientMain extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ClientMain.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root, 900, 600);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
