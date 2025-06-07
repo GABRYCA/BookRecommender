@@ -58,6 +58,7 @@ public class AppPreloader extends Preloader {
         statusLabel = (Label) loader.getNamespace().get("statusLabel");
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/SplashScreen.css").toExternalForm());
         stage.initStyle(StageStyle.TRANSPARENT);
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
@@ -77,13 +78,35 @@ public class AppPreloader extends Preloader {
 
         for (int i = 0; i <= maxSteps; i++) {
             final double progress = i / (double) maxSteps;
+            final int currentStep = i;
+
             KeyFrame keyFrame = new KeyFrame(Duration.millis(i * 20), event -> {
                 progressBar.setProgress(progress);
-                statusLabel.setText("Caricamento... " + (int) (progress * 100) + "%");
+
+                // Messaggi di stato più dettagliati e realistici
+                String statusMessage = getLoadingMessage(currentStep);
+                statusLabel.setText(statusMessage + " " + currentStep + "%");
             });
             timeline.getKeyFrames().add(keyFrame);
         }
+
         timeline.play();
+    }
+
+    private String getLoadingMessage(int progress) {
+        if (progress < 20) {
+            return "Inizializzazione sistema...";
+        } else if (progress < 40) {
+            return "Caricamento database...";
+        } else if (progress < 60) {
+            return "Connessione al server...";
+        } else if (progress < 80) {
+            return "Preparazione interfaccia...";
+        } else if (progress < 95) {
+            return "Finalizzazione...";
+        } else {
+            return "Completamento...";
+        }
     }
 
     /**

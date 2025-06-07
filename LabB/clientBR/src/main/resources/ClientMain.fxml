@@ -121,7 +121,7 @@
                 <Tab text="Consigli" closable="false">
                     <VBox spacing="10">
                         <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Region HBox.hgrow="ALWAYS" />
+                            <Region HBox.hgrow="ALWAYS" prefWidth="300" />
 
                             <HBox spacing="10" alignment="CENTER">
                                 <Label text="ID Libro:" />
@@ -130,7 +130,7 @@
                                 <Button fx:id="mieiConsigliBtn" text="I Miei Consigli" onAction="#visualizzaMieiConsigli" styleClass="profile-button" />
                             </HBox>
 
-                            <Region HBox.hgrow="ALWAYS" />
+                            <Region HBox.hgrow="ALWAYS" prefWidth="150" />
 
                             <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio" styleClass="profile-button" />
                         </HBox>

@@ -1,0 +1,79 @@
+/* === SPLASH SCREEN STYLES === */
+
+/* Container principale */
+.splash-container {
+    -fx-background-color: linear-gradient(to bottom, #3d5467, #4a6078);
+    -fx-background-radius: 25;
+    -fx-padding: 50;
+    -fx-border-color: #1a252f;
+    -fx-border-width: 2;
+    -fx-border-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 5);
+}
+
+/* Logo */
+.splash-logo {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);
+}
+
+/* Titolo principale */
+.splash-title {
+    -fx-font-family: 'Courier New';
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 1);
+}
+
+/* Sottotitolo */
+.splash-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: normal;
+}
+
+/* Container barra di caricamento */
+.splash-loading-container {
+    -fx-padding: 20;
+}
+
+/* Barra di caricamento */
+.splash-progress-bar {
+    -fx-pref-width: 350;
+    -fx-pref-height: 16;
+    -fx-accent: #ffffff;
+    -fx-control-inner-background: #34495e;
+    -fx-background-color: #7f8c8d;
+    -fx-background-radius: 8;
+    -fx-border-color: #95a5a6;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+/* Testo di stato */
+.splash-status {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* Footer */
+.splash-footer {
+    -fx-font-size: 11px;
+    -fx-text-fill: #bdc3c7;
+    -fx-font-style: italic;
+}
+
+/* Animazioni e transizioni */
+.splash-container:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 20, 0, 0, 8);
+}
+
+/* Stili per i separatori */
+.splash-separator {
+    -fx-pref-height: 20;
+}
+
+.splash-separator-small {
+    -fx-pref-height: 10;
+}
