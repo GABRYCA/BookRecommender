@@ -922,4 +922,42 @@ public class ClientOperazioni {
 
         return null;
     }
+
+    public List<String> getCategorie() throws IOException {
+        Object risposta = client.inviaComando("CATEGORIE", "");
+        System.out.println("Risposta ricevuta: " + risposta);
+
+        if (risposta instanceof String && !((String) risposta).isEmpty()) {
+            String rispostaStr = (String) risposta;
+
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = mapper.readTree(rispostaStr);
+
+                JsonNode dataNode = rootNode.get("data");
+                if (dataNode != null) {
+                    JsonNode categorieNode = dataNode.get("categorie");
+                    if (categorieNode != null && categorieNode.isArray()) {
+                        List<String> categorie = new ArrayList<>();
+
+                        for (JsonNode categoria : categorieNode) {
+                            categorie.add(categoria.asText());
+                        }
+
+                        System.out.println("Categorie ricevute: " + categorie);
+                        return categorie;
+                    }
+                }
+
+                throw new IOException("Struttura JSON inattesa: manca 'data.categorie'");
+
+            } catch (Exception e) {
+                throw new IOException("Errore nel parsing JSON: " + e.getMessage(), e);
+            }
+        }
+
+        throw new IOException("Risposta inattesa o vuota");
+    }
+
+
 }

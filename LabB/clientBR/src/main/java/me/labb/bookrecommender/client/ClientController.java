@@ -2,6 +2,9 @@ package me.labb.bookrecommender.client;
 
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller principale per l'interfaccia grafica del client BookRecommender.
@@ -49,6 +53,10 @@ public class ClientController implements Initializable {
     private Button logoutBtn;
     @FXML
     private Button cercaBtn;
+    @FXML
+    private Button cercaCategorieBtn;
+    @FXML
+    private ComboBox<String> categoryComboBox;
     @FXML
     private Button profiloBtn;
     @FXML
@@ -186,6 +194,63 @@ public class ClientController implements Initializable {
 
         // Configura il listener per il caricamento automatico delle librerie
         setupTabListener();
+    }
+
+
+    /**
+     * Carica tutte le categorie nella ComboBox.
+     */
+    private ObservableList<String> tutteLeCategorie;
+
+    private void caricaCategorieComboBox() {
+        try {
+            List<String> categorie = client.getCategorie();
+            System.out.println(categorie.toString());
+
+            tutteLeCategorie = FXCollections.observableArrayList(categorie);
+            categoryComboBox.setItems(tutteLeCategorie);
+
+            installAutoCompletion(categoryComboBox);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Errore nel caricamento categorie: " + e.getMessage());
+        }
+    }
+
+    private void installAutoCompletion(ComboBox<String> comboBox) {
+        comboBox.setEditable(true);
+
+        comboBox.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            // Evita di processare se la ComboBox non è in focus
+            if (!comboBox.isFocused()) return;
+
+            // Evita di processare se il nuovo valore è lo stesso del valore selezionato
+            if (newValue != null && newValue.equals(comboBox.getValue())) return;
+
+            Platform.runLater(() -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    comboBox.setItems(tutteLeCategorie);
+                } else {
+                    List<String> filtered = tutteLeCategorie.stream()
+                            .filter(item -> item.toLowerCase().contains(newValue.toLowerCase()))
+                            .collect(Collectors.toList());
+
+                    comboBox.setItems(FXCollections.observableArrayList(filtered));
+                }
+
+                if (!comboBox.getItems().isEmpty()) {
+                    comboBox.show();
+                }
+            });
+        });
+
+        // Ripristina la lista completa quando si nasconde il dropdown
+        comboBox.setOnHidden(e -> {
+            if (comboBox.getValue() == null || comboBox.getValue().isEmpty()) {
+                comboBox.setItems(tutteLeCategorie);
+            }
+        });
     }
 
     /**
@@ -1875,7 +1940,7 @@ public class ClientController implements Initializable {
         // Aggiungi animazioni a tutti i pulsanti
         List<Button> buttons = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn, profiloBtn,aggiungiLibroBtn,rimuoviLibroBtn
+                logoutBtn, cercaBtn,cercaCategorieBtn, profiloBtn,aggiungiLibroBtn,rimuoviLibroBtn
         );
 
         for (Button button : buttons) {
@@ -1918,6 +1983,7 @@ public class ClientController implements Initializable {
             @Override
             protected Boolean call() {
                 try {
+
                     return client.connetti();
                 } catch (IOException e) {
                     Platform.runLater(() -> {
@@ -1958,6 +2024,7 @@ public class ClientController implements Initializable {
                 }
 
                 updateUIState();
+                caricaCategorieComboBox();
             }
         };
 
@@ -2215,6 +2282,14 @@ public class ClientController implements Initializable {
         } catch (IOException e) {
             stampa("Errore recupero profilo: " + e.getMessage());
         }
+    }
+
+    /**
+     * Cerca libri in base alla categoria.
+     */
+    @FXML
+    private void cercaLibriPerCategoria(){
+
     }
 
     /**
@@ -2734,7 +2809,7 @@ public class ClientController implements Initializable {
         // Crea una lista di controlli che cambieranno stato
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn, profiloBtn,
+                logoutBtn, cercaBtn, cercaCategorieBtn,categoryComboBox,
                 searchField,
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
@@ -2755,7 +2830,7 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected || isLoggedIn;
             } else if (control == logoutBtn || control == profiloBtn ) {
                 newDisabled = !isConnected || !isLoggedIn;
-            } else if (control == cercaBtn || control == searchField) {
+            } else if (control == cercaBtn || control == searchField || control == cercaCategorieBtn || control== categoryComboBox) {
                 newDisabled = !isConnected;
             } else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
