@@ -2326,7 +2326,6 @@ public class ClientController implements Initializable {
     private void cercaLibriPerCategoria() {
         String categoriaSelezionata = categoryComboBox.getValue();
         String termine = searchField.getText().trim();
-        categoriaSelezionata = categoriaSelezionata + ">" + termine;
         if (categoriaSelezionata == null || categoriaSelezionata.trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Categoria non selezionata");
@@ -2339,6 +2338,7 @@ public class ClientController implements Initializable {
             alert.showAndWait();
             return;
         }
+        categoriaSelezionata = categoriaSelezionata + ">" + termine;
 
         resultLabel.setText("Ricerca in corso...");
         resultContainer.getChildren().clear();
