@@ -241,11 +241,11 @@ public class ClientHandler implements Runnable {
      * Gestisce la richiesta di ricerca libri in base alla categoria e, opzionalmente, al titolo.
      * <p>
      * La stringa in input deve contenere la categoria come primo termine,
-     * seguita opzionalmente da un termine di titolo (separati da spazio).
-     * Se viene specificato solo un termine, la ricerca sarà effettuata solo per categoria.
-     * Se viene specificato anche un secondo termine, la ricerca sarà effettuata per categoria e titolo.
+     * seguita opzionalmente dal titolo, separati dal carattere ">".
+     * Se viene specificato solo un valore, la ricerca sarà effettuata solo per categoria.
+     * Se viene specificato anche un secondo valore, la ricerca sarà effettuata per categoria e titolo.
      *
-     * @param categoriaEAltro Stringa contenente la categoria e opzionalmente il titolo (es. "Horror Dracula")
+     * @param categoriaEAltro Stringa nel formato "Categoria>Titolo" (es. "Horror>Dracula")
      * @return JSON con i libri trovati o un messaggio di errore
      */
     private String gestisciCercaPerCategoria(String categoriaEAltro) {
@@ -253,9 +253,9 @@ public class ClientHandler implements Runnable {
             return ResponseFormatter.erroreJson("Specifica almeno una categoria.");
         }
 
-        // Split dei parametri: il primo è la categoria, il secondo (opzionale) è il titolo
-        String[] parts = categoriaEAltro.trim().split("\\s+", 2);
-        String categoria = parts[0];
+        // Split dei parametri: separatore ">"
+        String[] parts = categoriaEAltro.trim().split(">", 2);
+        String categoria = parts[0].trim();
         String titolo = (parts.length > 1) ? parts[1].trim() : "";
 
         try (Connection conn = dbManager.getConnection()) {
