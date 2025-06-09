@@ -108,6 +108,8 @@ public class ClientHandler implements Runnable {
                 return dettagliLibro(parametri);
             case "CATEGORIE":
                 return getCategorie();
+            case "CERCA_PER_CATEGORIA":
+                return gestisciCercaPerCategoria(parametri);
             case "HELP":
                 return getComandi();
             case "LOGIN":
@@ -233,6 +235,93 @@ public class ClientHandler implements Runnable {
             System.err.println("Errore durante la ricerca dei libri: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
         }
+    }
+
+    /**
+     * Gestisce la richiesta di ricerca libri in base alla categoria e, opzionalmente, al titolo.
+     * <p>
+     * La stringa in input deve contenere la categoria come primo termine,
+     * seguita opzionalmente da un termine di titolo (separati da spazio).
+     * Se viene specificato solo un termine, la ricerca sarà effettuata solo per categoria.
+     * Se viene specificato anche un secondo termine, la ricerca sarà effettuata per categoria e titolo.
+     *
+     * @param categoriaEAltro Stringa contenente la categoria e opzionalmente il titolo (es. "Horror Dracula")
+     * @return JSON con i libri trovati o un messaggio di errore
+     */
+    private String gestisciCercaPerCategoria(String categoriaEAltro) {
+        if (categoriaEAltro == null || categoriaEAltro.trim().isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica almeno una categoria.");
+        }
+
+        // Split dei parametri: il primo è la categoria, il secondo (opzionale) è il titolo
+        String[] parts = categoriaEAltro.trim().split("\\s+", 2);
+        String categoria = parts[0];
+        String titolo = (parts.length > 1) ? parts[1].trim() : "";
+
+        try (Connection conn = dbManager.getConnection()) {
+            StringBuilder sqlBuilder = new StringBuilder(
+                    "SELECT \"LibroID\", \"Titolo\", \"Autori\", \"Categoria\", \"Prezzo\" " +
+                            "FROM \"Libri\" WHERE \"Categoria\" ILIKE ?"
+            );
+
+            if (!titolo.isEmpty()) {
+                sqlBuilder.append(" AND \"Titolo\" ILIKE ?");
+            }
+
+            sqlBuilder.append(" ORDER BY \"Titolo\" LIMIT 10");
+
+            try (PreparedStatement stmt = conn.prepareStatement(sqlBuilder.toString())) {
+                stmt.setString(1, "%" + categoria + "%");
+                if (!titolo.isEmpty()) {
+                    stmt.setString(2, "%" + titolo + "%");
+                }
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    List<Map<String, Object>> libri = new ArrayList<>();
+
+                    while (rs.next()) {
+                        Map<String, Object> libro = new HashMap<>();
+                        libro.put("id", rs.getInt("LibroID"));
+                        libro.put("titolo", rs.getString("Titolo"));
+                        libro.put("autori", rs.getString("Autori"));
+                        libro.put("categoria", rs.getString("Categoria"));
+                        libro.put("prezzo", rs.getFloat("Prezzo"));
+                        libri.add(libro);
+                    }
+
+                    if (libri.isEmpty()) {
+                        return ResponseFormatter.erroreJson(
+                                "Nessun libro trovato per categoria: " + categoria +
+                                        (titolo.isEmpty() ? "" : " e titolo: " + titolo)
+                        );
+                    }
+
+                    return ResponseFormatter.successoJson(
+                            "Trovati " + libri.size() + " libri per categoria: " + categoria +
+                                    (titolo.isEmpty() ? "" : " e titolo: " + titolo),
+                            ResponseFormatter.singletonMap("libri", libri)
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore nella ricerca per categoria e titolo: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
+        }
+    }
+
+
+    /**
+     * Metodo helper per fare l'escape di caratteri speciali nel JSON
+     * (se non esiste già nella tua classe)
+     */
+    private String escapeJson(String str) {
+        if (str == null) return "";
+
+        return str.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     /**
@@ -413,6 +502,7 @@ public class ClientHandler implements Runnable {
         comandiGenerali.add(createCommandInfo("CONSIGLIA", "Ottieni consigli di libri in una determinata categoria", "<categoria>"));
         comandiGenerali.add(createCommandInfo("DETTAGLI_LIBRO", "Ottieni i dettagli completi di un libro specifico", "<libroID>"));
         comandiGenerali.add(createCommandInfo("CATEGORIE", "Ottieni la lista completa di tutte le categorie di libri disponibili", ""));
+        comandiGenerali.add(createCommandInfo("CERCA_PER_CATEGORIA", "Cerca libri con una specifica categoria", "<categoria>"));
         comandiGenerali.add(createCommandInfo("FORMAT", "Imposta il formato di risposta (TEXT o JSON)", "<formato>"));
         comandiGenerali.add(createCommandInfo("HELP", "Mostra questa lista di comandi", ""));
         comandiGenerali.add(createCommandInfo("EXIT", "Chiudi la connessione", ""));

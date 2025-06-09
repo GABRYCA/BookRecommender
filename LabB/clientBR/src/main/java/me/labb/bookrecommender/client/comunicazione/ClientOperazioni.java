@@ -277,6 +277,44 @@ public class ClientOperazioni {
     }
 
     /**
+     * Cerca libri per categoria specifica.
+     *
+     * @param categoria La categoria da cercare
+     * @return Lista di libri della categoria specificata
+     * @throws IOException In caso di errori di comunicazione
+     */
+    public List<Libro> cercaLibriPerCategoria(String categoria) throws IOException {
+        String risposta = client.inviaComando("CERCA_PER_CATEGORIA", categoria);
+
+        List<Libro> libri = new ArrayList<>();
+
+        if (client.isSuccesso(risposta)) {
+            Map<String, Object> dati = client.estraiDati(risposta);
+            if (dati != null && dati.containsKey("libri")) {
+                List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("libri");
+
+                for (Map<String, Object> libroMap : libriList) {
+                    Libro libro = new Libro(
+                            (Integer) libroMap.get("id"),
+                            (String) libroMap.get("titolo"),
+                            (String) libroMap.get("autori"),
+                            "",
+                            (String) libroMap.get("categoria"),
+                            "",
+                            ((Number) libroMap.get("prezzo")).floatValue(),
+                            "",
+                            0
+                    );
+
+                    libri.add(libro);
+                }
+            }
+        }
+
+        return libri;
+    }
+
+    /**
      * Ottiene consigli di libri in base a una categoria.
      *
      * @param categoria Categoria per cui ottenere consigli

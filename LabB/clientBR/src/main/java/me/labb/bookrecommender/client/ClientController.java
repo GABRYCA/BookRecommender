@@ -2285,11 +2285,81 @@ public class ClientController implements Initializable {
     }
 
     /**
-     * Cerca libri in base alla categoria.
+     * Cerca libri in base alla categoria selezionata.
      */
     @FXML
-    private void cercaLibriPerCategoria(){
+    private void cercaLibriPerCategoria() {
+        String categoriaSelezionata = categoryComboBox.getValue();
+        String termine = searchField.getText().trim();
+        categoriaSelezionata = categoriaSelezionata + " " + termine;
+        if (categoriaSelezionata == null || categoriaSelezionata.trim().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Categoria non selezionata");
+            alert.setHeaderText("Nessuna categoria selezionata");
+            alert.setContentText("Seleziona una categoria dalla lista.");
+            // Aggiungi la classe CSS all'Alert
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
 
+        resultLabel.setText("Ricerca in corso...");
+        resultContainer.getChildren().clear();
+
+        // Animazione di ricerca
+        FadeTransition fade = new FadeTransition(Duration.millis(300), resultLabel);
+        fade.setFromValue(0.5);
+        fade.setToValue(1.0);
+        fade.setCycleCount(Animation.INDEFINITE);
+        fade.setAutoReverse(true);
+        fade.play();
+
+        // Esegui la ricerca in un thread separato
+        String finalCategoriaSelezionata = categoriaSelezionata;
+        Task<List<Libro>> task = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                return client.cercaLibriPerCategoria(finalCategoriaSelezionata);
+            }
+
+            @Override
+            protected void succeeded() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+
+                List<Libro> libri = getValue();
+                if (libri.isEmpty()) {
+                    stampaConAnimazione("Nessun libro trovato per la categoria: \"" + finalCategoriaSelezionata + "\"");
+                    resultLabel.setText("Nessun risultato trovato");
+                } else {
+                    stampaConAnimazione("📚 Trovati " + libri.size() + " libri nella categoria \"" + finalCategoriaSelezionata + "\"");
+                    resultLabel.setText("Libri trovati (" + libri.size() + ")");
+                    mostraRisultati(libri);
+                }
+            }
+
+            @Override
+            protected void failed() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+                stampaConAnimazione("Errore durante la ricerca per categoria: " + getException().getMessage());
+                resultLabel.setText("Errore nella ricerca");
+
+                // Mostra alert di errore
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore nella ricerca");
+                alert.setHeaderText("Impossibile cercare libri per categoria");
+                alert.setContentText("Si è verificato un errore: " + getException().getMessage());
+                alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                alert.getDialogPane().getStyleClass().add("registration-alert");
+                animaDialogo(alert);
+                alert.showAndWait();
+            }
+        };
+
+        new Thread(task).start();
     }
 
     /**
