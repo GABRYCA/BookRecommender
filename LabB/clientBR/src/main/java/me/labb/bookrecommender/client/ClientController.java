@@ -2915,7 +2915,7 @@ public class ClientController implements Initializable {
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, cercaCategorieBtn,categoryComboBox,
-                searchField,
+                searchField,profiloBtn,
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 generaConsigliBtn, mieiConsigliBtn, salvaConsiglioBtn, libroIDConsigliField
