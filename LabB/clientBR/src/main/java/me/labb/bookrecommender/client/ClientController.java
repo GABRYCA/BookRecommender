@@ -1058,8 +1058,26 @@ public class ClientController implements Initializable {
                 );
 
                 if (valutazioneID > 0) {
+                    // Alert di successo inline
+                    Alert alertOk = new Alert(Alert.AlertType.INFORMATION);
+                    alertOk.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertOk.setTitle("Valutazione salvata");
+                    alertOk.setHeaderText(null);
+                    alertOk.setContentText("Valutazione salvata con successo! (ID: " + valutazioneID + ")");
+                    alertOk.getDialogPane().getStyleClass().add("success-dialog");
+                    alertOk.showAndWait();
+
                     stampaConAnimazione("Valutazione salvata con successo (ID: " + valutazioneID + ").");
                 } else {
+                    // Alert per errore di formato
+                    Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+                    alertFormatError.setTitle("Errore");
+                    alertFormatError.setHeaderText("La valutazione non è stata salvata");
+                    alertFormatError.setContentText("La valutazione con ID: " + valutazioneID + " non è stata salvata");
+                    alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertFormatError.showAndWait();
+
                     stampaConAnimazione("Errore nel salvataggio della valutazione.");
                 }
             } catch (IOException e) {
@@ -1708,8 +1726,25 @@ public class ClientController implements Initializable {
                 int consiglioID = client.salvaConsiglio(pair.getKey(), pair.getValue());
 
                 if (consiglioID > 0) {
+                    // Alert di successo inline
+                    Alert alertOk = new Alert(Alert.AlertType.INFORMATION);
+                    alertOk.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertOk.setTitle("Consiglio salvato");
+                    alertOk.setHeaderText(null);
+                    alertOk.setContentText("Consiglio salvato con successo! (ID: " + consiglioID + ")");
+                    alertOk.getDialogPane().getStyleClass().add("success-dialog");
+                    alertOk.showAndWait();
+
                     stampaConAnimazione("Consiglio salvato con successo (ID: " + consiglioID + ").");
                 } else {
+                    // Alert per errore di formato
+                    Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+                    alertFormatError.setTitle("Errore");
+                    alertFormatError.setHeaderText("Il consiglio non è stata salvata");
+                    alertFormatError.setContentText("Il consiglio con ID: " + consiglioID + " non è stato salvato");
+                    alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+                    alertFormatError.showAndWait();
                     stampaConAnimazione("Errore nel salvataggio del consiglio.");
                 }
             } catch (IOException e) {
