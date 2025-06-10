@@ -786,13 +786,14 @@ public class ClientOperazioni {
 
         if (client.isSuccesso(risposta)) {
             Map<String, Object> dati = client.estraiDati(risposta);
-            if (dati != null && dati.containsKey("libri")) {
-                List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("libri");
+
+            if (dati != null && dati.containsKey("consigli")) {
+                List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("consigli");
 
                 for (Map<String, Object> libroMap : libriList) {
                     // Crea l'oggetto Libro
                     Libro libro = new Libro(
-                            (Integer) libroMap.get("libroId"),
+                            (Integer) libroMap.get("libroID"),
                             (String) libroMap.get("titolo"),
                             (String) libroMap.get("autori"),
                             (String) libroMap.getOrDefault("descrizione", ""),

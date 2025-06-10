@@ -1033,6 +1033,10 @@ public class ClientHandler implements Runnable {
                 libroMap.put("autori", libro.autori());
                 libroMap.put("categoria", libro.categoria());
                 libroMap.put("prezzo", libro.prezzo());
+                libroMap.put("descrizione", libro.descrizione());
+                libroMap.put("editore", libro.editore());
+                libroMap.put("mesePubblicazione", libro.mesePubblicazione());
+                libroMap.put("annoPubblicazione", libro.annoPubblicazione());
                 libriConsigliatiData.add(libroMap);
             }
             responseData.put("consigli", libriConsigliatiData);
