@@ -123,7 +123,7 @@ public class ClientComunicazione {
      * @throws IOException           se si verifica un errore durante la comunicazione
      * @throws IllegalStateException se il client non è connesso al server
      */
-    public String inviaComando(String comando, String parametri) throws IOException {
+    public synchronized String inviaComando(String comando, String parametri) throws IOException {
         if (!isConnesso()) {
             throw new IllegalStateException("Il client non è connesso al server");
         }
