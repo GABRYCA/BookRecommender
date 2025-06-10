@@ -72,6 +72,52 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>console</headerType>
+                            <jar>${project.build.directory}/BookRecommender-Server-${project.version}.jar</jar>
+                            <outfile>${project.build.directory}/BookRecommender-Server.exe</outfile>
+                            <errTitle>BookRecommender Server Error</errTitle>
+                            <classPath>
+                                <mainClass>me.labb.bookrecommender.server.ServerMain</mainClass>
+                                <addDependencies>false</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>${maven.compiler.source}</minVersion>
+                                <initialHeapSize>128</initialHeapSize>
+                                <maxHeapSize>1024</maxHeapSize>
+                                <opts>
+                                </opts>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${project.version}.0.0</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>BookRecommender Server</fileDescription>
+                                <copyright>2025 - Gabriele Caretti, Riccardo Como</copyright>
+                                <productVersion>${project.version}.0.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>BookRecommender-Server</productName>
+                                <internalName>BookRecommender-Server</internalName>
+                                <originalFilename>BookRecommender-Server.exe</originalFilename>
+                            </versionInfo>
+                            <icon>src/main/resources/SplashLogo.ico</icon>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
