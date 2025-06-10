@@ -212,25 +212,6 @@ public class ConsiglioDAO {
         try {
             conn = dbManager.getConnection();
 
-            // Ottengo cateogoria del libro (intendo libro di riferimento, stiamo guardando un libro per esempio
-            // e vogliamo vederne i consigliati)
-            /*String categoriaQuery = """
-                    SELECT "Categoria" FROM "Libri"
-                    WHERE "LibroID" = ?
-                    """;
-
-            String categoria = null;
-            try (PreparedStatement catStmt = conn.prepareStatement(categoriaQuery)) {
-                catStmt.setInt(1, libroRiferimentoID);
-                try (ResultSet catRs = catStmt.executeQuery()) {
-                    if (catRs.next()) {
-                        categoria = catRs.getString("Categoria");
-                    } else {
-                        return libriConsigliati;
-                    }
-                }
-            }*/
-
             // Prendo dai ConsigliLibri i libri consigliati per il libro di riferimento
             String sql = """
                     SELECT * FROM "ConsigliLibri"
@@ -256,23 +237,6 @@ public class ConsiglioDAO {
             if (libriConsigliati.isEmpty()) {
                 return libriConsigliati;
             }
-
-            System.out.println("Libri consigliati trovati: " + libriConsigliati);
-
-            /*while (rs.next()) {
-                Libro libro = new Libro(
-                        rs.getInt("LibroID"),
-                        rs.getString("Titolo"),
-                        rs.getString("Autori"),
-                        rs.getString("Descrizione"),
-                        rs.getString("Categoria"),
-                        rs.getString("Editore"),
-                        rs.getFloat("Prezzo"),
-                        rs.getString("MesePubblicazione"),
-                        rs.getInt("AnnoPubblicazione")
-                );
-                libriConsigliati.add(libro);
-            }*/
 
             return libriConsigliati;
         } finally {
