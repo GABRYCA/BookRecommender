@@ -1532,7 +1532,17 @@ public class ClientController implements Initializable {
         }
 
         String libroIDStr = libroIDConsigliField.getText().trim();
-        if (libroIDStr.isEmpty()) {
+        if (libroIDStr.isEmpty() || !libroIDStr.matches("\\d+") || Integer.parseInt(libroIDStr) < 0) {
+
+            // Alert per errore di formato
+            Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+            alertFormatError.setTitle("Errore");
+            alertFormatError.setHeaderText("Inseriesci un ID del libro valido");
+            alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+            alertFormatError.showAndWait();
+
+            stampaConAnimazione("Errore nel salvataggio del consiglio.");
             stampaConAnimazione("Inserisci l'ID del libro per cui generare consigli.");
             return;
         }
@@ -1588,6 +1598,14 @@ public class ClientController implements Initializable {
 
             new Thread(task).start();
         } catch (NumberFormatException e) {
+            // Alert per errore di formato
+            Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+            alertFormatError.setTitle("Errore");
+            alertFormatError.setHeaderText("Inseriesci un ID valido");
+            alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+            alertFormatError.showAndWait();
+
             stampaConAnimazione("ID libro non valido. Inserisci un numero intero.");
         }
     }
