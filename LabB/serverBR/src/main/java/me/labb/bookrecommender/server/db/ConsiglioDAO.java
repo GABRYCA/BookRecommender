@@ -214,7 +214,7 @@ public class ConsiglioDAO {
 
             // Ottengo cateogoria del libro (intendo libro di riferimento, stiamo guardando un libro per esempio
             // e vogliamo vederne i consigliati)
-            String categoriaQuery = """
+            /*String categoriaQuery = """
                     SELECT "Categoria" FROM "Libri"
                     WHERE "LibroID" = ?
                     """;
@@ -229,24 +229,37 @@ public class ConsiglioDAO {
                         return libriConsigliati;
                     }
                 }
-            }
+            }*/
 
-            // Trovo i libri della stessa categoria
+            // Prendo dai ConsigliLibri i libri consigliati per il libro di riferimento
             String sql = """
-                    SELECT * FROM "Libri"
-                    WHERE "Categoria" = ? AND "LibroID" != ?
-                    ORDER BY RANDOM()
+                    SELECT * FROM "ConsigliLibri"
+                    WHERE "LibroRiferimentoID" = ?
+                    ORDER BY "DataSuggerimento" DESC
                     LIMIT ?
                     """;
 
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, categoria);
-            stmt.setInt(2, libroRiferimentoID);
-            stmt.setInt(3, limit);
+            stmt.setInt(1, libroRiferimentoID);
+            stmt.setInt(2, limit);
 
             rs = stmt.executeQuery();
 
+            // Per ogni consiglio trovato, prendo il libro suggerito
             while (rs.next()) {
+                int libroSuggeritoID = rs.getInt("LibroSuggeritoID");
+                Optional<Libro> libroOpt = libroDAO.getLibroById(libroSuggeritoID);
+                libroOpt.ifPresent(libriConsigliati::add);
+            }
+
+            // Se non ho trovato libri consigliati, ritorno una lista vuota
+            if (libriConsigliati.isEmpty()) {
+                return libriConsigliati;
+            }
+
+            System.out.println("Libri consigliati trovati: " + libriConsigliati);
+
+            /*while (rs.next()) {
                 Libro libro = new Libro(
                         rs.getInt("LibroID"),
                         rs.getString("Titolo"),
@@ -259,7 +272,7 @@ public class ConsiglioDAO {
                         rs.getInt("AnnoPubblicazione")
                 );
                 libriConsigliati.add(libro);
-            }
+            }*/
 
             return libriConsigliati;
         } finally {
