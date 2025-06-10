@@ -340,7 +340,7 @@ public class ClientController implements Initializable {
      * @return Un nodo VBox che rappresenta la card del libro
      */
     private VBox creaCardLibro(Libro libro) {
-        return creaCardLibro(libro, -1); // Chiama la versione overloaded senza ID libreria
+        return creaCardLibro(libro, -1);
     }
 
     /**
@@ -376,7 +376,7 @@ public class ClientController implements Initializable {
 
         // Prezzo
         Label prezzo = new Label("Prezzo: €" + libro.prezzo());
-        prezzo.getStyleClass().add("book-price");        // Container per i pulsanti
+        prezzo.getStyleClass().add("book-price");
         HBox pulsantiContainer = new HBox(10);
         pulsantiContainer.setAlignment(Pos.CENTER);
 
@@ -1775,12 +1775,12 @@ public class ClientController implements Initializable {
         VBox bookCard = creaCardLibro(libro);
 
         // Aggiungi un pulsante per salvare il consiglio
-        Button salvaConsiglioBtn = new Button("Salva Consiglio");
+        /* Button salvaConsiglioBtn = new Button("Salva Consiglio");
         salvaConsiglioBtn.getStyleClass().add("action-button");
 
         salvaConsiglioBtn.setOnAction(e -> {
             try {
-                int consiglioID = client.salvaConsiglio(libroRiferimentoID, 0); // Assumiamo che l'ID del libro sia 0 per ora
+                int consiglioID = client.salvaConsiglio(libroRiferimentoID, 0);
 
                 if (consiglioID > 0) {
                     stampaConAnimazione("Consiglio salvato con successo (ID: " + consiglioID + ").");
@@ -1792,7 +1792,7 @@ public class ClientController implements Initializable {
             }
         });
 
-        bookCard.getChildren().add(salvaConsiglioBtn);
+        bookCard.getChildren().add(salvaConsiglioBtn);*/
 
         return bookCard;
     }
