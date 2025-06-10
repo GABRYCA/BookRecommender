@@ -1,0 +1,10 @@
+me.labb.bookrecommender.client
+me.labb.bookrecommender.client.comunicazione
+me.labb.bookrecommender.client.oggetti
+me.labb.bookrecommender.server
+me.labb.bookrecommender.server.csv
+me.labb.bookrecommender.server.db
+me.labb.bookrecommender.server.oggetti
+me.labb.bookrecommender.server.rete
+me.labb.bookrecommender.server.sicurezza
+me.labb.bookrecommender.server.utils
