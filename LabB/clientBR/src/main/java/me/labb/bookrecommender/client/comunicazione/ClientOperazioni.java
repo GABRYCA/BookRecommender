@@ -605,15 +605,15 @@ public class ClientOperazioni {
         Map<String, Object> parametri = new HashMap<>();
         parametri.put("libroID", libroID);
         parametri.put("scoreStile", scoreStile);
-        parametri.put("noteStile", noteStile);
+        parametri.put("noteStile", noteStile.isEmpty() ? "-" : noteStile);
         parametri.put("scoreContenuto", scoreContenuto);
-        parametri.put("noteContenuto", noteContenuto);
+        parametri.put("noteContenuto", noteContenuto.isEmpty() ? "-" : noteContenuto);
         parametri.put("scoreGradevolezza", scoreGradevolezza);
-        parametri.put("noteGradevolezza", noteGradevolezza);
+        parametri.put("noteGradevolezza", noteGradevolezza.isEmpty() ? "-" : noteGradevolezza);
         parametri.put("scoreOriginalita", scoreOriginalita);
-        parametri.put("noteOriginalita", noteOriginalita);
+        parametri.put("noteOriginalita", noteOriginalita.isEmpty() ? "-" : noteOriginalita);
         parametri.put("scoreEdizione", scoreEdizione);
-        parametri.put("noteEdizione", noteEdizione);
+        parametri.put("noteEdizione", noteEdizione.isEmpty() ? "-" : noteEdizione);
 
         String risposta = client.inviaComando("VALUTA_LIBRO", parametri);
 

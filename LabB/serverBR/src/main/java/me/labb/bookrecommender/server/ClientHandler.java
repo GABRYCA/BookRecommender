@@ -853,15 +853,26 @@ public class ClientHandler implements Runnable {
                 }
                 libroID = ((Number) paramsMap.get("libroID")).intValue();
                 scoreStile = ((Number) paramsMap.get("scoreStile")).shortValue();
-                noteStile = (String) paramsMap.get("noteStile");
-                scoreContenuto = ((Number) paramsMap.get("scoreContenuto")).shortValue();
-                noteContenuto = (String) paramsMap.get("noteContenuto");
-                scoreGradevolezza = ((Number) paramsMap.get("scoreGradevolezza")).shortValue();
-                noteGradevolezza = (String) paramsMap.get("noteGradevolezza");
-                scoreOriginalita = ((Number) paramsMap.get("scoreOriginalita")).shortValue();
-                noteOriginalita = (String) paramsMap.get("noteOriginalita");
-                scoreEdizione = ((Number) paramsMap.get("scoreEdizione")).shortValue();
-                noteEdizione = (String) paramsMap.get("noteEdizione");
+
+                // Gestione sicura dei valori null per le note - conversione a stringa vuota
+                noteStile = String.valueOf(paramsMap.getOrDefault("noteStile", ""));
+
+                scoreContenuto = paramsMap.containsKey("scoreContenuto") ?
+                        ((Number) paramsMap.get("scoreContenuto")).shortValue() : 0;
+                noteContenuto = String.valueOf(paramsMap.getOrDefault("noteContenuto", ""));
+
+                scoreGradevolezza = paramsMap.containsKey("scoreGradevolezza") ?
+                        ((Number) paramsMap.get("scoreGradevolezza")).shortValue() : 0;
+                noteGradevolezza = String.valueOf(paramsMap.getOrDefault("noteGradevolezza", ""));
+
+                scoreOriginalita = paramsMap.containsKey("scoreOriginalita") ?
+                        ((Number) paramsMap.get("scoreOriginalita")).shortValue() : 0;
+                noteOriginalita = String.valueOf(paramsMap.getOrDefault("noteOriginalita", ""));
+
+                scoreEdizione = paramsMap.containsKey("scoreEdizione") ?
+                        ((Number) paramsMap.get("scoreEdizione")).shortValue() : 0;
+                noteEdizione = String.valueOf(paramsMap.getOrDefault("noteEdizione", ""));
+
             } else {
                 String[] parti = parametri.split("\\s+");
                 if (parti.length < 11) {
@@ -869,21 +880,24 @@ public class ClientHandler implements Runnable {
                 }
                 libroID = Integer.parseInt(parti[0]);
                 scoreStile = Short.parseShort(parti[1]);
-                noteStile = parti[2];
+                noteStile = parti[2].isEmpty() ? "-" : parti[2];
                 scoreContenuto = Short.parseShort(parti[3]);
-                noteContenuto = parti[4];
+                noteContenuto = parti[4].isEmpty() ? "-" : parti[4];
                 scoreGradevolezza = Short.parseShort(parti[5]);
-                noteGradevolezza = parti[6];
+                noteGradevolezza = parti[6].isEmpty() ? "-" : parti[6];
                 scoreOriginalita = Short.parseShort(parti[7]);
-                noteOriginalita = parti[8];
+                noteOriginalita = parti[8].isEmpty() ? "-" : parti[8];
                 scoreEdizione = Short.parseShort(parti[9]);
-                noteEdizione = parti[10];
+                noteEdizione = parti[10].isEmpty() ? "-" : parti[10];
             }
 
-            if (scoreStile < 1 || scoreStile > 5 || scoreContenuto < 1 || scoreContenuto > 5 ||
-                    scoreGradevolezza < 1 || scoreGradevolezza > 5 || scoreOriginalita < 1 || scoreOriginalita > 5 ||
-                    scoreEdizione < 1 || scoreEdizione > 5) {
-                return ResponseFormatter.erroreJson("I punteggi devono essere compresi tra 1 e 5.");
+            // Validazione dei punteggi (permettendo 0 per indicare "non valutato")
+            if ((scoreStile != 0 && (scoreStile < 1 || scoreStile > 5)) ||
+                    (scoreContenuto != 0 && (scoreContenuto < 1 || scoreContenuto > 5)) ||
+                    (scoreGradevolezza != 0 && (scoreGradevolezza < 1 || scoreGradevolezza > 5)) ||
+                    (scoreOriginalita != 0 && (scoreOriginalita < 1 || scoreOriginalita > 5)) ||
+                    (scoreEdizione != 0 && (scoreEdizione < 1 || scoreEdizione > 5))) {
+                return ResponseFormatter.erroreJson("I punteggi devono essere compresi tra 1 e 5 (o 0 per non valutato).");
             }
 
             int valutazioneID = valutazioneDAO.salvaValutazione(

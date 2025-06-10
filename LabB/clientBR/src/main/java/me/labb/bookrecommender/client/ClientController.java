@@ -1344,20 +1344,15 @@ public class ClientController implements Initializable {
         VBox noteSection = new VBox(8);
         noteSection.getStyleClass().add("notes-section");
 
-        boolean hasNotes = !valutazione.noteStile().isEmpty() || !valutazione.noteContenuto().isEmpty() ||
-                !valutazione.noteGradevolezza().isEmpty() || !valutazione.noteOriginalita().isEmpty() ||
-                !valutazione.noteEdizione().isEmpty();
+        Label noteTitle = new Label("Note");
+        VBox noteContainer = new VBox(6);
+        noteContainer.getStyleClass().add("note-box");
+        noteTitle.getStyleClass().add("note-title");
+        noteSection.getChildren().add(noteTitle);
 
-        if (hasNotes) {
-            Label noteTitle = new Label("Note");
-            noteTitle.getStyleClass().add("note-title");
-            noteSection.getChildren().add(noteTitle);
 
-            VBox noteContainer = new VBox(6);
-            noteContainer.getStyleClass().add("note-box");
-
-            // Aggiungi note per ogni categoria se non vuote
-            if (!valutazione.noteStile().isEmpty()) {
+            // Aggiungi note per ogni categoria se non nulle, non vuote e non composte solo da spazi
+            if (valutazione.noteStile() != null && !valutazione.noteStile().trim().isEmpty()) {
                 VBox notaBox = new VBox(4);
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
@@ -1372,7 +1367,7 @@ public class ClientController implements Initializable {
                 noteContainer.getChildren().add(notaBox);
             }
 
-            if (!valutazione.noteContenuto().isEmpty()) {
+            if (valutazione.noteContenuto() != null && !valutazione.noteContenuto().trim().isEmpty()) {
                 VBox notaBox = new VBox(4);
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
@@ -1387,7 +1382,7 @@ public class ClientController implements Initializable {
                 noteContainer.getChildren().add(notaBox);
             }
 
-            if (!valutazione.noteGradevolezza().isEmpty()) {
+            if (valutazione.noteGradevolezza() != null && !valutazione.noteGradevolezza().trim().isEmpty()) {
                 VBox notaBox = new VBox(4);
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
@@ -1402,7 +1397,7 @@ public class ClientController implements Initializable {
                 noteContainer.getChildren().add(notaBox);
             }
 
-            if (!valutazione.noteOriginalita().isEmpty()) {
+            if (valutazione.noteOriginalita() != null && !valutazione.noteOriginalita().trim().isEmpty()) {
                 VBox notaBox = new VBox(4);
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
@@ -1417,7 +1412,7 @@ public class ClientController implements Initializable {
                 noteContainer.getChildren().add(notaBox);
             }
 
-            if (!valutazione.noteEdizione().isEmpty()) {
+            if (valutazione.noteEdizione() != null && !valutazione.noteEdizione().trim().isEmpty()) {
                 VBox notaBox = new VBox(4);
                 notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
@@ -1431,9 +1426,7 @@ public class ClientController implements Initializable {
                 notaBox.getChildren().addAll(categoriaLabel, noteText);
                 noteContainer.getChildren().add(notaBox);
             }
-
-            noteSection.getChildren().add(noteContainer);
-        }
+        noteSection.getChildren().add(noteContainer);
 
         // ===== FOOTER =====
         HBox footer = new HBox();
@@ -3836,16 +3829,22 @@ public class ClientController implements Initializable {
         // Converti il risultato
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == valutaButtonType) {
+
                 short scoreStile = scoreStileSpinner.getValue().shortValue();
-                String noteStile = noteStileField.getText();
+                String noteStile = noteStileField.getText().isEmpty() ? "-" : noteStileField.getText();
+
                 short scoreContenuto = scoreContenutoSpinner.getValue().shortValue();
-                String noteContenuto = noteContenutoField.getText();
+                String noteContenuto = noteContenutoField.getText().isEmpty() ? "-" : noteContenutoField.getText();
+
                 short scoreGradevolezza = scoreGradevolezzaSpinner.getValue().shortValue();
-                String noteGradevolezza = noteGradevolezzaField.getText();
+                String noteGradevolezza = noteGradevolezzaField.getText().isEmpty() ? "-" : noteGradevolezzaField.getText();
+
                 short scoreOriginalita = scoreOriginalitaSpinner.getValue().shortValue();
-                String noteOriginalita = noteOriginalitaField.getText();
+                String noteOriginalita = noteOriginalitaField.getText().isEmpty() ? "-" : noteOriginalitaField.getText();
+
                 short scoreEdizione = scoreEdizioneSpinner.getValue().shortValue();
-                String noteEdizione = noteEdizioneField.getText();
+                String noteEdizione = noteEdizioneField.getText().isEmpty() ? "-" : noteEdizioneField.getText();
+
 
                 // Crea un oggetto Valutazione temporaneo (con ID se aggiornamento)
                 return new Valutazione(
