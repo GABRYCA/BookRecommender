@@ -3937,10 +3937,27 @@ public class ClientController implements Initializable {
             mostraFormValutazioneLibro(libro, dialogStage);
         });
 
-        // Pulsante "Suggerisci Libro Correlato"
-        Button suggestButton = new Button("💡 Suggerisci Libro");
+        // Pulsante "Suggerisci Libro Correlato" - Rinominato in "Consiglia Libro" (spero non sia un grosso problema)
+        Button suggestButton = new Button("💡 Consiglia Libro");
         suggestButton.getStyleClass().add("action-button");
         suggestButton.setOnAction(event -> mostraDialogoSuggerisciLibro(libro));
+
+        // Controllo quanti libri sono già stati consigliati, se ho già consigliato 3 libri, disabilito il pulsante
+        try {
+            List<Consiglio> consigli = client.visualizzaMieiConsigli();
+            // Filtra per il libro corrente
+            long conteggioConsigli = consigli.stream()
+                    .filter(c -> c.libroRiferimentoID() == libro.libroId())
+                    .count();
+            if (conteggioConsigli >= 3) {
+                suggestButton.setDisable(true);
+                suggestButton.setText("💡 Consiglia Libro (Limite raggiunto)");
+                suggestButton.setTooltip(new Tooltip("Hai già consigliato 3 libri per questo libro."));
+            }
+        } catch (IOException e) {
+            mostraMessaggioErrore("Errore nel caricamento dei consigli: " + e.getMessage());
+            return section;
+        }
 
         actionsBox.getChildren().addAll(addToLibraryButton, rateBookButton, suggestButton);
         section.getChildren().add(actionsBox);
@@ -4260,7 +4277,7 @@ public class ClientController implements Initializable {
                 if (libriDisponibili.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Nessun Libro Disponibile");
-                    alert.setHeaderText("Non ci sono libri disponibili per i suggerimenti");
+                    alert.setHeaderText("Non ci sono libri disponibili per i consigli");
                     alert.setContentText("Aggiungi libri alle tue librerie per poter suggerire libri correlati.");
                     alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
                     alert.showAndWait();
@@ -4290,8 +4307,8 @@ public class ClientController implements Initializable {
                 .collect(java.util.stream.Collectors.toList());
 
         ChoiceDialog<LibroDisplay> dialog = new ChoiceDialog<>(libriDisplay.get(0), libriDisplay);
-        dialog.setTitle("Suggerisci Libro Correlato");
-        dialog.setHeaderText("Suggerisci un libro correlato a \"" + libroRiferimento.titolo() + "\"");
+        dialog.setTitle("Consiglia Libro Correlato");
+        dialog.setHeaderText("Consiglia un libro correlato a \"" + libroRiferimento.titolo() + "\"");
         dialog.setContentText("Scegli un libro dalle tue librerie:");
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
@@ -4309,9 +4326,10 @@ public class ClientController implements Initializable {
                 protected void succeeded() {
                     Integer consiglioId = getValue();
                     if (consiglioId > 0) {
-                        stampaConAnimazione("Suggerimento \"" + libroSelezionato.titolo() + "\" salvato con successo per \"" + libroRiferimento.titolo() + "\".");
+                        // Chiudo tutti i dialogi aperti
+                        mostraMessaggioSuccesso("Consiglio salvato con successo! ID Consiglio: " + consiglioId);
                     } else {
-                        stampaConAnimazione("Errore nel salvataggio del suggerimento (potrebbe già esistere).");
+                        mostraMessaggioErrore("Impossibile salvare il consiglio. Il libro potrebbe essere già stato consigliato oppure hai raggiunto il limite.");
                     }
                 }
 
