@@ -176,17 +176,17 @@ public class ClientController implements Initializable {
         client = new ClientOperazioni("localhost", 8080);
 
 
-        HBox.setMargin(creaLibreriaBtn, new Insets(20,0,20,0));
-        HBox.setMargin(rinominaLibreriaBtn, new Insets(20,0,20,0));
-        HBox.setMargin(EliminaLibreriaBtn, new Insets(20,0,20,0));
-        HBox.setMargin(aggiornaLibrerieBtn, new Insets(20,0,20,0));
-        HBox.setMargin(valutaLibroBtn, new Insets(20,0,20,0));
-        HBox.setMargin(mieValutazioniBtn, new Insets(20,0,20,0));
-        HBox.setMargin(libroIDValutazioniField, new Insets(20,0,20,0));
-        HBox.setMargin(cercaValutazioniBtn, new Insets(20,0,20,0));
-        HBox.setMargin(generaConsigliBtn, new Insets(20,0,20,0));
-        HBox.setMargin(mieiConsigliBtn, new Insets(20,0,20,0));
-        HBox.setMargin(salvaConsiglioBtn, new Insets(20,0,20,0));
+        HBox.setMargin(creaLibreriaBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(rinominaLibreriaBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(EliminaLibreriaBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(aggiornaLibrerieBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(valutaLibroBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(mieValutazioniBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(libroIDValutazioniField, new Insets(20, 0, 20, 0));
+        HBox.setMargin(cercaValutazioniBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(generaConsigliBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(mieiConsigliBtn, new Insets(20, 0, 20, 0));
+        HBox.setMargin(salvaConsiglioBtn, new Insets(20, 0, 20, 0));
 
 
         output.getStyleClass().add("terminal-textarea");
@@ -1363,81 +1363,81 @@ public class ClientController implements Initializable {
         noteSection.getChildren().add(noteTitle);
 
 
-            // Aggiungi note per ogni categoria se non nulle, non vuote e non composte solo da spazi
-            if (valutazione.noteStile() != null && !valutazione.noteStile().trim().isEmpty()) {
-                VBox notaBox = new VBox(4);
-                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+        // Aggiungi note per ogni categoria se non nulle, non vuote e non composte solo da spazi
+        if (valutazione.noteStile() != null && !valutazione.noteStile().trim().isEmpty()) {
+            VBox notaBox = new VBox(4);
+            notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
-                Label categoriaLabel = new Label("Stile:");
-                categoriaLabel.getStyleClass().add("note-category");
+            Label categoriaLabel = new Label("Stile:");
+            categoriaLabel.getStyleClass().add("note-category");
 
-                Label noteText = new Label(valutazione.noteStile());
-                noteText.getStyleClass().add("note-text");
-                noteText.setWrapText(true);
+            Label noteText = new Label(valutazione.noteStile());
+            noteText.getStyleClass().add("note-text");
+            noteText.setWrapText(true);
 
-                notaBox.getChildren().addAll(categoriaLabel, noteText);
-                noteContainer.getChildren().add(notaBox);
-            }
+            notaBox.getChildren().addAll(categoriaLabel, noteText);
+            noteContainer.getChildren().add(notaBox);
+        }
 
-            if (valutazione.noteContenuto() != null && !valutazione.noteContenuto().trim().isEmpty()) {
-                VBox notaBox = new VBox(4);
-                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+        if (valutazione.noteContenuto() != null && !valutazione.noteContenuto().trim().isEmpty()) {
+            VBox notaBox = new VBox(4);
+            notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
-                Label categoriaLabel = new Label("Contenuto:");
-                categoriaLabel.getStyleClass().add("note-category");
+            Label categoriaLabel = new Label("Contenuto:");
+            categoriaLabel.getStyleClass().add("note-category");
 
-                Label noteText = new Label(valutazione.noteContenuto());
-                noteText.getStyleClass().add("note-text");
-                noteText.setWrapText(true);
+            Label noteText = new Label(valutazione.noteContenuto());
+            noteText.getStyleClass().add("note-text");
+            noteText.setWrapText(true);
 
-                notaBox.getChildren().addAll(categoriaLabel, noteText);
-                noteContainer.getChildren().add(notaBox);
-            }
+            notaBox.getChildren().addAll(categoriaLabel, noteText);
+            noteContainer.getChildren().add(notaBox);
+        }
 
-            if (valutazione.noteGradevolezza() != null && !valutazione.noteGradevolezza().trim().isEmpty()) {
-                VBox notaBox = new VBox(4);
-                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+        if (valutazione.noteGradevolezza() != null && !valutazione.noteGradevolezza().trim().isEmpty()) {
+            VBox notaBox = new VBox(4);
+            notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
-                Label categoriaLabel = new Label("Gradevolezza:");
-                categoriaLabel.getStyleClass().add("note-category");
+            Label categoriaLabel = new Label("Gradevolezza:");
+            categoriaLabel.getStyleClass().add("note-category");
 
-                Label noteText = new Label(valutazione.noteGradevolezza());
-                noteText.getStyleClass().add("note-text");
-                noteText.setWrapText(true);
+            Label noteText = new Label(valutazione.noteGradevolezza());
+            noteText.getStyleClass().add("note-text");
+            noteText.setWrapText(true);
 
-                notaBox.getChildren().addAll(categoriaLabel, noteText);
-                noteContainer.getChildren().add(notaBox);
-            }
+            notaBox.getChildren().addAll(categoriaLabel, noteText);
+            noteContainer.getChildren().add(notaBox);
+        }
 
-            if (valutazione.noteOriginalita() != null && !valutazione.noteOriginalita().trim().isEmpty()) {
-                VBox notaBox = new VBox(4);
-                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+        if (valutazione.noteOriginalita() != null && !valutazione.noteOriginalita().trim().isEmpty()) {
+            VBox notaBox = new VBox(4);
+            notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
-                Label categoriaLabel = new Label("Originalità:");
-                categoriaLabel.getStyleClass().add("note-category");
+            Label categoriaLabel = new Label("Originalità:");
+            categoriaLabel.getStyleClass().add("note-category");
 
-                Label noteText = new Label(valutazione.noteOriginalita());
-                noteText.getStyleClass().add("note-text");
-                noteText.setWrapText(true);
+            Label noteText = new Label(valutazione.noteOriginalita());
+            noteText.getStyleClass().add("note-text");
+            noteText.setWrapText(true);
 
-                notaBox.getChildren().addAll(categoriaLabel, noteText);
-                noteContainer.getChildren().add(notaBox);
-            }
+            notaBox.getChildren().addAll(categoriaLabel, noteText);
+            noteContainer.getChildren().add(notaBox);
+        }
 
-            if (valutazione.noteEdizione() != null && !valutazione.noteEdizione().trim().isEmpty()) {
-                VBox notaBox = new VBox(4);
-                notaBox.setStyle("-fx-padding: 0 0 8 0;");
+        if (valutazione.noteEdizione() != null && !valutazione.noteEdizione().trim().isEmpty()) {
+            VBox notaBox = new VBox(4);
+            notaBox.setStyle("-fx-padding: 0 0 8 0;");
 
-                Label categoriaLabel = new Label("Edizione:");
-                categoriaLabel.getStyleClass().add("note-category");
+            Label categoriaLabel = new Label("Edizione:");
+            categoriaLabel.getStyleClass().add("note-category");
 
-                Label noteText = new Label(valutazione.noteEdizione());
-                noteText.getStyleClass().add("note-text");
-                noteText.setWrapText(true);
+            Label noteText = new Label(valutazione.noteEdizione());
+            noteText.getStyleClass().add("note-text");
+            noteText.setWrapText(true);
 
-                notaBox.getChildren().addAll(categoriaLabel, noteText);
-                noteContainer.getChildren().add(notaBox);
-            }
+            notaBox.getChildren().addAll(categoriaLabel, noteText);
+            noteContainer.getChildren().add(notaBox);
+        }
         noteSection.getChildren().add(noteContainer);
 
         // ===== FOOTER =====
@@ -2019,7 +2019,7 @@ public class ClientController implements Initializable {
         // Aggiungi animazioni a tutti i pulsanti
         List<Button> buttons = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn,cercaCategorieBtn, profiloBtn,aggiungiLibroBtn,rimuoviLibroBtn
+                logoutBtn, cercaBtn, cercaCategorieBtn, profiloBtn, aggiungiLibroBtn, rimuoviLibroBtn
         );
 
         for (Button button : buttons) {
@@ -2585,7 +2585,7 @@ public class ClientController implements Initializable {
 
     /**
      * Cerca libri per autore e anno di pubblicazione.
-     * */
+     */
     @FXML
     private void cercaLibriPerAutoreEAnno() {
         String autore = autoreField.getText().trim();
@@ -3192,8 +3192,8 @@ public class ClientController implements Initializable {
         // Crea una lista di controlli che cambieranno stato
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
-                logoutBtn, cercaBtn, cercaCategorieBtn,categoryComboBox,
-                searchField,profiloBtn,
+                logoutBtn, cercaBtn, cercaCategorieBtn, categoryComboBox,
+                searchField, profiloBtn,
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 generaConsigliBtn, mieiConsigliBtn, salvaConsiglioBtn, libroIDConsigliField
@@ -3211,9 +3211,9 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected;
             } else if (control == loginBtn || control == registratiBtn) {
                 newDisabled = !isConnected || isLoggedIn;
-            } else if (control == logoutBtn || control == profiloBtn ) {
+            } else if (control == logoutBtn || control == profiloBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
-            } else if (control == cercaBtn || control == searchField || control == cercaCategorieBtn || control== categoryComboBox) {
+            } else if (control == cercaBtn || control == searchField || control == cercaCategorieBtn || control == categoryComboBox) {
                 newDisabled = !isConnected;
             } else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {
@@ -4326,10 +4326,13 @@ public class ClientController implements Initializable {
                 protected void succeeded() {
                     Integer consiglioId = getValue();
                     if (consiglioId > 0) {
-                        // Chiudo tutti i dialogi aperti
-                        mostraMessaggioSuccesso("Consiglio salvato con successo! ID Consiglio: " + consiglioId);
+                        Platform.runLater(() -> {
+                            mostraMessaggioSuccesso("Consiglio salvato con successo! ID Consiglio: " + consiglioId);
+                        });
                     } else {
-                        mostraMessaggioErrore("Impossibile salvare il consiglio. Il libro potrebbe essere già stato consigliato oppure hai raggiunto il limite.");
+                        Platform.runLater(() -> {
+                            mostraMessaggioErrore("Impossibile salvare il consiglio. Il libro potrebbe essere già stato consigliato oppure hai raggiunto il limite.");
+                        });
                     }
                 }
 
