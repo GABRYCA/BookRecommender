@@ -1746,6 +1746,27 @@ public class ClientController implements Initializable {
 
         result.ifPresent(pair -> {
             try {
+
+                // Massimo 3 consigli per lo stesso libro
+                List<Consiglio> consigli = client.visualizzaMieiConsigli();
+                if (!consigli.isEmpty()) {
+                    long count = consigli.stream()
+                            .filter(c -> c.libroRiferimentoID() == pair.getKey())
+                            .count();
+
+                    if (count >= 3) {
+                        // Alert per errore di formato
+                        Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
+                        alertFormatError.setTitle("Errore");
+                        alertFormatError.setHeaderText("Limite di consigli raggiunto");
+                        alertFormatError.setContentText("Non puoi avere più di 3 consigli per lo stesso libro.");
+                        alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                        alertFormatError.getDialogPane().getStyleClass().add("error-dialog");
+                        alertFormatError.showAndWait();
+                        return;
+                    }
+                }
+
                 int consiglioID = client.salvaConsiglio(pair.getKey(), pair.getValue());
 
                 if (consiglioID > 0) {
@@ -1763,7 +1784,7 @@ public class ClientController implements Initializable {
                     // Alert per errore di formato
                     Alert alertFormatError = new Alert(Alert.AlertType.ERROR);
                     alertFormatError.setTitle("Errore");
-                    alertFormatError.setHeaderText("Il consiglio non è stata salvata");
+                    alertFormatError.setHeaderText("Il consiglio non è stata salvato");
                     alertFormatError.setContentText("Il consiglio con ID: " + consiglioID + " non è stato salvato");
                     alertFormatError.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
                     alertFormatError.getDialogPane().getStyleClass().add("error-dialog");

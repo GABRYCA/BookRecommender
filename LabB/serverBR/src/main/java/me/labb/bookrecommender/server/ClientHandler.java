@@ -1201,6 +1201,16 @@ public class ClientHandler implements Runnable {
             if (libroDAO.getLibroById(libroRiferimentoID).isEmpty() || libroDAO.getLibroById(libroSuggeritoID).isEmpty()) {
                 return ResponseFormatter.erroreJson("Uno o entrambi i libri specificati non esistono.");
             }
+            // Verifico se il libro ha già più di 3 consigli dallo stesso utente
+            // Prendo i miei consigli e conto
+            List<Consiglio> mieiConsigli = consiglioDAO.getConsigliUtente(utenteAutenticato.userID());
+            long conteggioConsigli = mieiConsigli.stream()
+                    .filter(c -> c.libroRiferimentoID() == libroRiferimentoID)
+                    .count();
+            if (conteggioConsigli >= 3) {
+                return ResponseFormatter.erroreJson("Hai raggiunto il numero massimo di consigli per questo libro.");
+            }
+
 
             int consiglioID = consiglioDAO.salvaConsiglio(utenteAutenticato.userID(), libroRiferimentoID, libroSuggeritoID);
             return ResponseFormatter.successoJson("Consiglio salvato con successo.", ResponseFormatter.singletonMap("consiglioID", consiglioID));
