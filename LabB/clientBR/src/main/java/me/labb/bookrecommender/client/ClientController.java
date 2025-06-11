@@ -3935,12 +3935,10 @@ public class ClientController implements Initializable {
         rateBookButton.getStyleClass().add("action-button");
         rateBookButton.setOnAction(event -> {
             mostraFormValutazioneLibro(libro, dialogStage);
-        });
-
-        // Pulsante "Suggerisci Libro Correlato" - Rinominato in "Consiglia Libro" (spero non sia un grosso problema)
+        });        // Pulsante "Suggerisci Libro Correlato" - Rinominato in "Consiglia Libro" (spero non sia un grosso problema)
         Button suggestButton = new Button("💡 Consiglia Libro");
         suggestButton.getStyleClass().add("action-button");
-        suggestButton.setOnAction(event -> mostraDialogoSuggerisciLibro(libro));
+        suggestButton.setOnAction(event -> mostraDialogoSuggerisciLibro(libro, dialogStage));
 
         // Controllo quanti libri sono già stati consigliati, se ho già consigliato 3 libri, disabilito il pulsante
         try {
@@ -4209,7 +4207,7 @@ public class ClientController implements Initializable {
     /**
      * Mostra un dialogo per suggerire un libro correlato.
      */
-    private void mostraDialogoSuggerisciLibro(Libro libroRiferimento) {
+    private void mostraDialogoSuggerisciLibro(Libro libroRiferimento, Stage detailsStage) {
         // Prima carica tutte le librerie dell'utente
         Task<List<Libreria>> loadLibrariesTask = new Task<>() {
             @Override
@@ -4229,10 +4227,8 @@ public class ClientController implements Initializable {
                     alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
                     alert.showAndWait();
                     return;
-                }
-
-                // Carica tutti i libri dalle librerie dell'utente
-                caricaLibriDaLibrerie(librerie, libroRiferimento);
+                }                // Carica tutti i libri dalle librerie dell'utente
+                caricaLibriDaLibrerie(librerie, libroRiferimento, detailsStage);
             }
 
             @Override
@@ -4247,7 +4243,7 @@ public class ClientController implements Initializable {
     /**
      * Carica tutti i libri dalle librerie dell'utente per la selezione.
      */
-    private void caricaLibriDaLibrerie(List<Libreria> librerie, Libro libroRiferimento) {
+    private void caricaLibriDaLibrerie(List<Libreria> librerie, Libro libroRiferimento, Stage detailsStage) {
         Task<List<Libro>> loadBooksTask = new Task<>() {
             @Override
             protected List<Libro> call() throws Exception {
@@ -4282,10 +4278,8 @@ public class ClientController implements Initializable {
                     alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
                     alert.showAndWait();
                     return;
-                }
-
-                // Mostra il dialogo di selezione del libro
-                mostraDialogoSelezioneLibro(libriDisponibili, libroRiferimento);
+                }                // Mostra il dialogo di selezione del libro
+                mostraDialogoSelezioneLibro(libriDisponibili, libroRiferimento, detailsStage);
             }
 
             @Override
@@ -4300,7 +4294,7 @@ public class ClientController implements Initializable {
     /**
      * Mostra il dialogo per selezionare un libro da suggerire.
      */
-    private void mostraDialogoSelezioneLibro(List<Libro> libriDisponibili, Libro libroRiferimento) {
+    private void mostraDialogoSelezioneLibro(List<Libro> libriDisponibili, Libro libroRiferimento, Stage detailsStage) {
         // Crea wrapper per display migliorato
         List<LibroDisplay> libriDisplay = libriDisponibili.stream()
                 .map(LibroDisplay::new)
@@ -4328,6 +4322,11 @@ public class ClientController implements Initializable {
                     if (consiglioId > 0) {
                         Platform.runLater(() -> {
                             mostraMessaggioSuccesso("Consiglio salvato con successo! ID Consiglio: " + consiglioId);
+                            // Chiudi la finestra dei dettagli corrente e riaprila con i dati aggiornati
+                            if (detailsStage != null) {
+                                detailsStage.close();
+                                mostraDettagliLibro(libroRiferimento);
+                            }
                         });
                     } else {
                         Platform.runLater(() -> {
