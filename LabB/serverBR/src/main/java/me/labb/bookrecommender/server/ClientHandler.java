@@ -110,6 +110,12 @@ public class ClientHandler implements Runnable {
                 return getCategorie();
             case "CERCA_PER_CATEGORIA":
                 return gestisciCercaPerCategoria(parametri);
+            case "CERCA_PER_AUTORE":
+                return cercaPerAutore(parametri);
+            case "CERCA_PER_ANNO":
+                return cercaPerAnno(parametri);
+            case "CERCA_PER_AUTORE_E_ANNO":
+                return cercaPerAutoreEAnno(parametri);
             case "HELP":
                 return getComandi();
             case "LOGIN":
@@ -167,6 +173,123 @@ public class ClientHandler implements Runnable {
         }
 
         return ResponseFormatter.erroreJson("Comando non riconosciuto. Digita HELP per la lista dei comandi.");
+    }
+
+    private String cercaPerAnno(String parametri) {
+        if (parametri.isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica un anno per la ricerca.");
+        }
+        try (Connection conn = dbManager.getConnection()) {
+            String sql = """
+                    SELECT "LibroID", "Titolo", "Autori", "Categoria", "Prezzo"
+                    FROM "Libri"
+                    WHERE "AnnoPubblicazione" = ?
+                    LIMIT 10
+                    """;
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, Integer.parseInt(parametri));
+                try (ResultSet rs = stmt.executeQuery()) {
+                    List<Map<String, Object>> libri = new ArrayList<>();
+                    while (rs.next()) {
+                        Map<String, Object> libro = new HashMap<>();
+                        libro.put("id", rs.getInt("LibroID"));
+                        libro.put("titolo", rs.getString("Titolo"));
+                        libro.put("autori", rs.getString("Autori"));
+                        libro.put("categoria", rs.getString("Categoria"));
+                        libro.put("prezzo", rs.getFloat("Prezzo"));
+                        libri.add(libro);
+                    }
+                    if (libri.isEmpty()) {
+                        return ResponseFormatter.erroreJson("Nessun libro trovato per l'anno: " + parametri);
+                    }
+                    return ResponseFormatter.successoJson("Trovati " + libri.size() + " libri per l'anno: " + parametri, ResponseFormatter.singletonMap("libri", libri));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante la ricerca dei libri per anno: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
+        }
+    }
+
+    private String cercaPerAutoreEAnno(String parametri) {
+        if (parametri.isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica un autore e un anno per la ricerca.");
+        }
+        String[] parts = parametri.split("\\s+");
+        if (parts.length < 2) {
+            return ResponseFormatter.erroreJson("Formato non valido. Usa: AUTORE ANNO");
+        }
+        String autore = parts[0];
+        int anno = Integer.parseInt(parts[1]); // Da testare
+
+        try (Connection conn = dbManager.getConnection()) {
+            String sql = """
+                    SELECT "LibroID", "Titolo", "Autori", "Categoria", "Prezzo"
+                    FROM "Libri"
+                    WHERE "Autori" ILIKE ? AND "AnnoPubblicazione" = ?
+                    LIMIT 10
+                    """;
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, "%" + autore + "%");
+                stmt.setInt(2, anno);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    List<Map<String, Object>> libri = new ArrayList<>();
+                    while (rs.next()) {
+                        Map<String, Object> libro = new HashMap<>();
+                        libro.put("id", rs.getInt("LibroID"));
+                        libro.put("titolo", rs.getString("Titolo"));
+                        libro.put("autori", rs.getString("Autori"));
+                        libro.put("categoria", rs.getString("Categoria"));
+                        libro.put("prezzo", rs.getFloat("Prezzo"));
+                        libri.add(libro);
+                    }
+                    if (libri.isEmpty()) {
+                        return ResponseFormatter.erroreJson("Nessun libro trovato per l'autore: " + autore + " e l'anno: " + anno);
+                    }
+                    return ResponseFormatter.successoJson("Trovati " + libri.size() + " libri per l'autore: " + autore + " e l'anno: " + anno, ResponseFormatter.singletonMap("libri", libri));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante la ricerca dei libri per autore e anno: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
+        }
+    }
+
+    private String cercaPerAutore(String parametri) {
+        if (parametri.isEmpty()) {
+            return ResponseFormatter.erroreJson("Specifica un autore per la ricerca.");
+        }
+        try (Connection conn = dbManager.getConnection()) {
+            String sql = """
+                    SELECT "LibroID", "Titolo", "Autori", "Categoria", "Prezzo"
+                    FROM "Libri"
+                    WHERE "Autori" ILIKE ?
+                    LIMIT 10
+                    """;
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                String termine = "%" + parametri + "%";
+                stmt.setString(1, termine);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    List<Map<String, Object>> libri = new ArrayList<>();
+                    while (rs.next()) {
+                        Map<String, Object> libro = new HashMap<>();
+                        libro.put("id", rs.getInt("LibroID"));
+                        libro.put("titolo", rs.getString("Titolo"));
+                        libro.put("autori", rs.getString("Autori"));
+                        libro.put("categoria", rs.getString("Categoria"));
+                        libro.put("prezzo", rs.getFloat("Prezzo"));
+                        libri.add(libro);
+                    }
+                    if (libri.isEmpty()) {
+                        return ResponseFormatter.erroreJson("Nessun libro trovato per l'autore: " + parametri);
+                    }
+                    return ResponseFormatter.successoJson("Trovati " + libri.size() + " libri per l'autore: " + parametri, ResponseFormatter.singletonMap("libri", libri));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante la ricerca dei libri per autore: " + e.getMessage());
+            return ResponseFormatter.erroreJson("Errore durante la ricerca. Riprova più tardi.");
+        }
     }
 
     /**
@@ -508,6 +631,9 @@ public class ClientHandler implements Runnable {
         comandiGenerali.add(createCommandInfo("DETTAGLI_LIBRO", "Ottieni i dettagli completi di un libro specifico", "<libroID>"));
         comandiGenerali.add(createCommandInfo("CATEGORIE", "Ottieni la lista completa di tutte le categorie di libri disponibili", ""));
         comandiGenerali.add(createCommandInfo("CERCA_PER_CATEGORIA", "Cerca libri con una specifica categoria", "<categoria>"));
+        comandiGenerali.add(createCommandInfo("CERCA_PER_AUTORE", "Cerca libri di un autore specifico", "<autore>"));
+        comandiGenerali.add(createCommandInfo("CERCA_PER_ANNO", "Cerca libri pubblicati in un anno specifico", "<anno>"));
+        comandiGenerali.add(createCommandInfo("CERCA_PER_AUTORE_E_ANNO", "Cerca libri di un autore specifico pubblicati in un anno specifico", "<autore> <anno>"));
         comandiGenerali.add(createCommandInfo("FORMAT", "Imposta il formato di risposta (TEXT o JSON)", "<formato>"));
         comandiGenerali.add(createCommandInfo("HELP", "Mostra questa lista di comandi", ""));
         comandiGenerali.add(createCommandInfo("EXIT", "Chiudi la connessione", ""));
