@@ -3940,22 +3940,33 @@ public class ClientController implements Initializable {
         suggestButton.getStyleClass().add("action-button");
         suggestButton.setOnAction(event -> mostraDialogoSuggerisciLibro(libro, dialogStage));
 
-        // Controllo quanti libri sono già stati consigliati, se ho già consigliato 3 libri, disabilito il pulsante
-        try {
-            List<Consiglio> consigli = client.visualizzaMieiConsigli();
-            // Filtra per il libro corrente
-            long conteggioConsigli = consigli.stream()
-                    .filter(c -> c.libroRiferimentoID() == libro.libroId())
-                    .count();
-            if (conteggioConsigli >= 3) {
-                suggestButton.setDisable(true);
-                suggestButton.setText("💡 Consiglia Libro (Limite raggiunto)");
-                suggestButton.setTooltip(new Tooltip("Hai già consigliato 3 libri per questo libro."));
+        Task<Long> checkSuggestionsTask = new Task<>() {
+            @Override
+            protected Long call() throws Exception {
+                List<Consiglio> consigli = client.visualizzaMieiConsigli();
+                // Filtra per il libro corrente
+                return consigli.stream()
+                        .filter(c -> c.libroRiferimentoID() == libro.libroId())
+                        .count();
             }
-        } catch (IOException e) {
-            mostraMessaggioErrore("Errore nel caricamento dei consigli: " + e.getMessage());
-            return section;
-        }
+
+            @Override
+            protected void succeeded() {
+                long conteggioConsigli = getValue();
+                if (conteggioConsigli >= 3) {
+                    suggestButton.setDisable(true);
+                    suggestButton.setText("💡 Consiglia Libro (Limite raggiunto)");
+                    suggestButton.setTooltip(new Tooltip("Hai già consigliato 3 libri per questo libro."));
+                }
+            }
+
+            @Override
+            protected void failed() {
+                System.err.println("Errore nel controllo dei consigli: " + getException().getMessage());
+            }
+        };
+
+        new Thread(checkSuggestionsTask).start();
 
         actionsBox.getChildren().addAll(addToLibraryButton, rateBookButton, suggestButton);
         section.getChildren().add(actionsBox);
