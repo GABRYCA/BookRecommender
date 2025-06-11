@@ -56,6 +56,12 @@ public class ClientController implements Initializable {
     @FXML
     private Button cercaCategorieBtn;
     @FXML
+    private Button cercaAutoreBtn;
+    @FXML
+    private Button cercaAnnoBtn;
+    @FXML
+    private Button cercaAutoreAnnoBtn;
+    @FXML
     private ComboBox<String> categoryComboBox;
     @FXML
     private Button profiloBtn;
@@ -64,11 +70,17 @@ public class ClientController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
+    private TextField autoreField;
+    @FXML
+    private TextField annoField;
+    @FXML
     private VBox resultContainer;
     @FXML
     private Label resultLabel;
     @FXML
-    private TabPane mainTabPane;    // Componenti per la gestione delle librerie
+    private TabPane mainTabPane;
+
+    // Componenti per la gestione delle librerie
     @FXML
     private Button creaLibreriaBtn;
     @FXML
@@ -2342,7 +2354,6 @@ public class ClientController implements Initializable {
             alert.setTitle("Categoria non selezionata");
             alert.setHeaderText("Nessuna categoria selezionata");
             alert.setContentText("Seleziona una categoria dalla lista.");
-            // Aggiungi la classe CSS all'Alert
             alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             alert.getDialogPane().getStyleClass().add("registration-alert");
             animaDialogo(alert);
@@ -2402,6 +2413,241 @@ public class ClientController implements Initializable {
                 alert.getDialogPane().getStyleClass().add("registration-alert");
                 animaDialogo(alert);
                 alert.showAndWait();
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    /**
+     * Cerca libri per autore
+     */
+    @FXML
+    private void cercaLibriPerAutore() {
+        String autore = autoreField.getText().trim();
+
+        if (autore.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campo vuoto");
+            alert.setHeaderText("Nessun autore inserito");
+            alert.setContentText("Inserisci un autore da cercare.");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        resultLabel.setText("Ricerca in corso...");
+        resultContainer.getChildren().clear();
+
+        // Animazione di ricerca
+        FadeTransition fade = new FadeTransition(Duration.millis(300), resultLabel);
+        fade.setFromValue(0.5);
+        fade.setToValue(1.0);
+        fade.setCycleCount(Animation.INDEFINITE);
+        fade.setAutoReverse(true);
+        fade.play();
+
+        Task<List<Libro>> task = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                return client.cercaLibriPerAutore(autore).stream().toList();
+            }
+
+            @Override
+            protected void succeeded() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+
+                List<Libro> libri = getValue();
+                if (libri.isEmpty()) {
+                    stampaConAnimazione("Nessun libro trovato per l'autore: \"" + autore + "\"");
+                    resultLabel.setText("Nessun risultato trovato");
+                } else {
+                    stampaConAnimazione("📚 Trovati " + libri.size() + " libri per l'autore \"" + autore + "\"");
+                    resultLabel.setText("Libri trovati (" + libri.size() + ")");
+                    mostraRisultati(libri);
+                }
+            }
+
+            @Override
+            protected void failed() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+                stampaConAnimazione("Errore durante la ricerca per autore: " + getException().getMessage());
+                resultLabel.setText("Errore nella ricerca");
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    /**
+     * Cerca libri per anno di pubblicazione.
+     */
+    @FXML
+    private void cercaLibriPerAnno() {
+        String anno = annoField.getText().trim();
+
+        if (anno.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campo vuoto");
+            alert.setHeaderText("Nessun anno inserito");
+            alert.setContentText("Inserisci un anno da cercare.");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        // Verifica che l'anno sia un numero valido
+        try {
+            Integer.parseInt(anno);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Anno non valido");
+            alert.setHeaderText("Formato anno errato");
+            alert.setContentText("Inserisci un anno valido (numero intero).");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        resultLabel.setText("Ricerca in corso...");
+        resultContainer.getChildren().clear();
+
+        // Animazione di ricerca
+        FadeTransition fade = new FadeTransition(Duration.millis(300), resultLabel);
+        fade.setFromValue(0.5);
+        fade.setToValue(1.0);
+        fade.setCycleCount(Animation.INDEFINITE);
+        fade.setAutoReverse(true);
+        fade.play();
+
+        Task<List<Libro>> task = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                return client.cercaLibriPerAnno(Integer.parseInt(anno)).stream().toList();
+            }
+
+            @Override
+            protected void succeeded() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+
+                List<Libro> libri = getValue();
+                if (libri.isEmpty()) {
+                    stampaConAnimazione("Nessun libro trovato per l'anno: \"" + anno + "\"");
+                    resultLabel.setText("Nessun risultato trovato");
+                } else {
+                    stampaConAnimazione("📚 Trovati " + libri.size() + " libri per l'anno \"" + anno + "\"");
+                    resultLabel.setText("Libri trovati (" + libri.size() + ")");
+                    mostraRisultati(libri);
+                }
+            }
+
+            @Override
+            protected void failed() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+                stampaConAnimazione("Errore durante la ricerca per anno: " + getException().getMessage());
+                resultLabel.setText("Errore nella ricerca");
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    /**
+     * Cerca libri per autore e anno di pubblicazione.
+     * */
+    @FXML
+    private void cercaLibriPerAutoreEAnno() {
+        String autore = autoreField.getText().trim();
+        String anno = annoField.getText().trim();
+
+        if (autore.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campo vuoto");
+            alert.setHeaderText("Nessun autore inserito");
+            alert.setContentText("Inserisci un autore da cercare.");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        if (anno.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campo vuoto");
+            alert.setHeaderText("Nessun anno inserito");
+            alert.setContentText("Inserisci un anno da cercare.");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        // Verifica che l'anno sia un numero valido
+        try {
+            Integer.parseInt(anno);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Anno non valido");
+            alert.setHeaderText("Formato anno errato");
+            alert.setContentText("Inserisci un anno valido (numero intero).");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            alert.getDialogPane().getStyleClass().add("registration-alert");
+            animaDialogo(alert);
+            alert.showAndWait();
+            return;
+        }
+
+        resultLabel.setText("Ricerca in corso...");
+        resultContainer.getChildren().clear();
+
+        // Animazione di ricerca
+        FadeTransition fade = new FadeTransition(Duration.millis(300), resultLabel);
+        fade.setFromValue(0.5);
+        fade.setToValue(1.0);
+        fade.setCycleCount(Animation.INDEFINITE);
+        fade.setAutoReverse(true);
+        fade.play();
+
+        Task<List<Libro>> task = new Task<>() {
+            @Override
+            protected List<Libro> call() throws Exception {
+                return client.cercaLibriPerAutoreEAnno(autore, Integer.parseInt(anno)).stream().toList();
+            }
+
+            @Override
+            protected void succeeded() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+
+                List<Libro> libri = getValue();
+                if (libri.isEmpty()) {
+                    stampaConAnimazione("Nessun libro trovato per l'autore: \"" + autore + "\"");
+                    resultLabel.setText("Nessun risultato trovato");
+                } else {
+                    stampaConAnimazione("📚 Trovati " + libri.size() + " libri per l'autore \"" + autore + "\"");
+                    resultLabel.setText("Libri trovati (" + libri.size() + ")");
+                    mostraRisultati(libri);
+                }
+            }
+
+            @Override
+            protected void failed() {
+                fade.stop();
+                resultLabel.setOpacity(1.0);
+                stampaConAnimazione("Errore durante la ricerca per autore e anno: " + getException().getMessage());
+                resultLabel.setText("Errore nella ricerca");
             }
         };
 

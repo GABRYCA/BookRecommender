@@ -10,30 +10,35 @@
     <top>
         <VBox spacing="15" styleClass="header-section">
             <padding>
-                <Insets bottom="15" left="20" right="20" top="20" />
+                <Insets bottom="15" left="20" right="20" top="20"/>
             </padding>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <!-- Spazio flessibile sinistro -->
-                <Region HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS"/>
 
                 <!-- Titolo centrato dinamicamente -->
-                <Label styleClass="app-title" text="📚 Book Recommender" />
+                <Label styleClass="app-title" text="📚 Book Recommender"/>
 
                 <!-- Spazio flessibile destro -->
-                <Region HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS"/>
 
                 <!-- Elemento a destra (es. stato connessione) -->
-                <Label fx:id="statusLabel" styleClass="status-label" text="Non connesso" />
+                <Label fx:id="statusLabel" styleClass="status-label" text="Non connesso"/>
             </HBox>
 
             <HBox alignment="CENTER" spacing="10" styleClass="button-bar">
-                <Button fx:id="connettiBtn" mnemonicParsing="false" onAction="#connetti" styleClass="action-button" text="Connetti" />
-                <Button fx:id="disconnettiBtn" mnemonicParsing="false" onAction="#disconnetti" styleClass="action-button" text="Disconnetti" />
-                <Separator orientation="VERTICAL" />
-                <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#login" styleClass="action-button" text="Login" />
-                <Button fx:id="registratiBtn" mnemonicParsing="false" onAction="#registrati" styleClass="action-button" text="Registrati" />
-                <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logout" styleClass="action-button" text="Logout" />
+                <Button fx:id="connettiBtn" mnemonicParsing="false" onAction="#connetti" styleClass="action-button"
+                        text="Connetti"/>
+                <Button fx:id="disconnettiBtn" mnemonicParsing="false" onAction="#disconnetti"
+                        styleClass="action-button" text="Disconnetti"/>
+                <Separator orientation="VERTICAL"/>
+                <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#login" styleClass="action-button"
+                        text="Login"/>
+                <Button fx:id="registratiBtn" mnemonicParsing="false" onAction="#registrati" styleClass="action-button"
+                        text="Registrati"/>
+                <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logout" styleClass="action-button"
+                        text="Logout"/>
             </HBox>
         </VBox>
     </top>
@@ -41,30 +46,52 @@
     <center>
         <VBox spacing="15" styleClass="content-section">
             <padding>
-                <Insets bottom="10" left="20" right="20" top="10" />
+                <Insets bottom="10" left="20" right="20" top="10"/>
             </padding>
+            <!-- Sezione di ricerca principale -->
+            <VBox spacing="10" styleClass="search-section">
+                <!-- Prima riga: ricerca generale -->
+                <HBox alignment="CENTER_LEFT" spacing="10" prefWidth="600">
+                    <Region HBox.hgrow="ALWAYS"/>
 
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-section" prefWidth="600">
-                <Region HBox.hgrow="ALWAYS" />
+                    <HBox alignment="CENTER" spacing="5" style="-fx-translate-x: 50;">
+                        <TextField fx:id="searchField" promptText="Cerca libri..." prefWidth="400"/>
+                        <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri"
+                                styleClass="search-button" text="🔍"/>
+                        <ComboBox fx:id="categoryComboBox" prefWidth="150" promptText="Categoria..."/>
+                        <Button fx:id="cercaCategorieBtn" mnemonicParsing="false" onAction="#cercaLibriPerCategoria"
+                                styleClass="search-button" text="filtra"/>
+                    </HBox>
 
-                <HBox alignment="CENTER" spacing="5" style="-fx-translate-x: 50;">
-                    <TextField fx:id="searchField" promptText="Cerca libri..." prefWidth="500" />
-                    <Button fx:id="cercaBtn" mnemonicParsing="false" onAction="#cercaLibri" styleClass="search-button" text="🔍" />
-                    <ComboBox fx:id="categoryComboBox" prefWidth="180" promptText="Seleziona categoria..."/>
-                    <Button fx:id="cercaCategorieBtn" mnemonicParsing="false" onAction="#cercaLibriPerCategoria" styleClass="search-button" text="filtra" />
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo"
+                            styleClass="profile-button" text="Profilo"/>
                 </HBox>
 
-                <Region HBox.hgrow="ALWAYS" />
+                <!-- Seconda riga: filtri avanzati -->
+                <HBox alignment="CENTER" spacing="10" styleClass="advanced-search">
+                    <Label text="Filtri avanzati:" styleClass="filter-label"/>
 
-                <Button fx:id="profiloBtn" mnemonicParsing="false" onAction="#visualizzaProfilo" styleClass="profile-button" text="Profilo" />
-            </HBox>
+                    <TextField fx:id="autoreField" promptText="Autore..." prefWidth="150"/>
+                    <Button fx:id="cercaAutoreBtn" mnemonicParsing="false" onAction="#cercaLibriPerAutore"
+                            styleClass="filter-button" text="Cerca per autore"/>
+
+                    <TextField fx:id="annoField" promptText="Anno..." prefWidth="80"/>
+                    <Button fx:id="cercaAnnoBtn" mnemonicParsing="false" onAction="#cercaLibriPerAnno"
+                            styleClass="filter-button" text="Cerca per anno"/>
+
+                    <Button fx:id="cercaAutoreAnnoBtn" mnemonicParsing="false" onAction="#cercaLibriPerAutoreEAnno"
+                            styleClass="filter-button" text="Autore + Anno"/>
+                </HBox>
+            </VBox>
 
             <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="tabs-container">
                 <Tab text="Risultati" closable="false">
                     <VBox spacing="10">
-                        <Label fx:id="resultLabel" styleClass="section-title" text="" />
+                        <Label fx:id="resultLabel" styleClass="section-title" text=""/>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="resultContainer" spacing="20" styleClass="result-container" />
+                            <VBox fx:id="resultContainer" spacing="20" styleClass="result-container"/>
                         </ScrollPane>
                     </VBox>
                 </Tab>
@@ -72,32 +99,38 @@
                 <!-- Scheda per le Librerie -->
                 <Tab text="Le Mie Librerie" closable="false">
                     <VBox spacing="10">
-                        <HBox spacing="10" alignment="CENTER" >
-                            <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria" styleClass="profile-button" />
-                            <Button fx:id="rinominaLibreriaBtn" text="Rinomina Libreria" onAction="#rinominaLibreria" styleClass="profile-button" />
-                            <Button fx:id="EliminaLibreriaBtn" text="Elimina Libreria" onAction="#EliminaLibreria" styleClass="profile-button" />
-                            <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie" styleClass="profile-button" />
+                        <HBox spacing="10" alignment="CENTER">
+                            <Button fx:id="creaLibreriaBtn" text="Crea Nuova Libreria" onAction="#creaLibreria"
+                                    styleClass="profile-button"/>
+                            <Button fx:id="rinominaLibreriaBtn" text="Rinomina Libreria" onAction="#rinominaLibreria"
+                                    styleClass="profile-button"/>
+                            <Button fx:id="EliminaLibreriaBtn" text="Elimina Libreria" onAction="#EliminaLibreria"
+                                    styleClass="profile-button"/>
+                            <Button fx:id="aggiornaLibrerieBtn" text="Aggiorna" onAction="#aggiornaLibrerie"
+                                    styleClass="profile-button"/>
                         </HBox>
                         <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
                             <!-- Lista delle librerie -->
                             <VBox spacing="5" alignment="CENTER">
-                                <Label text="Le mie librerie" styleClass="section-title" />
-                                <ListView fx:id="librerieListView" VBox.vgrow="ALWAYS" />
+                                <Label text="Le mie librerie" styleClass="section-title"/>
+                                <ListView fx:id="librerieListView" VBox.vgrow="ALWAYS"/>
                             </VBox>
                             <!-- Contenuto della libreria selezionata -->
                             <VBox spacing="5" alignment="CENTER">
                                 <!-- HBox con testo centrato e bottoni a destra -->
-                                <HBox spacing="10" alignment="CENTER" >
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label fx:id="libreriaSelezionataLabel" text="" styleClass="section-title" />
-                                    <Region HBox.hgrow="ALWAYS" />
+                                <HBox spacing="10" alignment="CENTER">
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="libreriaSelezionataLabel" text="" styleClass="section-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
                                     <HBox spacing="10" alignment="CENTER_RIGHT">
-                                        <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro" onAction="#aggiungiLibroALibreria" styleClass="action-button" />
-                                        <Button fx:id="rimuoviLibroBtn" text="Rimuovi Libro" onAction="#rimuoviLibroDaLibreria" styleClass="action-button" />
+                                        <Button fx:id="aggiungiLibroBtn" text="Aggiungi Libro"
+                                                onAction="#aggiungiLibroALibreria" styleClass="action-button"/>
+                                        <Button fx:id="rimuoviLibroBtn" text="Rimuovi Libro"
+                                                onAction="#rimuoviLibroDaLibreria" styleClass="action-button"/>
                                     </HBox>
                                 </HBox>
                                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                                    <VBox fx:id="libreriaContentContainer" spacing="8" styleClass="result-container" />
+                                    <VBox fx:id="libreriaContentContainer" spacing="8" styleClass="result-container"/>
                                 </ScrollPane>
                             </VBox>
                         </SplitPane>
@@ -108,13 +141,16 @@
                 <Tab text="Valutazioni" closable="false">
                     <VBox spacing="10">
                         <HBox spacing="10" alignment="CENTER">
-                            <Button fx:id="valutaLibroBtn" text="Valuta un Libro" onAction="#mostraFormValutazione" styleClass="profile-button" />
-                            <Button fx:id="mieValutazioniBtn" text="Le Mie Valutazioni" onAction="#visualizzaMieValutazioni" styleClass="profile-button" />
-                            <TextField fx:id="libroIDValutazioniField" promptText="ID Libro" prefWidth="100" />
-                            <Button fx:id="cercaValutazioniBtn" text="Cerca Valutazioni" onAction="#cercaValutazioniLibro" styleClass="profile-button" />
+                            <Button fx:id="valutaLibroBtn" text="Valuta un Libro" onAction="#mostraFormValutazione"
+                                    styleClass="profile-button"/>
+                            <Button fx:id="mieValutazioniBtn" text="Le Mie Valutazioni"
+                                    onAction="#visualizzaMieValutazioni" styleClass="profile-button"/>
+                            <TextField fx:id="libroIDValutazioniField" promptText="ID Libro" prefWidth="100"/>
+                            <Button fx:id="cercaValutazioniBtn" text="Cerca Valutazioni"
+                                    onAction="#cercaValutazioniLibro" styleClass="profile-button"/>
                         </HBox>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                            <HBox fx:id="valutazioniContainer" spacing="8" styleClass="result-container" />
+                            <HBox fx:id="valutazioniContainer" spacing="8" styleClass="result-container"/>
                         </ScrollPane>
                     </VBox>
                 </Tab>
@@ -123,27 +159,31 @@
                 <Tab text="Consigli" closable="false">
                     <VBox spacing="10">
                         <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Region HBox.hgrow="ALWAYS" prefWidth="300" />
+                            <Region HBox.hgrow="ALWAYS" prefWidth="300"/>
 
                             <HBox spacing="10" alignment="CENTER">
-                                <Label text="ID Libro:" />
-                                <TextField fx:id="libroIDConsigliField" promptText="ID Libro" prefWidth="100" />
-                                <Button fx:id="generaConsigliBtn" text="Genera Consigli" onAction="#generaConsigli" styleClass="profile-button" />
-                                <Button fx:id="mieiConsigliBtn" text="I Miei Consigli" onAction="#visualizzaMieiConsigli" styleClass="profile-button" />
+                                <Label text="ID Libro:"/>
+                                <TextField fx:id="libroIDConsigliField" promptText="ID Libro" prefWidth="100"/>
+                                <Button fx:id="generaConsigliBtn" text="Genera Consigli" onAction="#generaConsigli"
+                                        styleClass="profile-button"/>
+                                <Button fx:id="mieiConsigliBtn" text="I Miei Consigli"
+                                        onAction="#visualizzaMieiConsigli" styleClass="profile-button"/>
                             </HBox>
 
-                            <Region HBox.hgrow="ALWAYS" prefWidth="150" />
+                            <Region HBox.hgrow="ALWAYS" prefWidth="150"/>
 
-                            <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio" styleClass="profile-button" />
+                            <Button fx:id="salvaConsiglioBtn" text="Salva Consiglio" onAction="#salvaConsiglio"
+                                    styleClass="profile-button"/>
                         </HBox>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="consigliContainer" spacing="8" styleClass="result-container" />
+                            <VBox fx:id="consigliContainer" spacing="8" styleClass="result-container"/>
                         </ScrollPane>
                     </VBox>
                 </Tab>
 
                 <Tab text="Console" closable="false">
-                    <TextArea fx:id="output" editable="false" wrapText="true" styleClass="console-output" VBox.vgrow="ALWAYS" />
+                    <TextArea fx:id="output" editable="false" wrapText="true" styleClass="console-output"
+                              VBox.vgrow="ALWAYS"/>
                 </Tab>
             </TabPane>
         </VBox>
@@ -152,9 +192,9 @@
     <bottom>
         <HBox styleClass="footer" alignment="CENTER_RIGHT" spacing="10">
             <padding>
-                <Insets bottom="10" left="20" right="20" top="10" />
+                <Insets bottom="10" left="20" right="20" top="10"/>
             </padding>
-            <Label styleClass="version-footer" text="Book Recommender v1.0" />
+            <Label styleClass="version-footer" text="Book Recommender v1.0"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -315,14 +315,14 @@ public class ClientOperazioni {
     }
 
     /**
-     * Ottiene consigli di libri in base a una categoria.
+     * Cerca libri per autore specifico.
      *
-     * @param categoria Categoria per cui ottenere consigli
-     * @return Lista di libri consigliati, o una lista vuota se nessun libro è stato trovato
-     * @throws IOException se si verifica un errore durante la comunicazione
+     * @param autore L'autore da cercare
+     * @return Lista di libri dell'autore specificato
+     * @throws IOException In caso di errori di comunicazione
      */
-    public List<Libro> consigliaLibri(String categoria) throws IOException {
-        String risposta = client.inviaComando("CONSIGLIA", categoria);
+    public List<Libro> cercaLibriPerAutore(String autore) throws IOException {
+        String risposta = client.inviaComando("CERCA_PER_AUTORE", autore);
 
         List<Libro> libri = new ArrayList<>();
 
@@ -332,7 +332,84 @@ public class ClientOperazioni {
                 List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("libri");
 
                 for (Map<String, Object> libroMap : libriList) {
-                    // Crea l'oggetto Libro
+                    Libro libro = new Libro(
+                            (Integer) libroMap.get("id"),
+                            (String) libroMap.get("titolo"),
+                            (String) libroMap.get("autori"),
+                            "",
+                            (String) libroMap.get("categoria"),
+                            "",
+                            ((Number) libroMap.get("prezzo")).floatValue(),
+                            "",
+                            0
+                    );
+
+                    libri.add(libro);
+                }
+            }
+        }
+
+        return libri;
+    }
+
+    /**
+     * Cerca libri per anno di pubblicazione.
+     *
+     * @param anno L'anno di pubblicazione da cercare
+     * @return Lista di libri pubblicati nell'anno specificato
+     * @throws IOException In caso di errori di comunicazione
+     */
+    public List<Libro> cercaLibriPerAnno(int anno) throws IOException {
+        String risposta = client.inviaComando("CERCA_PER_ANNO", String.valueOf(anno));
+
+        List<Libro> libri = new ArrayList<>();
+
+        if (client.isSuccesso(risposta)) {
+            Map<String, Object> dati = client.estraiDati(risposta);
+            if (dati != null && dati.containsKey("libri")) {
+                List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("libri");
+
+                for (Map<String, Object> libroMap : libriList) {
+                    Libro libro = new Libro(
+                            (Integer) libroMap.get("id"),
+                            (String) libroMap.get("titolo"),
+                            (String) libroMap.get("autori"),
+                            "",
+                            (String) libroMap.get("categoria"),
+                            "",
+                            ((Number) libroMap.get("prezzo")).floatValue(),
+                            "",
+                            0
+                    );
+
+                    libri.add(libro);
+                }
+            }
+        }
+
+        return libri;
+    }
+
+    /**
+     * Cerca libri per autore e anno insieme.
+     *
+     * @param autore L'autore da cercare
+     * @param anno L'anno di pubblicazione da cercare
+     * @return Lista di libri dell'autore specificato pubblicati nell'anno specificato
+     * @throws IOException In caso di errori di comunicazione
+     */
+    public List<Libro> cercaLibriPerAutoreEAnno(String autore, int anno) throws IOException {
+        String parametri = autore + " " + anno;
+        String risposta = client.inviaComando("CERCA_PER_AUTORE_E_ANNO", parametri);
+
+        List<Libro> libri = new ArrayList<>();
+
+        if (client.isSuccesso(risposta)) {
+            Map<String, Object> dati = client.estraiDati(risposta);
+            if (dati != null && dati.containsKey("libri")) {
+                List<Map<String, Object>> libriList = (List<Map<String, Object>>) dati.get("libri");
+
+                for (Map<String, Object> libroMap : libriList) {
                     Libro libro = new Libro(
                             (Integer) libroMap.get("id"),
                             (String) libroMap.get("titolo"),

@@ -105,6 +105,48 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
 }
 
+.advanced-search {
+    -fx-background-color: #0a1020;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+    -fx-border-color: #243356;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+}
+
+.filter-label {
+    -fx-text-fill: #8a9dc9;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.filter-button {
+    -fx-cursor: hand;
+    -fx-background-color: #2a4365;
+    -fx-background-radius: 4px;
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 11px;
+    -fx-padding: 6px 10px;
+    -fx-border-color: #3a5574;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.filter-button:hover {
+    -fx-background-color: #3a5574;
+    -fx-border-color: #4a6584;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 4, 0, 0, 2);
+}
+
+.filter-button:pressed {
+    -fx-background-color: #1a2f45;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
 .text-field {
     -fx-background-color: #1c2a48;
     -fx-background-radius: 4px;
