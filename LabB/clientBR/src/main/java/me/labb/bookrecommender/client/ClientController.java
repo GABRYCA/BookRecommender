@@ -3193,7 +3193,7 @@ public class ClientController implements Initializable {
         List<Node> controlsToUpdate = List.of(
                 connettiBtn, disconnettiBtn, loginBtn, registratiBtn,
                 logoutBtn, cercaBtn, cercaCategorieBtn, categoryComboBox,
-                searchField, profiloBtn,
+                searchField, profiloBtn,autoreField,annoField,cercaAutoreBtn,cercaAnnoBtn,cercaAutoreAnnoBtn,
                 creaLibreriaBtn, rinominaLibreriaBtn, aggiornaLibrerieBtn, aggiungiLibroBtn, rimuoviLibroBtn, EliminaLibreriaBtn,
                 valutaLibroBtn, mieValutazioniBtn, cercaValutazioniBtn, libroIDValutazioniField,
                 generaConsigliBtn, mieiConsigliBtn, salvaConsiglioBtn, libroIDConsigliField
@@ -3213,7 +3213,7 @@ public class ClientController implements Initializable {
                 newDisabled = !isConnected || isLoggedIn;
             } else if (control == logoutBtn || control == profiloBtn) {
                 newDisabled = !isConnected || !isLoggedIn;
-            } else if (control == cercaBtn || control == searchField || control == cercaCategorieBtn || control == categoryComboBox) {
+            } else if (control == cercaBtn || control == searchField || control == cercaCategorieBtn || control == categoryComboBox || control == autoreField || control == annoField || control == cercaAutoreBtn || control == cercaAnnoBtn || control == cercaAutoreAnnoBtn) {
                 newDisabled = !isConnected;
             } else if (control == creaLibreriaBtn || control == rinominaLibreriaBtn || control == aggiornaLibrerieBtn ||
                     control == aggiungiLibroBtn || control == rimuoviLibroBtn || control == EliminaLibreriaBtn) {

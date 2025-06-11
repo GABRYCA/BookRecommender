@@ -4,6 +4,11 @@
     -fx-font-size: 14px;
 }
 
+.copyright-footer {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+}
 
 
 .app-title {

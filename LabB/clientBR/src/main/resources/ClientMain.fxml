@@ -190,10 +190,12 @@
     </center>
 
     <bottom>
-        <HBox styleClass="footer" alignment="CENTER_RIGHT" spacing="10">
+        <HBox styleClass="footer" alignment="CENTER" spacing="10">
             <padding>
                 <Insets bottom="10" left="20" right="20" top="10"/>
             </padding>
+            <Label styleClass="copyright-footer" text="© 2025 Riccardo-Coder &amp; AnonymousGCA"/>
+            <Region HBox.hgrow="ALWAYS"/>
             <Label styleClass="version-footer" text="Book Recommender v1.0"/>
         </HBox>
     </bottom>
