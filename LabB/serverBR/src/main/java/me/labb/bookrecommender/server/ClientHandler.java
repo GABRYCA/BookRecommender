@@ -201,7 +201,7 @@ public class ClientHandler implements Runnable {
     /**
      * Cerca libri nel database in base ai parametri forniti.
      *
-     * @param parametri I parametri di ricerca (titolo o descrizione)
+     * @param parametri I parametri di ricerca (titolo)
      * @return Messaggio di successo o errore in formato JSON
      */
     private String cercaLibri(String parametri) {
@@ -209,11 +209,16 @@ public class ClientHandler implements Runnable {
             return ResponseFormatter.erroreJson("Specifica un termine di ricerca.");
         }
         try (Connection conn = dbManager.getConnection()) {
-            String sql = "SELECT \"LibroID\", \"Titolo\", \"Autori\", \"Categoria\", \"Prezzo\" FROM \"Libri\" WHERE \"Titolo\" ILIKE ? OR \"Descrizione\" ILIKE ? LIMIT 10";
+            String sql = """
+                    SELECT "LibroID", "Titolo", "Autori", "Categoria", "Prezzo"
+                    FROM "Libri"
+                    WHERE "Titolo" ILIKE ?
+                    LIMIT 10
+                    """;
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 String termine = "%" + parametri + "%";
                 stmt.setString(1, termine);
-                stmt.setString(2, termine);
+                //stmt.setString(2, termine);
                 try (ResultSet rs = stmt.executeQuery()) {
                     List<Map<String, Object>> libri = new ArrayList<>();
                     while (rs.next()) {
