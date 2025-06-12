@@ -13,9 +13,9 @@
 - **Main**: TBD
 
 ### Ruoli Membri:
-- Caretti Gabriele: ? (PM)
-- Riccardo Como: ? (Dev)
-- Giorgia Manicone: ? (Documentazione e Testing)
+- Caretti Gabriele: (PM)
+- Riccardo Como: (Dev)
+- Giorgia Manicone: (Documentazione e Testing)
 
 ### Descrizione:
 BookRecommender è un progetto che segue le linee guida del progetto
