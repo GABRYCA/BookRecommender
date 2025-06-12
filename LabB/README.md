@@ -16,13 +16,13 @@
 - **Database**: PostgreSQL
 - **Accesso DB**: JDBC
 - **GUI**: JavaFX
-- **Concorrenza**: Gestione multi-threading/client sul server
-- **Comunicazione Client/Server**: Sockets, RMI (o altro meccanismo)
+- **Concorrenza**: Gestione multi-threading/client sul server (ClientHandler)
+- **Comunicazione Client/Server**: Sockets (Con serializzazione JSON)
 
 ### Ruoli Membri:
-- Caretti Gabriele: ? (PM)
-- Riccardo Como: ? (Dev)
-- Giorgia Manicone: ? (Documentazione e Testing)
+- Caretti Gabriele: (PM & Dev client e server)
+- Riccardo Como: (Dev client e server)
+- Giorgia Manicone: (Documentazione e Testing)
 
 ### Descrizione:
 BookRecommender è un progetto che segue le linee guida del progetto
