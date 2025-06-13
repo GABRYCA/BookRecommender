@@ -1,6 +1,7 @@
 package me.labb.bookrecommender.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.labb.bookrecommender.server.db.*;
 import me.labb.bookrecommender.server.oggetti.*;
@@ -121,7 +122,15 @@ public class ClientHandler implements Runnable {
             case "LOGIN":
                 return login(parametri);
             case "REGISTRA":
-                return registra(parametri);
+                // Per REGISTRA manteniamo il JSON originale se la richiesta è JSON
+                if (RequestParser.isJsonRequest(input)) {
+                    // Estraiamo la parte JSON dai parametri originali
+                    String jsonParams = estraiJsonDaInput(input);
+                    return registra(jsonParams);
+                } else {
+                    // Se non è JSON, usa i parametri normali
+                    return registra(parametri);
+                }
             case "FORMAT":
                 return impostaFormato(parametri);
         }
@@ -173,6 +182,30 @@ public class ClientHandler implements Runnable {
         }
 
         return ResponseFormatter.erroreJson("Comando non riconosciuto. Digita HELP per la lista dei comandi.");
+    }
+
+    // Metodo helper per estrarre il JSON dai parametri
+    private String estraiJsonDaInput(String input) {
+        try {
+            // Trova l'inizio del JSON (dopo "parametri":")
+            int startIndex = input.indexOf("\"parametri\":") + "\"parametri\":".length();
+
+            // Trova la fine del JSON (l'ultima })
+            int endIndex = input.lastIndexOf("}");
+
+            if (startIndex > 0 && endIndex > startIndex) {
+                return input.substring(startIndex, endIndex + 1).trim();
+            }
+
+            // Fallback: restituisce i parametri normali se non riesce ad estrarre il JSON
+            RequestParser.ParsedRequest parsedRequest = RequestParser.parseRequest(input);
+            return parsedRequest.getParametri();
+
+        } catch (Exception e) {
+            System.err.println("Errore nell'estrazione del JSON: " + e.getMessage());
+            RequestParser.ParsedRequest parsedRequest = RequestParser.parseRequest(input);
+            return parsedRequest.getParametri();
+        }
     }
 
     private String cercaPerAnno(String parametri) {
@@ -587,23 +620,38 @@ public class ClientHandler implements Runnable {
      * @return Messaggio di successo o errore in formato JSON
      */
     private String registra(String parametri) {
-        String[] parti = parametri.split("\\s+", 5);
-        if (parti.length < 4) {
-            return ResponseFormatter.erroreJson("Formato non valido. Usa: REGISTRA nomeCompleto email username password [codiceFiscale]");
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> dati;
+
+        try {
+            dati = mapper.readValue(parametri, new TypeReference<Map<String, String>>() {});
+        } catch (IOException e) {
+            return ResponseFormatter.erroreJson("Formato JSON non valido.");
         }
-        String nomeCompleto = parti[0];
-        String email = parti[1];
-        String username = parti[2];
-        String password = parti[3];
-        String codiceFiscale = parti.length > 4 ? parti[4] : null;
+
+        String nomeCompleto = dati.get("nomeCompleto");
+        String email = dati.get("email");
+        String username = dati.get("username");
+        String password = dati.get("password");
+        String codiceFiscale = dati.get("codiceFiscale"); // può essere null
+
+        // Verifica campi obbligatori
+        if (nomeCompleto == null || email == null || username == null || password == null) {
+            return ResponseFormatter.erroreJson("Parametri mancanti. Richiesti: nomeCompleto, email, username, password.");
+        }
+
         try {
             int userID = utenteDAO.registraUtente(nomeCompleto, codiceFiscale, email, username, password);
-            return ResponseFormatter.successoJson("Registrazione completata con successo! Ora puoi effettuare il login.", ResponseFormatter.singletonMap("userID", userID));
+            return ResponseFormatter.successoJson(
+                    "Registrazione completata con successo! Ora puoi effettuare il login.",
+                    ResponseFormatter.singletonMap("userID", userID)
+            );
         } catch (SQLException e) {
             System.err.println("Errore durante la registrazione: " + e.getMessage());
             return ResponseFormatter.erroreJson("Errore durante la registrazione. L'username o l'email potrebbero essere già in uso.");
         }
     }
+
 
     /**
      * Controlla se l'utente è autenticato.
