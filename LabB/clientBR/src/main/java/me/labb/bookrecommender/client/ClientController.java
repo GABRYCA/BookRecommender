@@ -3266,6 +3266,7 @@ public class ClientController implements Initializable {
                     // Aggiorna la visualizzazione della libreria
                     caricaLibriInLibreria(libreriaID);
                 } else {
+                    mostraMessaggioErrore("Errore nella rimozione del libro dalla libreria.");
                     stampaConAnimazione("Errore nella rimozione del libro dalla libreria.");
                 }
             } catch (IOException e) {
@@ -4198,8 +4199,10 @@ public class ClientController implements Initializable {
                 );
 
                 if (valutazioneID > 0) {
+                    mostraMessaggioSuccesso("Valutazione salvata con successo (ID: " + valutazioneID + ").");
                     stampaConAnimazione(valutazionePreesistente != null ? "Valutazione aggiornata con successo (ID: " + valutazioneID + ")." : "Valutazione salvata con successo (ID: " + valutazioneID + ").");
                 } else {
+                    mostraMessaggioErrore("Errore nel salvataggio della valutazione.");
                     stampaConAnimazione("Errore nel salvataggio della valutazione.");
                 }
             } catch (IOException e) {
