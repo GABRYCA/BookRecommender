@@ -2144,6 +2144,7 @@ public class ClientController implements Initializable {
     @FXML
     private void disconnetti() {
         client.chiudi();
+        clearUI();
         isConnected = false;
         isLoggedIn = false;
         animaCambioStato(statusLabel, "Non connesso", "status-connected", "status-disconnected");
