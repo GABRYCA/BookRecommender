@@ -2328,12 +2328,14 @@ public class ClientController implements Initializable {
      * Ripulisce la GUI allo stato iniziale (prima che un qualsiasi utente si loggasse).
      */
     private void clearUI() {
+
         resultContainer.getChildren().clear();
         consigliContainer.getChildren().clear();
         searchField.clear();
         resultLabel.setText("Inserisci un termine di ricerca");
         libreriaContentContainer.getChildren().clear();
         librerieListView.getItems().clear();
+        valutazioniContainer.getChildren().clear();
     }
 
     /**
